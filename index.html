@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>口岸网点经营看板</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --bd:#e3e6ea; --tx:#1a1d21; --sub:#6b7280;
+    --ac:#4a5bd6; --ac2:#6b7ae8; --ok:#1f7a4d; --okbg:#e8f5ee;
+    --wn:#a35b00; --wnbg:#fdf3e3; --rd:#a32d2d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--tx);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.6; padding:0 0 40px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+  header{
+    background:linear-gradient(135deg,#4a5bd6,#6b7ae8);
+    color:#fff; padding:28px 0 24px; margin-bottom:20px;
+  }
+  header h1{font-size:22px;font-weight:700;letter-spacing:.5px}
+  header .sub{font-size:13px;opacity:.9;margin-top:6px}
+  header .fix{
+    display:inline-block;margin-top:12px;background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.3);border-radius:20px;
+    padding:4px 12px;font-size:12px;
+  }
+
+  .card{
+    background:var(--card);border:1px solid var(--bd);border-radius:12px;
+    padding:18px;margin-bottom:14px;display:block;text-decoration:none;color:inherit;
+    transition:transform .12s, box-shadow .12s, border-color .12s;
+  }
+  .card:hover,.card:active{
+    transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);
+    border-color:var(--ac2);
+  }
+  .card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .card h2{font-size:17px;font-weight:700}
+  .card .desc{font-size:13px;color:var(--sub);margin-top:6px}
+  .card .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .tag{
+    font-size:11px;padding:3px 9px;border-radius:20px;
+    background:#eef0f4;color:var(--sub);
+  }
+  .tag.live{background:var(--okbg);color:var(--ok);font-weight:600}
+  .tag.time{background:#eef0f4;color:#4b5563}
+  .go{
+    margin-top:14px;font-size:13px;color:var(--ac);font-weight:600;
+  }
+  .go::after{content:"›";margin-left:4px;font-size:15px}
+
+  .note{
+    background:var(--wnbg);border:1px solid #f0dcb8;border-left:3px solid #d99a2b;
+    border-radius:8px;padding:12px 14px;font-size:13px;color:#7a4b00;margin-bottom:14px;
+  }
+  .note b{color:var(--wn)}
+
+  .box{
+    background:var(--card);border:1px solid var(--bd);border-radius:12px;
+    padding:16px 18px;margin-bottom:14px;font-size:13px;color:var(--sub);
+  }
+  .box h3{font-size:14px;color:var(--tx);margin-bottom:10px;font-weight:700}
+  .box a{color:var(--ac);text-decoration:none;word-break:break-all}
+  .box a:hover{text-decoration:underline}
+  .box li{margin:5px 0 5px 18px}
+  .box code{
+    background:#eef0f4;padding:1px 6px;border-radius:4px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#374151;
+  }
+
+  footer{text-align:center;font-size:12px;color:var(--sub);margin-top:24px;line-height:1.8}
+  .mirror{display:inline-block;margin:0 6px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>口岸网点经营看板</h1>
+    <div class="sub">量返谈判 · 债务路线 · 现金流实测</div>
+    <div class="fix">📌 网址永久固定，内容持续更新</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="note">
+    <b>换网址提醒（记账工具）</b><br>
+    记账数据存在浏览器本地，<b>按网址隔离</b>。第一次在新网址打开时，
+    如果看不到以前记的账，不是数据丢了 —— 在记账工具里输入<b>同步码 260901</b> 即可从云端恢复。
+  </div>
+
+  <a class="card" href="rebate-plan/index.html">
+    <div class="top">
+      <h2>口岸门店量返方案</h2>
+    </div>
+    <div class="desc">
+      谈门店时直接翻给他看的展示页。规则一句话：超出基数每票返 ¥0.30，
+      全部走圆通签约即 ¥0.40。含内部毛利测算面板、竞争对手对比、谈判话术、沟通指南。
+    </div>
+    <div class="meta">
+      <span class="tag live">v11</span>
+      <span class="tag">谈判现场用</span>
+      <span class="tag time" id="t1">—</span>
+    </div>
+    <div class="go">打开</div>
+  </a>
+
+  <a class="card" href="debt-roadmap/index.html">
+    <div class="top">
+      <h2>债务重组执行总路线图</h2>
+    </div>
+    <div class="desc">
+      三年还款路线。含债务余额下降曲线、每个节点的剩余债务与下一阶段面临金额、
+      分期墙峰值月、2033 气球贷收官方案判断。
+    </div>
+    <div class="meta">
+      <span class="tag">v5 口径</span>
+      <span class="tag">每周检查</span>
+      <span class="tag time" id="t2">—</span>
+    </div>
+    <div class="go">打开</div>
+  </a>
+
+  <a class="card" href="cashflow-tracker/index.html">
+    <div class="top">
+      <h2>90 天现金流实测记账</h2>
+    </div>
+    <div class="desc">
+      每天记一笔，五格盘点，月底出月报并导出 CSV。
+      用的是现金收付制，目的是测出<b>真实月结余</b>，而不是账面利润。
+    </div>
+    <div class="meta">
+      <span class="tag live">手机直接记</span>
+      <span class="tag">同步码 260901</span>
+      <span class="tag time" id="t3">—</span>
+    </div>
+    <div class="go">打开</div>
+  </a>
+
+  <div class="box">
+    <h3>📌 关于网址</h3>
+    <ul>
+      <li>这个入口页的网址<b>永久不变</b>，以后所有更新都只改内容、不换网址。</li>
+      <li>三个子页面用相对链接，跟着入口页走，也不用单独记。</li>
+      <li>如果哪天打开很慢或打不开，用下面的<b>备用地址</b>，内容完全一样。</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>🔁 备用地址（内容同步，二选一即可）</h3>
+    <div id="mirrors" style="margin-top:6px">
+      备用地址将在部署完成后自动填入。
+    </div>
+  </div>
+
+  <footer>
+    口岸网点经营看板 · 网址固定，内容持续演进<br>
+    <span id="footnote"></span>
+  </footer>
+
+</div>
+
+<script>
+/* 部署时由发布脚本自动填入实际账号/仓库名 */
+var USER = '{USER}';
+var REPO = '{REPO}';
+var BRANCH = 'main';
+
+var ITEMS = [
+  { id:'t1', file:'rebate-plan/index.html' },
+  { id:'t2', file:'debt-roadmap/index.html' },
+  { id:'t3', file:'cashflow-tracker/index.html' }
+];
+
+function fillDates(map){
+  ITEMS.forEach(function(it){
+    var el = document.getElementById(it.id);
+    if(!el) return;
+    var v = map && map[it.file];
+    el.textContent = v ? ('更新于 ' + v) : '—';
+  });
+}
+
+function buildMirrors(){
+  var box = document.getElementById('mirrors');
+  if(!box) return;
+  if(USER.indexOf('{') === 0){
+    box.textContent = '备用地址将在部署完成后自动填入。';
+    return;
+  }
+  var pages  = 'https://' + USER + '.github.io/' + REPO + '/';
+  var jsd    = 'https://cdn.jsdelivr.net/gh/' + USER + '/' + REPO + '@' + BRANCH + '/';
+  var fastly = 'https://fastly.jsdelivr.net/gh/' + USER + '/' + REPO + '@' + BRANCH + '/';
+
+  var here = location.href.split('#')[0];
+  var list = [
+    ['GitHub Pages（主地址）', pages],
+    ['jsDelivr（国内加速）',   jsd],
+    ['jsDelivr 备用节点',      fastly]
+  ];
+  var html = '';
+  list.forEach(function(p){
+    var isHere = here.indexOf(p[1]) === 0;
+    html += '<div style="margin:7px 0">'
+          + (isHere ? '<b style="color:#1f7a4d">✓ 当前</b> ' : '　')
+          + '<a href="' + p[1] + '">' + p[0] + '</a>'
+          + '<div style="font-size:11px;color:#9aa1ab;word-break:break-all;margin-top:2px">'
+          + p[1] + '</div></div>';
+  });
+  box.innerHTML = html;
+}
+
+/* 更新时间：优先读同目录的 versions.json（由发布脚本维护） */
+function loadVersions(){
+  try{
+    var x = new XMLHttpRequest();
+    x.open('GET', 'versions.json?_=' + Date.now(), true);
+    x.onreadystatechange = function(){
+      if(x.readyState === 4){
+        if(x.status === 200){
+          try{ fillDates(JSON.parse(x.responseText)); }catch(e){}
+        }
+      }
+    };
+    x.send();
+  }catch(e){}
+}
+
+buildMirrors();
+loadVersions();
+</script>
+
+</body>
+</html>

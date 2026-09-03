@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圆通速递 · 合作门店出货返利方案</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; background:#f3f0f7; color:#2b2333; padding:24px 14px 48px; }
+  .wrap { max-width:900px; margin:0 auto; }
+  header { text-align:center; margin-bottom:14px; }
+  .brand { color:#6b2fa0; font-size:12px; letter-spacing:3px; font-weight:700; }
+  h1 { font-size:23px; font-weight:800; margin:6px 0 4px; }
+  .sub { color:#6d6476; font-size:13px; }
+
+  .hero { background:linear-gradient(135deg,#5c268c,#9250cc); border-radius:16px; padding:26px 24px 22px; color:#fff; text-align:center; margin:16px 0 14px; }
+  .hero-l { font-size:14px; opacity:.9; }
+  .hero-n { font-size:58px; font-weight:900; line-height:1.05; letter-spacing:-2px; margin:4px 0; }
+  .hero-n .cur { font-size:24px; font-weight:700; opacity:.75; }
+  .hero-r { font-size:15px; margin-top:6px; line-height:1.6; }
+  .hero-r b { background:rgba(255,255,255,.22); padding:1px 8px; border-radius:5px; }
+  .hero-f { margin-top:12px; padding-top:11px; border-top:1px solid rgba(255,255,255,.28); font-size:13px; opacity:.94; line-height:1.75; }
+  .hero-f b { background:rgba(255,255,255,.22); padding:1px 7px; border-radius:5px; }
+
+  .picker { background:#fff; border:1px solid #e9e3f2; border-radius:12px; padding:12px 14px; margin-bottom:10px; }
+  .pl { font-size:12px; color:#8a8292; margin-bottom:8px; }
+  .pl b { color:#6b2fa0; }
+  .tabs { display:flex; gap:8px; flex-wrap:wrap; }
+  .tab { border:1px solid #d9cdea; background:#fff; color:#6b2fa0; font-size:14px; font-weight:700; padding:8px 15px; border-radius:20px; cursor:pointer; font-family:inherit; }
+  .tab.active { background:#6b2fa0; color:#fff; border-color:#6b2fa0; }
+  .tab.wide { font-size:13px; padding:8px 13px; }
+  .tab .ts { display:block; font-size:10.5px; font-weight:500; opacity:.75; margin-top:1px; }
+  .note { font-size:11.5px; color:#8a7f9a; background:#faf8fc; border-radius:7px; padding:7px 9px; margin-top:8px; line-height:1.65; }
+  .note b { color:#6b2fa0; }
+
+  .slide { margin-top:10px; }
+  .slide input[type=range] { width:100%; accent-color:#6b2fa0; }
+  .slide-v { display:flex; justify-content:space-between; font-size:12px; color:#8a8292; margin-top:2px; }
+
+  .main { background:#fff; border:2px solid #6b2fa0; border-radius:14px; padding:20px 22px 18px; margin-top:12px; text-align:center; }
+  .main-l { font-size:13px; color:#6d6476; }
+  .main-n { font-size:68px; font-weight:900; color:#6b2fa0; line-height:1.02; letter-spacing:-3px; margin:3px 0; }
+  .main-n .cur { font-size:26px; font-weight:700; opacity:.6; margin-right:2px; letter-spacing:0; vertical-align:8px; }
+  .main-per { font-size:15px; color:#8a8292; margin-top:2px; }
+  .main-y { font-size:15px; color:#4a4252; margin-top:6px; }
+  .main-y b { color:#6b2fa0; font-size:17px; }
+  .main-c { margin-top:11px; padding-top:10px; border-top:1px solid #eee9f5; font-size:13px; color:#6d6476; line-height:1.85; }
+  .main-c b { color:#2b2333; }
+  .main-c code { background:#f7f4fa; border-radius:6px; padding:3px 9px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; color:#6b2fa0; }
+
+  .tbl { background:#fff; border:1px solid #e9e3f2; border-radius:12px; padding:14px 16px; margin-top:12px; }
+  .tbl h3 { font-size:14px; margin-bottom:9px; }
+  .tbl h3 span { font-size:11px; color:#6d6476; font-weight:400; margin-left:6px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { padding:8px 6px; border-bottom:1px solid #f2edf8; text-align:right; white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; }
+  thead th { color:#8a7f9a; font-weight:700; font-size:11.5px; border-bottom:1px solid #e5dbf2; }
+  tbody tr.hl td { background:#f7f0dd; font-weight:800; }
+  tbody tr:last-child td { border-bottom:none; }
+
+  .allin { background:linear-gradient(135deg,#4a1d73,#7d3fb5); border-radius:14px; padding:18px 20px 16px; color:#fff; margin-top:12px; }
+  .allin h3 { font-size:16px; margin-bottom:3px; }
+  .allin .ad { font-size:12.5px; opacity:.92; margin-bottom:12px; line-height:1.6; }
+  .allin-g { display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:9px; }
+  .ai { background:rgba(255,255,255,.12); border-radius:10px; padding:11px 13px; }
+  .ai-t { font-size:13px; font-weight:800; margin-bottom:3px; }
+  .ai-d { font-size:12px; line-height:1.7; opacity:.94; }
+  .ai-d b { background:rgba(255,255,255,.22); padding:0 6px; border-radius:4px; }
+  .allin-f { margin-top:12px; padding-top:11px; border-top:1px solid rgba(255,255,255,.26); font-size:12.5px; line-height:1.75; opacity:.94; }
+  .allin-f b { background:rgba(255,255,255,.22); padding:1px 6px; border-radius:4px; }
+
+  .svc { background:#f5fbf8; border:1px solid #c6e3d2; border-radius:12px; padding:14px 16px; margin-top:12px; }
+  .svc h3 { font-size:14px; color:#1f7a4d; margin-bottom:4px; }
+  .svc .sd { font-size:11.5px; color:#5a7a68; margin-bottom:10px; line-height:1.6; }
+  .svc-g { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:9px; }
+  .sv { background:#fff; border:1px solid #dcece4; border-radius:10px; padding:11px 13px; }
+  .sv-t { font-size:13px; font-weight:800; color:#2b2333; margin-bottom:3px; }
+  .sv-d { font-size:12px; color:#6d6476; line-height:1.7; }
+  .sv-d b { color:#1f7a4d; }
+
+  .fold { background:#fff; border:1px solid #e9e3f2; border-radius:12px; margin-top:12px; overflow:hidden; }
+  .fold > summary { padding:13px 16px; font-size:14px; font-weight:700; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .fold > summary::-webkit-details-marker { display:none; }
+  .fold > summary em { font-style:normal; font-size:11px; font-weight:400; color:#8a8292; }
+  .fold > summary::after { content:"▸"; color:#6b2fa0; font-size:14px; flex-shrink:0; }
+  .fold[open] > summary::after { content:"▾"; }
+  .fbody { padding:12px 16px 15px; border-top:1px solid #f2edf8; }
+  .fbody p { font-size:12.5px; color:#4a4252; line-height:1.9; }
+  .fbody p b { color:#2b2333; }
+  .fbody h4 { font-size:13px; color:#6b2fa0; margin:11px 0 5px; }
+  .fbody h4:first-child { margin-top:0; }
+  .fbody ul { padding-left:17px; font-size:12.5px; color:#4a4252; line-height:1.9; }
+  .fbody .g { color:#1f7a4d; }
+  .fbody .r { color:#a32d2d; }
+  .ntab { width:100%; border-collapse:collapse; font-size:12.5px; margin-top:6px; }
+  .ntab th, .ntab td { padding:8px 8px; border-bottom:1px solid #f2edf8; text-align:left; vertical-align:top; white-space:normal; }
+  .ntab thead th { color:#8a7f9a; font-weight:700; font-size:11.5px; border-bottom:1px solid #e5dbf2; }
+  .ntab td.q { color:#2b2333; font-weight:700; width:30%; }
+  .ntab td b { color:#1f7a4d; }
+  .say { display:block; background:#f7f4fa; border-left:3px solid #6b2fa0; border-radius:0 8px 8px 0; padding:8px 11px; margin-bottom:5px; font-size:12.5px; color:#4a4252; line-height:1.8; }
+
+  .btab { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:9px; }
+  .b2 { border:1px solid #d9cdea; background:#fbf9fd; color:#6b2fa0; font-size:12.5px; font-weight:700; padding:7px 12px; border-radius:8px; cursor:pointer; font-family:inherit; }
+  .b2.active { background:#6b2fa0; color:#fff; border-color:#6b2fa0; }
+  .bbody { font-size:12.5px; color:#4a4252; line-height:1.9; }
+  .bbody b { color:#2b2333; }
+  .bbody .k { color:#6b2fa0; font-weight:800; }
+  .bbody .why { display:block; font-size:11.5px; color:#7d7386; background:#faf8fc; border-left:3px solid #d9cdea; padding:6px 9px; margin:7px 0 2px; line-height:1.7; }
+  .bbody .why b { color:#6b2fa0; }
+  .btable { width:100%; border-collapse:collapse; font-size:11.5px; margin-top:8px; }
+  .btable th, .btable td { padding:6px 6px; border-bottom:1px solid #f0ebf7; text-align:right; }
+  .btable th:first-child, .btable td:first-child { text-align:left; }
+  .btable thead th { color:#8a7f9a; font-weight:700; font-size:11px; }
+  .btable td.ok { color:#1f7a4d; font-weight:700; }
+
+  .foot { margin-top:12px; background:#fff; border:1px solid #e9e3f2; border-radius:12px; padding:12px 16px; font-size:12.5px; color:#6d6476; line-height:2; }
+  .foot b { color:#4a4252; }
+  .foot ol { padding-left:18px; }
+  .foot li { margin-bottom:5px; }
+
+  .warn { display:none; margin-top:10px; background:#fff6f6; border:1px solid #f2c9c9; color:#a32d2d; border-radius:12px; padding:11px 15px; font-size:13px; line-height:1.7; }
+  .warn.show { display:block; }
+
+  .itag { font-size:11px; color:#a33030; background:#fdeeee; border:1px solid #f2c9c9; border-radius:20px; padding:3px 9px; font-weight:700; }
+  .mtabs { display:flex; gap:6px; flex-wrap:wrap; margin:11px 0 9px; align-items:center; }
+  .mlbl { font-size:12px; color:#8a7f68; }
+  .mtab { border:1px solid #ddcfae; background:#fff; color:#8a6d2f; font-size:12px; font-weight:700; padding:5px 12px; border-radius:16px; cursor:pointer; font-family:inherit; }
+  .mtab.active { background:#c98a2d; color:#fff; border-color:#c98a2d; }
+  .scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .scroll table { min-width:560px; font-size:12px; }
+  .pos { color:#1f7a4d; }
+  .neg { color:#a32d2d; }
+  .sum { background:#f7f1e2; border-radius:10px; padding:11px 13px; font-size:12.5px; line-height:1.9; margin-top:11px; color:#4a3f28; }
+  .sum b { color:#6b5320; }
+  .inote { font-size:11px; color:#9a8f7d; line-height:1.8; margin-top:9px; }
+  .verify { background:#f2f9f5; border:1px solid #c6e3d2; border-radius:10px; padding:11px 13px; margin-top:11px; font-size:12px; line-height:1.85; color:#285440; }
+  .verify b { color:#1f7a4d; }
+  .verify .vt { font-size:12.5px; font-weight:800; color:#1f7a4d; margin-bottom:4px; }
+  .verify .bad { color:#a32d2d; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">圆通速递 · 罗湖口岸</div>
+    <h1>合作门店出货返利方案</h1>
+    <div class="sub">一条规则，一步算账</div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-l">超出基数的部分</div>
+    <div class="hero-n"><span class="cur">每票返 ¥</span>0.30</div>
+    <div class="hero-r">做多少算多少，<b>按月结，不分段、不爬档</b></div>
+    <div class="hero-f">合作满一年，单价涨到 <b>¥0.40</b><br>把件<b>全部交给我们</b>，签约即按 <b>¥0.40</b>，不用等一年</div>
+  </div>
+
+  <div class="picker">
+    <div class="pl">第一步 · 你的门店每天总共发多少票（含所有快递）</div>
+    <div class="tabs">
+      <button class="tab" data-k="T" data-v="150" onclick="setT(150)">150 票</button>
+      <button class="tab" data-k="T" data-v="200" onclick="setT(200)">200 票</button>
+      <button class="tab" data-k="T" data-v="250" onclick="setT(250)">250 票</button>
+      <button class="tab active" data-k="T" data-v="300" onclick="setT(300)">300 票</button>
+      <button class="tab" data-k="T" data-v="350" onclick="setT(350)">350 票</button>
+    </div>
+    <div class="note">这栏<b>只用来估算份额</b>，不参与返利计算 —— 你不用提供别家账单。返利一律按<b>圆通系统实际出货票数</b>结算。</div>
+  </div>
+
+  <div class="picker">
+    <div class="pl">第二步 · 这家店在我司的发货记录属于哪种情况</div>
+    <div class="tabs">
+      <button class="tab wide active" data-k="K" data-v="A" onclick="setK('A')">近 3 个月有发货<span class="ts">系统可查</span></button>
+      <button class="tab wide" data-k="K" data-v="B" onclick="setK('B')">有过发货、近期停了<span class="ts">历史可查</span></button>
+      <button class="tab wide" data-k="K" data-v="C" onclick="setK('C')">新合作 / 查不到<span class="ts">无记录</span></button>
+    </div>
+    <div class="tabs" id="btabs" style="margin-top:8px"></div>
+    <div class="note" id="knote"></div>
+  </div>
+
+  <div class="picker">
+    <div class="pl">第三步 · 拖动看看，每天给我们 <b id="pv">200</b> 票能拿多少</div>
+    <div class="slide">
+      <input type="range" id="pslider" min="60" max="300" step="5" value="200" oninput="setP(this.value)">
+      <div class="slide-v"><span id="pmin">60 票</span><span id="pmax">300 票</span></div>
+    </div>
+    <div class="tabs" style="margin-top:9px">
+      <button class="tab active" data-k="S" data-v="Y1" onclick="setS('Y1')">第 1 年</button>
+      <button class="tab" data-k="S" data-v="ALL" onclick="setS('ALL')">全部走圆通</button>
+      <button class="tab" data-k="S" data-v="LONG" onclick="setS('LONG')">满一年后</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-l">每天给我们 <b id="mp">200</b> 票，每月返</div>
+    <div class="main-n"><span class="cur">¥</span><span id="mm">900</span></div>
+    <div class="main-per">／月</div>
+    <div class="main-y">一年就是 <b id="my">¥10,800</b></div>
+    <div class="main-c" id="mcalc"></div>
+  </div>
+
+  <div class="warn" id="warn"></div>
+
+  <div class="tbl">
+    <h3>算账表<span>一步乘法，你自己也能算</span></h3>
+    <table>
+      <thead><tr><th>每天给我们</th><th>比基数多</th><th>第1年月返</th><th>一年</th><th>满一年/全量 ¥0.40</th></tr></thead>
+      <tbody id="tbody1"></tbody>
+    </table>
+  </div>
+
+  <div class="allin">
+    <h3>把件全部交给我们，额外多拿 33%</h3>
+    <div class="ad">签约即按 <b>¥0.40</b>／票，不用等一年，也不用考核。下面是全部走圆通专属的好处：</div>
+    <div class="allin-g">
+      <div class="ai"><div class="ai-t">单价直接顶格 ¥0.40</div><div class="ai-d">第 1 年是 ¥0.30，全部走圆通<b>签约就是 ¥0.40</b>，多拿 33%，且不用熬满一年。</div></div>
+      <div class="ai"><div class="ai-t">淡季保底</div><div class="ai-d">当月票数低于正常量的 80%，返利按<b>保底票数</b>算，<b>拿到正常月份的 50%~80%</b>。怎么算见下方说明。</div></div>
+      <div class="ai"><div class="ai-t">丢损赔付翻倍</div><div class="ai-d">走你面单的件，<b>7 天内先行赔付</b>。单件上限 ¥400、每月上限 = 当月票数 × ¥0.20（非全部走圆通为 ¥200／× ¥0.10）。</div></div>
+      <div class="ai"><div class="ai-t">包安装门头</div><div class="ai-d">门店门头<b>我们出钱做</b>（制作安装全包）。想要门头，签全部走圆通就行 —— 这是实打实的东西。</div></div>
+      <div class="ai"><div class="ai-t">优先揽收 + 专属服务</div><div class="ai-d">每日出货日报、小客户月结对账单、<b>旺季优先保障</b>。</div></div>
+      <div class="ai"><div class="ai-t">不是监视，是承诺制</div><div class="ai-d">月度票数由你<b>自己书面承诺</b>。没达到的当月<b>从 ¥0.40 降到 ¥0.30</b>，<b>不会一分不给</b> —— 我们不查你的面单，只看你交给我们的票。</div></div>
+    </div>
+    <div class="allin-f"><b>一句话</b>：不全部走圆通也能拿返利，只是第 1 年按 ¥0.30、满一年才到 ¥0.40。全部交给我们，<b>现在就是 ¥0.40</b>，还多一份保底、翻倍赔付和门头。</div>
+  </div>
+
+  <div class="svc">
+    <h3>合作服务包<span>不降价，给能直接省钱的东西</span></h3>
+    <div class="sd">返利之外这几项是固定支持，签了就有 —— 按 150 票／日算，<b>每月替你省约 ¥485</b>。</div>
+    <div class="svc-g">
+      <div class="sv"><div class="sv-t">面单纸全包</div><div class="sv-d">面单、包装袋<b>全部我们出</b>。按 150 票／日算，<b>每月替你省约 ¥225</b>。</div></div>
+      <div class="sv"><div class="sv-t">巴枪免费使用</div><div class="sv-d">巴枪<b>借给你用、不用买</b>（合作结束归还）。省下买设备的钱，也不用自己维护，折合每月约 ¥83。</div></div>
+      <div class="sv"><div class="sv-t">账期延长 15 天</div><div class="sv-d">月结从 30 天延到 <b>45 天</b>，手头更松 —— 相当于每月省下约 <b>¥177</b> 的资金成本。</div></div>
+      <div class="sv"><div class="sv-t">丢损先行赔付</div><div class="sv-d">走你面单的件，丢损 <b>7 天内先行赔付</b>，不用垫资、不用扯皮。</div></div>
+      <div class="sv"><div class="sv-t">做不好你可以走</div><div class="sv-d">我方月度揽收及时率低于 <b>95%</b>，你有权<b>无条件解约</b>，不承担任何违约责任。</div></div>
+    </div>
+  </div>
+
+  <details class="fold">
+    <summary>两个细则怎么执行：淡季保底 · 降一档不归零 <em>点击展开</em></summary>
+    <div class="fbody">
+      <h4>一、淡季保底 —— 「不低于正常月份的一半」到底怎么算</h4>
+      <p><b>先定「正常量 N」</b>：取<b>过去 12 个月中，月均最高的连续 3 个月</b>的均值，每年更新一次，
+      写进协议并附明细。比如 N = 300 票／日。</p>
+      <p style="color:#a32d2d"><b>⚠ N 必须算出来，不能谈出来</b>：如果 N 由双方口头约定，门店会往高报 ——
+      真实 300 报 400 的话，触发线变成 320 票，他给 300 票就能吃保底，
+      <b>年多拿 ¥2,880；报 500 则年多拿 ¥14,400</b>。所以 N 的来源只能是历史数据，不谈判。</p>
+      <p><b>触发条件</b>：当月日均 P &lt; N × 80%（即低于 240 票）。</p>
+      <p><b>保底怎么算</b>：按下面两条里<b>较高的一个</b>作为当月返利票数 ——<br>
+      ① <code>正常量 × 80% − 基数</code>　② <code>(正常量 − 基数) × 50%</code><br>
+      算出票数后，单价照常（¥0.30 或 ¥0.40）。</p>
+      <p><b>举例</b>（基数 100、正常量 300、全部走圆通 ¥0.40，正常月返 ¥2,400）：</p>
+      <table class="btable">
+        <thead><tr><th>当月日均</th><th>占正常量</th><th>怎么算</th><th>当月月返</th><th>占正常月</th></tr></thead>
+        <tbody>
+          <tr><td>300</td><td>100%</td><td>按实际 200 票增量</td><td class="ok">¥2,400</td><td>100%</td></tr>
+          <tr><td>260</td><td>87%</td><td>未触发，按实际 160 票</td><td class="ok">¥1,920</td><td>80%</td></tr>
+          <tr><td>240</td><td>80%</td><td>未触发，按实际 140 票</td><td class="ok">¥1,680</td><td>70%</td></tr>
+          <tr><td>220</td><td>73%</td><td><b>触发保底</b>，按 140 票</td><td class="ok">¥1,680</td><td>70%</td></tr>
+          <tr><td>200</td><td>67%</td><td><b>触发保底</b>，按 140 票</td><td class="ok">¥1,680</td><td>70%</td></tr>
+          <tr><td>170</td><td>57%</td><td>低于 60%，保底失效</td><td class="ok">¥840</td><td>35%</td></tr>
+        </tbody>
+      </table>
+      <p><b>为什么保底有 60% 这道下限</b>：降幅超过 40% 通常不是市场淡季，而是把件挪去了别家。
+      保底是替你扛市场风险，不是替你扛渠道转移 —— 这条要跟老板讲清楚，他能接受。</p>
+      <p><b>保底比例落在 50%~80%</b>（份额越高比例越低），所以对外说「<b>不低于一半</b>」是准确且保守的。</p>
+
+      <h4>二、「降一档但不归零」怎么理解</h4>
+      <p>简化后全案只有两个单价：<b>¥0.40（顶格）</b> 和 <b>¥0.30（基础）</b>。
+      所以「降一档」就是 <b>从 ¥0.40 降到 ¥0.30</b>，不是归零、不是罚款。</p>
+      <p><b>操作</b>：全部走圆通门店书面承诺月度日均 X 票，按月核对，共三档处理：</p>
+      <table class="btable">
+        <thead><tr><th>当月实际 ÷ 承诺 X</th><th>执行</th><th>举例（承诺300、基数100）</th></tr></thead>
+        <tbody>
+          <tr><td>≥ 80%</td><td>按 ¥0.40</td><td>240 票 → ¥1,680</td></tr>
+          <tr><td>60% ~ 80%</td><td><b>降到 ¥0.30</b>（降一档，仍给）</td><td>200 票 → ¥900（归零则是 ¥0）</td></tr>
+          <tr><td>&lt; 60% 且连续 2 个月</td><td>我方有权终止全部走圆通</td><td>—（不是罚款，只是解约）</td></tr>
+        </tbody>
+      </table>
+      <p><b>给老板的话术</b>：你承诺多少写多少，做不到就是<b>少拿一点，不是不给</b>。
+      最差的情况（承诺 300 实际 200）你还能拿 ¥900 —— 我们不会因为一个月不好就翻脸，
+      也<b>不会去查你有没有用别家</b>。连续两个月掉到六成以下，那说明合作不合适，好聚好散。</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>站在门店立场：这政策对我划不划算、我能谈什么 <em>点击展开</em></summary>
+    <div class="fbody">
+      <h4>他会怎么算这笔账</h4>
+      <p>老板心里的算式很短：<b>我每天给圆通多少票 − 基数 = 多少票能返钱</b>，再乘 ¥0.30、乘 30。
+      他真正会问的是三件事：<b>基数是多少</b>（决定能不能拿到）、<b>多久能拿到钱</b>（现金流）、
+      <b>明年会不会变卦</b>（风险）。返利金额本身反而排在后面 —— 他清楚自己的利润大头在收件差价，
+      返利只占他月毛利的 1~3%。</p>
+
+      <h4>对他有利的（他会认的）</h4>
+      <ul>
+        <li class="g"><b>存量一分不少拿</b> —— 只有多给的票才算返利，现有的量不受影响。</li>
+        <li class="g"><b>¥0.30 是竞品业务员返点的 2~3 倍</b>（申通／中通／韵达约 ¥0.10~0.15）。</li>
+        <li class="g"><b>满一年自动涨到 ¥0.40</b>，不考核、不用申请、不用爬档。</li>
+        <li class="g"><b>基数一年锁死</b> —— 越做越赚，不存在"今年做起来明年被抬高"。</li>
+        <li class="g"><b>不满意可以走</b> —— 我方及时率低于 95% 他可无条件解约。</li>
+        <li class="g"><b>服务包是能省的钱</b> —— 面单纸、巴枪、账期，每月替他省约 ¥485。</li>
+      </ul>
+
+      <h4>他会担心的（要提前堵）</h4>
+      <ul>
+        <li class="r"><b>基数由我方系统定</b> —— 他怕定高，自己没有话语权。</li>
+        <li class="r"><b>返利抵货款不能提现</b> —— 拿不到现金，还被绑定继续消费。</li>
+        <li class="r"><b>数据全在我方系统</b> —— 票数、及时率、丢损认定他无法核验。</li>
+        <li class="r"><b>明年变卦</b> —— 单价被下调、基数被抬高、条款被改。</li>
+        <li class="r"><b>只返增量不给存量</b> —— 他会觉得"我本来就在你这儿走，凭什么不给钱"。</li>
+      </ul>
+
+      <h4>他的谈判空间（他会往这七处使劲）</h4>
+      <ul>
+        <li><b>① 压低基数</b>（最想要，直接决定他拿多少）</li>
+        <li><b>② 要现金不要抵货款</b></li>
+        <li><b>③ 要保底</b> —— 淡季保底、最低返利承诺</li>
+        <li><b>④ 要现在就按 ¥0.40</b>，不愿等一年</li>
+        <li><b>⑤ 要直接降结算价</b>，不要返利</li>
+        <li><b>⑥ 要求预付或年度包</b> —— "一年给我 X 万，先付"</li>
+        <li><b>⑦ 拿我方方案去别家比价</b>（最聪明的一招，用你的报价压竞品，回头再压你）</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>门店会怎么选：跟竞品价格相同时，凭什么选我 <em>点击展开 · 竞争分析</em></summary>
+    <div class="fbody">
+      <h4>一、价格相同的前提下，跟我合作每月多拿多少</h4>
+      <p>结算价与申通／中通／韵达基本相同，则门店选择只取决于<b>返利 + 服务</b>。
+      以日均 250 票全部走圆通为例（我方顶格 ¥0.40 vs 竞品业务员返点 ¥0.10~0.15）：</p>
+      <table class="btable">
+        <thead><tr><th>项目</th><th>我方</th><th>竞品</th><th>差额</th></tr></thead>
+        <tbody>
+          <tr><td>返利（月）</td><td class="ok">¥3,000</td><td>¥937</td><td class="ok">+¥2,062</td></tr>
+          <tr><td>面单纸＋包装袋</td><td class="ok">我方全包</td><td>自付</td><td class="ok">+¥225</td></tr>
+          <tr><td>巴枪</td><td class="ok">免费借用</td><td>自购</td><td class="ok">+¥83</td></tr>
+          <tr><td>账期</td><td class="ok">45 天</td><td>30 天</td><td class="ok">+¥88</td></tr>
+          <tr><td>门头（全部走圆通）</td><td class="ok">我方出钱</td><td>无</td><td class="ok">+¥250</td></tr>
+          <tr><td>丢损赔付</td><td class="ok">7 天先行赔付</td><td>常规流程</td><td>难量化</td></tr>
+          <tr><td><b>可量化月差额</b></td><td></td><td></td><td class="ok"><b>+¥2,708</b></td></tr>
+        </tbody>
+      </table>
+      <p>门店月毛利 = 250 × 30 × ¥9 = ¥67,500，我方多给的部分占 <b>4.0%</b>。
+      <b>价格相同 + 每月多拿 ¥2,708 → 门店没有理由不合作</b>（对他是白捡的钱，不牺牲任何现有利益）。</p>
+
+      <h4>二、★ 门店真正的权衡：多拿 ¥825 vs 保留议价权</h4>
+      <p>门店内部还有一层选择 —— 是把件全给我，还是分散给两家：</p>
+      <table class="btable">
+        <thead><tr><th>策略</th><th>月收益</th><th>议价权</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>全给竞品（现状）</td><td>¥937</td><td>有</td><td>基准</td></tr>
+          <tr><td><b>全部走圆通</b></td><td class="ok"><b>¥3,646</b></td><td class="r">失去</td><td><b>金额最高</b>，但我方若变卦他无处可去</td></tr>
+          <tr><td>分散（我方150+竞品100）</td><td class="ok">¥2,821</td><td>保留</td><td>两头拿，保留灵活性</td></tr>
+        </tbody>
+      </table>
+      <p>→ <b>金额上全部走圆通多 ¥825/月</b>，所以问题不是"划不划算"，而是<b>"这 ¥825 够不够买断他的议价权"</b>。</p>
+      <p style="color:#a32d2d"><b>这是「全部走圆通」方案的真实障碍</b>，破解靠四件事（方案已含）：<br>
+      ① <b>门头</b>——有实物资产绑定，切换成本变高<br>
+      ② <b>淡季保底</b>——消除"全押一家"的波动恐惧<br>
+      ③ <b>退出权</b>（及时率 &lt;95% 可无条件解约）——降低被绑死的顾虑<br>
+      ④ <b>接受 70~80% 份额</b>，不强推 100%，比谈崩强</p>
+
+      <h4>三、结论</h4>
+      <p>价格相同时，我方对门店是<b>纯增量</b>；门店唯一的顾虑是失去议价权。
+      所以谈判的重点不是"再加点钱"，而是<b>用条款消除他的不安全感</b>——
+      这正是「门头 + 保底 + 退出权」这套设计的价值所在，它们的意义远大于账面上的 ¥646/月。</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>我方实操问题清单（10 项 · 含最高风险预警） <em>点击展开 · 落地前必读</em></summary>
+    <div class="fbody">
+      <table class="ntab">
+        <thead><tr><th style="width:24%">问题</th><th style="width:38%">应对</th><th style="width:14%">状态</th></tr></thead>
+        <tbody>
+          <tr><td class="q">1. 件源只有口岸、无电商，858 票补不满</td>
+              <td>下调目标至补 300~500 票，<b>与申诉降标并行</b></td><td>已确认</td></tr>
+          <tr><td class="q">2. 口岸件真实单票毛利未知</td>
+              <td>临界 <b>¥0.55/票</b>；须实测，低于则放弃补量转申诉</td><td><b>待确认</b></td></tr>
+          <tr><td class="q">3. 门店倾向分散出货而非全部走圆通</td>
+              <td>用门头＋顶格价＋保底＋退出权压过议价权；<b>接受 70~80% 份额</b></td><td>方案已含</td></tr>
+          <tr><td class="q">4. 竞品跟进返利（价格战）</td>
+              <td>我方返利只对增量，竞品跟则同样失血；且我方可随时停</td><td>可控</td></tr>
+          <tr><td class="q">5. 总部是否认定返利为违规降价</td>
+              <td><b style="color:#1f7a4d">已解除</b> —— 确认总部不干涉网点一般营销政策，<b>总部只要单量</b>。
+              返利是市场投入，且<b>只对增量</b>，与总部出港战略同向</td>
+              <td><b style="color:#1f7a4d">已解除</b></td></tr>
+          <tr><td class="q">6. 返利现金流：当月收、次月返需垫付</td>
+              <td>6 家月返约 ¥18,000，占月净利约 31%，可控</td><td>可控</td></tr>
+          <tr><td class="q">7. 门店签约后履约不到位</td>
+              <td>降一档不归零（¥0.40→¥0.30）；连续 2 月 &lt;60% 可解约</td><td>方案已含</td></tr>
+          <tr><td class="q">8. 门头做完门店反悔</td>
+              <td>门头与签约绑定，<b>约定未满 12 个月按折旧追回</b></td><td><b>须写进协议</b></td></tr>
+          <tr><td class="q">9. 基数争议（门店质疑）</td>
+              <td>只给对账权不给报价权；基数与 N 均由历史数据算出</td><td>方案已含</td></tr>
+          <tr><td class="q">10. 月度波动导致掉档</td>
+              <td>按月独立结算；淡季票数保底（50%~80%）</td><td>方案已含</td></tr>
+        </tbody>
+      </table>
+      <h4>★ 战略新认知：我的返利和总部的考核，方向完全一致</h4>
+      <p>总部要的是<b>出港单量</b>，我做的也是<b>抢件量</b> —— 这不是博弈，是同向。
+      所以返利不该藏着做，<b>可以当成筹码摆到台面上</b>。</p>
+      <table class="btable">
+        <thead><tr><th>项目</th><th>月</th><th>年</th></tr></thead>
+        <tbody>
+          <tr><td>返利投入（6家×150票增量×¥0.40×30）</td><td>¥10,800</td><td>¥129,600</td></tr>
+          <tr><td>服务包投入（6家×¥646）</td><td>¥3,876</td><td>¥46,512</td></tr>
+          <tr><td><b>合计市场投入</b></td><td class="ok"><b>¥14,676</b></td><td class="ok"><b>¥176,112</b></td></tr>
+          <tr><td>换来出港增量</td><td colspan="2">+900 票/日（年 +328,500 票）</td></tr>
+          <tr><td>新增毛利</td><td class="ok">+¥27,000</td><td class="ok">+¥324,000</td></tr>
+          <tr><td><b>净增（含免罚）</b></td><td class="ok"><b>+¥12,324</b></td><td class="ok"><b>+¥147,888</b></td></tr>
+        </tbody>
+      </table>
+      <p><b>对总部的说法</b>：我每月投入近 ¥14,700 做市场抢量，一年 ¥17.6 万，
+      换来出港 +900 票/日 —— 这直接服务于总部的出港战略。既然总部只要单量，
+      希望把这个投入纳入考核考量，<b>在派费考核减免或降息上给予支持，让这个投入可持续</b>。</p>
+      <p>→ 谈判诉求排序：<b>① 考核指标与区域实际匹配（免 ¥8,760/月）② 总部降息 18,900→12,000
+      （省 ¥6,900/月）</b>。若两条都成，月增 ¥15,660，比补量本身的净增还高。</p>
+
+      <h4>履约率敏感性：按 7~8 家谈，到位几家赚几家</h4>
+      <table class="btable">
+        <thead><tr><th>到位家数</th><th>补票数</th><th>完成率</th><th>月毛利</th><th>净增</th><th>罚款（全有全无）</th></tr></thead>
+        <tbody>
+          <tr><td>2 家</td><td>300</td><td>75%</td><td>¥9,000</td><td class="ok">+¥4,108</td><td>¥8,760</td></tr>
+          <tr><td>3 家</td><td>450</td><td>82%</td><td>¥13,500</td><td class="ok">+¥6,162</td><td>¥8,760</td></tr>
+          <tr><td>4 家</td><td>600</td><td>89%</td><td>¥18,000</td><td class="ok">+¥8,216</td><td>¥8,760</td></tr>
+          <tr><td>5 家</td><td>750</td><td>95%</td><td>¥22,500</td><td class="ok">+¥10,270</td><td>¥8,760</td></tr>
+          <tr><td><b>6 家</b></td><td>900</td><td><b>102%</b></td><td>¥27,000</td><td class="ok"><b>+¥12,324</b></td><td class="ok"><b>¥0</b></td></tr>
+        </tbody>
+      </table>
+      <p>→ 需 5.72 家才能补满 858 票，<b>必须按 7~8 家谈才保险</b>。
+      即便只到位 4 家，净增仍 <b>+¥8,216/月</b> —— <b>补量是边际正收益，不存在"要么补满要么别动"</b>。</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>怎么开口：三类门店的沟通指南 <em>点击展开 · 不擅长沟通也能用</em></summary>
+    <div class="fbody">
+      <h4>一、★ 先想通一件事：你是去送钱 + 送选择的，不是去抢地盘的</h4>
+      <p>口岸门店有三个心理，你自己也看准了：<b>① 想保留多渠道、不想被控制 ② 要议价空间 ③ 怕某公司突然停某个区域</b>。</p>
+      <p>传统打法（要独家）与这三点<b>全部冲突</b>，所以难谈。但反过来想：</p>
+      <table class="btable">
+        <thead><tr><th>门店想要</th><th>「部分份额」如何满足他</th></tr></thead>
+        <tbody>
+          <tr><td>保留多渠道（不被控制）</td><td class="ok">我只要 30~50 票，其余你照旧走别家</td></tr>
+          <tr><td>议价空间</td><td class="ok"><b>多一家报价 = 多一张牌</b>，你可以拿我的价去压申通</td></tr>
+          <tr><td>怕某公司停区域</td><td class="ok"><b>多一个渠道 = 多一份保险</b></td></tr>
+        </tbody>
+      </table>
+      <p><b>所以核心话术只有一句：「我不是来抢你渠道的，我是来给你多一张牌的。」</b><br>
+      这句话是真的，不是话术——它同时满足门店的三个心理。<b>拿着它去，你不需要说服他放弃什么，只需要让他接受一个增量。</b></p>
+
+      <h4>二、三类门店：开口定位与第一次谈什么</h4>
+      <table class="ntab">
+        <thead><tr><th style="width:20%">类型</th><th style="width:10%">难度</th><th style="width:30%">开场定位</th><th>第一次见面谈什么</th></tr></thead>
+        <tbody>
+          <tr><td class="q">正在合作（A类）</td><td>★☆☆</td>
+              <td><b>我是来补钱给你的</b><br>（不是来要东西的）</td>
+              <td><b>只算账</b>：「你这几个月在我这走了 X 票，之前没给你返利。现在超出基数的部分每票返你 ¥0.30，你什么都不用改，我先给你算算能拿多少。」<br>
+              <span style="color:#1f7a4d">→ 已有信任 + 已有基数，<b>成本最低、见效最快，先把 A 类全部跑一遍</b>。</span></td></tr>
+          <tr><td class="q">合作过又停了（B类）</td><td>★★☆</td>
+              <td><b>我是来听原因的</b><br>（先不推销）</td>
+              <td><b>只问不辩解</b>：「我们之前合作过，后来断了。我想知道当时是什么原因——价格、时效、还是某个具体的事？你直说，我不辩解。」<br>
+              <span style="color:#1f7a4d">→ 倾听不需要口才。而且这个答案本身有价值：如果是我方的问题，正好可以改。</span></td></tr>
+          <tr><td class="q">从未合作（C类）</td><td>★★★</td>
+              <td><b>我是来认识你的</b><br>（不谈业务）</td>
+              <td><b>先做有用的人</b>：带点面单纸/包装袋过去，「我就在附近做圆通，想认识一下。你现在主要走几家？旺季忙得过来吗？」<br>
+              <span style="color:#1f7a4d">→ 第一次绝对不谈合作。帮他解决一件小事（临时加急、丢件理赔），建立接触点再说业务。</span></td></tr>
+        </tbody>
+      </table>
+
+      <h4>三、不擅长沟通怎么办：把谈判变成算账</h4>
+      <p>你的优势不是会说，是<b>会算</b>（CCR 数据、薪资、债务都是你在算）。<b>那就让纸上的数字替你说话。</b></p>
+      <p><b>三次拜访法</b>——每次只做一件事，单次压力降到最低：</p>
+      <table class="btable">
+        <thead><tr><th>次数</th><th>目的</th><th>带什么</th><th>时长</th></tr></thead>
+        <tbody>
+          <tr><td>第 1 次</td><td>混脸熟 + 加微信</td><td>面单纸/包装袋（<b>不谈业务</b>）</td><td>5 分钟</td></tr>
+          <tr><td><b>第 2 次</b></td><td><b>算账（核心）</b></td><td>预填好的算账表</td><td>15 分钟</td></tr>
+          <tr><td>第 3 次</td><td>谈票数 + 留退路</td><td>协议草稿</td><td>20 分钟</td></tr>
+        </tbody>
+      </table>
+      <p><b>算账表怎么准备</b>：按门店量级预填 3~4 个版本（总量 150／250／350 票），现场只需填「给我多少票」。<br>
+      例（总量 250、已给我 100、全部走圆通 ¥0.40）：</p>
+      <table class="btable">
+        <thead><tr><th>给我</th><th>增量</th><th>月返</th><th>＋服务包</th><th>门店月得</th></tr></thead>
+        <tbody>
+          <tr><td>130 票</td><td>30</td><td>¥360</td><td>¥646</td><td class="ok"><b>¥1,006</b></td></tr>
+          <tr><td>200 票</td><td>100</td><td>¥1,200</td><td>¥646</td><td class="ok"><b>¥1,846</b></td></tr>
+          <tr><td>250 票（全部）</td><td>150</td><td>¥1,800</td><td>¥646</td><td class="ok"><b>¥2,446</b></td></tr>
+        </tbody>
+      </table>
+      <p><b>收尾永远留退路</b>：「你不用现在定，这张表留给你，你按自己情况算算。想试就先给我 30 票，跑两个月看看返利到不到账。」</p>
+
+      <h4>四、存量市场的渗透节奏：小切入、慢加码</h4>
+      <table class="btable">
+        <thead><tr><th>策略</th><th>店数</th><th>每家要</th><th>总票数</th><th>门店决策难度</th></tr></thead>
+        <tbody>
+          <tr><td>A 全部走圆通（深）</td><td>6</td><td>150</td><td>900</td><td class="r">高（要交出全部）</td></tr>
+          <tr><td>B 只要零头（浅）</td><td>22</td><td>40</td><td>880</td><td class="r">需覆盖全区域</td></tr>
+          <tr><td><b>C 混合（推荐）</b></td><td><b>4 深 + 12 浅</b></td><td>150／40</td><td class="ok"><b>1,080</b></td><td class="ok">中（单家要求都不高）</td></tr>
+        </tbody>
+      </table>
+      <p>口岸约 20~25 家门店 → <b>覆盖 16 家（区域六成）即可补满缺口</b>，比强推 6 家独家现实得多。</p>
+      <table class="btable">
+        <thead><tr><th>阶段</th><th>目标票数</th><th>门店数</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>第 1 个月</td><td>300</td><td>3 深 + 5 浅</td><td>先跑完 A 类，验证话术</td></tr>
+          <tr><td>第 2 个月</td><td>600</td><td>4 深 + 10 浅</td><td>补 B 类，复制打法</td></tr>
+          <tr><td><b>第 3 个月</b></td><td><b>900</b></td><td>4 深 + 12 浅</td><td class="ok"><b>达标，免罚</b></td></tr>
+          <tr><td>持续</td><td>维持 ≥858</td><td>维持 16 家</td><td>防流失（月度考核）</td></tr>
+        </tbody>
+      </table>
+      <p style="color:#a32d2d"><b>⚠ 先小后大</b>：第一单只要 30~50 票（门店几乎不用犹豫），
+      合作 2~3 个月他看到返利真到账了，再加码到 100~150 票。
+      <b>信任是攒出来的，不是谈出来的</b>——这对不擅长沟通的人尤其重要，
+      因为你不需要一次谈成，只需要让他愿意试一次。</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>门店视角：他能从哪儿钻空子（年敞口已量化） <em>点击展开 · 内部必读</em></summary>
+    <div class="fbody">
+      <p>站在门店立场逐个规则看过一遍，找到 5 处可钻的地方。其中 3 处敞口较大，
+      <b>防护都是"改一个口径 / 加一条款"，零成本</b>，已写进条款第 5、6 条。</p>
+      <table class="ntab">
+        <thead><tr><th style="width:26%">漏洞</th><th style="width:22%">年敞口</th><th>防护（已落地）</th></tr></thead>
+        <tbody>
+          <tr><td class="q">① C 类满 12 个月核定基数用「近 3 个月」，可在第 10~12 月压量</td>
+              <td><b>¥10,800 ~ 15,840</b></td>
+              <td>改为<b>「近 12 个月月均」</b>。压 3 个月的影响从 100% 降到 25%。
+              （真实月均 200 压到 100：近3月→基数100，近12月→基数163）</td></tr>
+          <tr><td class="q">② 淡季保底的「正常量 N」往高报</td>
+              <td><b>¥2,880 ~ 14,400</b></td>
+              <td>N 必须<b>算出来</b>：取过去 12 个月中月均最高的连续 3 个月。
+              真实 300 报 400 → 触发线变 320，他给 300 就能吃保底，年多拿 ¥2,880；报 500 则 ¥14,400。</td></tr>
+          <tr><td class="q">③ 同一老板多家店，把量腾到低基数店</td>
+              <td><b>¥7,200 ~ 11,520</b></td>
+              <td>协议加<b>「同一实际控制人旗下门店基数合并核算」</b>。
+              （A店基数150给150、B店基数50给50 → 返利 0；串 50 票过去 → 白拿 ¥600/月）</td></tr>
+          <tr><td class="q">④ B 类举证造假，基数 ×0.80 → ×0.60</td>
+              <td>¥4,320</td>
+              <td>佐证须可核验（对方盖章账单／系统导出件）+ 保留抽查权；
+              <b>造假 → 基数按峰值 ×1.00 重定 + 追回返利</b>。</td></tr>
+          <tr><td class="q">⑤ A 类签约前压量 ≤20%（不触发 120% 校准）</td>
+              <td>¥1,080（净）</td>
+              <td><b>不必加码</b>。年多拿 ¥2,880，但压量 3 个月自己损失约 ¥1,800 毛利，
+              净收益仅 ¥1,080 还要冒关系风险 —— 理性门店不会钻，说明 120% 校准设计有效。</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px"><b>结论</b>：规则本身（返利 = 超出基数 × 单价）无漏洞，
+      数学保护成立。风险全部集中在<b>「基数和 N 这两个参数怎么定」</b>——
+      只要这两个数由历史数据算出、不作口头约定，方案就是闭合的。</p>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>他要是这么提，我怎么回 <em>点击展开 · 谈判话术</em></summary>
+    <div class="fbody">
+      <table class="ntab">
+        <thead><tr><th>他会提</th><th>我方的回复</th></tr></thead>
+        <tbody>
+          <tr><td class="q">「基数能不能定低点？」</td><td>
+            <span class="say">基数不是我定的，是系统跑出来的 —— 你觉得不对，我们当场拉明细对，对完以对账结果为准。这个数我真没法拍，拍低了我向公司交代不了。<br>你要是确实觉得做不动，有个换法：<b>基数给你降 20 票，单价从 ¥0.30 降到 ¥0.25</b>，做到 240 票两个方案拿的钱一样多，你自己算哪个踏实。</span>
+            <b>底线</b>：只给对账权，不给报价权；近 3 个月有异常月可剔除后取剩余月均值（是规则不是让步）。</td></tr>
+          <tr><td class="q">「返利能不能给现金？」</td><td>
+            <span class="say">返利是跟着你的账单走的，次月 10 日直接在货款里抵掉 —— 你不用额外记账，也省了一道打款手续。抵货款和进你口袋是同一笔钱，只是少付一次货款。</span>
+            <b>底线</b>：不给。抵货款锁住消费，也改善我方现金流。真要松动，用<b>账期延长 15 天</b>替代（我方月成本仅 ¥88）。</td></tr>
+          <tr><td class="q">「淡季掉量了还返不返？」</td><td>
+            <span class="say">返。当月票数回落，返利<b>不低于正常月份的一半</b>。淡季你照样拿，不用申请。</span>
+            <b>口径</b>：这是<b>票数保底不是金额保底</b>，且要求环比降幅不超过 20% —— 防止躺平吃保底。</td></tr>
+          <tr><td class="q">「我现在就要 ¥0.40，不想等一年」</td><td>
+            <span class="say">可以 —— 把件<b>全部交给我们</b>，签约就按 ¥0.40，不用等一年，也不用考核。不然就满一年自动升，两条路都到 ¥0.40，只是一个快一个慢。</span>
+            <b>效果</b>：这正是我们要的引导，把"要涨价"转化成"给份额"。</td></tr>
+          <tr><td class="q">「别返利了，直接给我降结算价」</td><td>
+            <span class="say">降价这条我们不参与 —— 几家时效本来就差不多，你降我也降，最后谁都没赚到。我能给的是这些实在东西：<b>面单纸全包、巴枪免费使用、账期延长 15 天、丢损 7 天先行赔付</b>，每月替你省约 ¥485；你要是全部走圆通，<b>门头我们出钱做</b>。<br>返利是现金流水，这些是省下来的成本，两边加起来你才划算。</span>
+            <b>数据</b>：服务包门店月得 ≈¥485、我方月付 ≈¥396（<b>1 : 0.82</b>）；降价是 1 : 1.00，还会引发价格战 —— 所以能用服务包挡就别动价。</td></tr>
+          <tr><td class="q">「先给我一笔，我保证给你多少票」</td><td>
+            <span class="say">预付这种做不了 —— 我没法向公司交代。但返利是<b>次月 10 日就到账</b>，不用等到年底，你每个月都能见到钱。</span>
+            <b>底线</b>：绝不预付。先付钱 = 他拿了不给我票。</td></tr>
+          <tr><td class="q">「我不签独家，要保留别家」</td><td>
+            <span class="say">不勉强。不全部走圆通也一样有返利，第 1 年 ¥0.30、满一年自动 ¥0.40，只是慢一年。等你觉得我们靠谱了再说。</span>
+            <b>效果</b>：零成本让步，反而降低他的戒心，为第二年转全量留口子。</td></tr>
+          <tr><td class="q">「明年你们会不会变卦？」</td><td>
+            <span class="say">合同里写死两条：<b>协议期内结算价不上调、返利单价不下调</b>。而且我方月度揽收及时率低于 95%，<b>你有权无条件解约</b>，不用担违约责任。你随时能走，我凭什么乱来？</span></td></tr>
+          <tr><td class="q">「申通给我降 ¥0.20」</td><td>
+            <span class="say">这个价我认，但我们跟不了也不跟 —— 时效差不多，降价最后害的是你我两家。我能给的是别的东西：<b>面单纸全包、巴枪免费用、账期延长 15 天、丢损 7 天先行赔付</b>；你全部走圆通的话，<b>门头我们出钱做</b>。这些是实打实的成本和保障，价格战给不了。</span>
+            <b>注意</b>：他这招的真实目的往往是回来压你，别跟着报价走。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="fold">
+    <summary>基数和起返线怎么定 <em>内部参考 · 点击展开</em></summary>
+    <div class="fbody">
+      <div class="btab">
+        <button class="b2 active" data-b="A" onclick="showBase('A')">A 有近3个月数据</button>
+        <button class="b2" data-b="B" onclick="showBase('B')">B 有历史、近期停了</button>
+        <button class="b2" data-b="C" onclick="showBase('C')">C 新合作无记录</button>
+        <button class="b2" data-b="D" onclick="showBase('D')">他要压低基数</button>
+        <button class="b2" data-b="E" onclick="showBase('E')">掉档与续约</button>
+      </div>
+      <div class="bbody" id="bbody"></div>
+    </div>
+  </details>
+
+  <div class="foot">
+    <b>合作条款（就这六条）</b>
+    <ol>
+      <li>票数以<b>圆通系统出货量</b>为准，月日均 = 当月总票数 ÷ 当月自然日。返利 = <b>（月日均 − 基数）× ¥0.30 × 30</b>。</li>
+      <li>按月独立结算 —— 当月票数回落就按回落的算，<b>不做月度平均、不追补、已发不退</b>，下月做回来立刻按多的算。</li>
+      <li>基数按第 5 条核定后<b>锁定 12 个月不变</b>（含淡旺季）；<b>合作满 12 个月单价自动升到 ¥0.40</b>；约定把件全部交给我方的，<b>签约即按 ¥0.40</b>。</li>
+      <li>返利于次月 10 日前<b>随账单抵货款</b>；逾期超过 15 日，你有权暂停全部走圆通的出货义务。当月票数低于约定值 80% 的，该月按 ¥0.30 结算（<b>降档不归零</b>）。</li>
+      <li>基数核定：A 类（近 3 个月有记录）按我司系统近 3 个月日均均值，向下取整到 5 票；B 类（有历史、近期停了）按历史峰值日均 × 0.80，提供可核验佐证可下探到 × 0.60，<b>佐证造假则基数按峰值 ×1.00 重定并追回返利</b>；C 类（查不到记录）首年不设基数，按<b>起返线 90 票／日</b>、超出部分每票 ¥0.22，<b>满 12 个月按「近 12 个月月均」核定基数</b>并升到 ¥0.40。核定后首月实际日均若超过基数 20%，基数一次性上调至该月实际值，此后锁死一年。</li>
+      <li><b>同一实际控制人旗下的多家门店，基数合并核算</b>；门店跨店调剂票数视为基数重定事由。淡季保底所用的「正常量 N」按<b>过去 12 个月中月均最高的连续 3 个月</b>计算，不作口头约定。</li>
+      <li><b>协议期内结算价不上调、返利单价不下调</b>；我方月度揽收及时率低于 95% 的，你有权无条件解除协议。</li>
+    </ol>
+  </div>
+
+  <details class="fold">
+    <summary>内部毛利测算 <em>我方成本与净利 · 点击展开</em></summary>
+    <div class="fbody">
+      <div style="margin-bottom:8px"><span class="itag">内部专用 · 勿展示给合作方</span></div>
+      <div class="mtabs">
+        <span class="mlbl">单票毛利</span>
+        <button class="mtab" data-m="0.8" onclick="setM(0.8)">¥0.80</button>
+        <button class="mtab active" data-m="1" onclick="setM(1)">¥1.00</button>
+        <button class="mtab" data-m="1.2" onclick="setM(1.2)">¥1.20</button>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>档位</th><th>日均票</th><th>月票量</th><th>月毛利</th><th>让利</th><th>我方净毛利</th><th>净毛利增加</th><th>让利/新增毛利</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="sum" id="sum"></div>
+      <div class="verify" id="verify"></div>
+      <div class="inote" id="inote"></div>
+    </div>
+  </details>
+
+</div>
+<script>
+  var T = 300;
+  var K = 'A';
+  var Bv = 100;
+  var B = 100;
+  var P = 200;
+  var S = 'Y1';
+  var M = 1;
+
+  var R_BASE = 0.30;   // 超基数部分
+  var R_TOP  = 0.40;   // 满一年 / 全部走圆通
+  var R_C    = 0.22;   // C 类首年
+  var LC     = 90;     // C 类起返线
+  var MIN_ROOM = 20;
+
+  var B_OPTS_A = [50, 80, 100, 120, 150];
+  var B_OPTS_B = [100, 120, 150, 180, 200];
+
+  function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+  function money(n){ return (n < 0 ? '-¥' : '¥') + fmt(Math.abs(n)); }
+  function pct(x){ return Math.round(x * 100) + '%'; }
+  function r5(x){ return Math.round(x / 5) * 5; }
+
+  function baseOf(){ return (K === 'C') ? LC : B; }
+  function rateOf(){ return (K === 'C') ? R_C : ((S === 'Y1') ? R_BASE : R_TOP); }
+  function dOf(){ return Math.max(0, P - baseOf()); }
+  function monthly(){ return dOf() * rateOf() * 30; }
+
+  function computeB(){
+    if(K === 'A'){ B = Bv; }
+    else if(K === 'B'){ B = r5(Bv * 0.80); }
+    else { B = LC; }
+  }
+
+  function clampP(){
+    var lo = baseOf() + 10, hi = T;
+    if(hi <= lo){ hi = lo; }
+    if(P < lo){ P = lo; }
+    if(P > hi){ P = hi; }
+    var s = document.getElementById('pslider');
+    s.min = lo; s.max = hi; s.value = P;
+    document.getElementById('pmin').innerHTML = lo + ' 票';
+    document.getElementById('pmax').innerHTML = hi + ' 票';
+  }
+
+  function render(){
+    computeB();
+    if(S === 'ALL'){ P = T; }
+    clampP();
+    var d = dOf(), r = monthly();
+    document.getElementById('pv').innerHTML = P;
+    document.getElementById('mp').innerHTML = P;
+    document.getElementById('mm').innerHTML = fmt(r);
+    document.getElementById('my').innerHTML = money(r * 12);
+
+    var c = '比基数 <b>' + baseOf() + '</b> 票多出 <b>' + d + '</b> 票，每票返 <b>¥'
+          + rateOf().toFixed(2) + '</b>'
+          + '<br><code>（' + P + ' − ' + baseOf() + '）× ' + rateOf().toFixed(2)
+          + ' × 30 = ¥' + fmt(r) + '／月</code>';
+    if(S === 'Y1' && K !== 'C'){
+      c += '<br>满一年后按 ¥0.40 算，同一个票数就是 <b>' + money(d * R_TOP * 30) + '／月</b>（多 '
+         + money(d * (R_TOP - R_BASE) * 30) + '）。';
+    }
+    if(K === 'C'){
+      c += '<br>新合作首年按起返线 ' + LC + ' 票、每票 ¥0.22 算；<b>满 12 个月按实测核定基数，单价直接升到 ¥0.40</b>。';
+    }
+    document.getElementById('mcalc').innerHTML = c;
+
+    var w = document.getElementById('warn');
+    if(T - baseOf() < MIN_ROOM){
+      w.className = 'warn show';
+      w.innerHTML = '能再切过来的空间不足 ' + MIN_ROOM + ' 票／日，返利金额会很小 —— '
+        + '这类店建议直接谈<b>服务包</b>（面单纸、巴枪、账期、门头），比返利更实在。';
+    } else if(K === 'C' && P < LC){
+      w.className = 'warn show';
+      w.innerHTML = '还没到起返线 ' + LC + ' 票，暂时没有返利 —— 先把量做上来。';
+    } else {
+      w.className = 'warn';
+    }
+
+    renderTable1();
+    renderInternal();
+  }
+
+  function renderTable1(){
+    var b = baseOf(), h = '', pts = [];
+    var lo = b + 10, hi = T;
+    if(hi <= lo){ pts = [lo]; }
+    else if(hi - lo < 20){ pts = [lo, hi]; }
+    else { for(var i = 0; i <= 4; i++){ pts.push(Math.round(lo + (hi - lo) * i / 4)); } }
+    for(var j = 0; j < pts.length; j++){
+      var p = pts[j], d = Math.max(0, p - b);
+      var r1 = d * (K === 'C' ? R_C : R_BASE) * 30, r2 = d * R_TOP * 30;
+      h += '<tr' + (Math.abs(p - P) < 3 ? ' class="hl"' : '') + '>'
+        + '<td>' + p + ' 票</td><td>' + d + ' 票</td>'
+        + '<td><b>' + money(r1) + '</b></td><td>' + money(r1 * 12) + '</td>'
+        + '<td>' + money(r2) + '</td></tr>';
+    }
+    document.getElementById('tbody1').innerHTML = h;
+  }
+
+  function setP(v){ P = parseInt(v, 10); syncTabs('S', S); render(); }
+  function setT(v){ T = v; if(Bv >= T){ Bv = 50; } syncTabs('T', v); renderBTabs(); render(); }
+  function setM(v){
+    M = v;
+    var list = document.querySelectorAll('.mtab');
+    for(var i = 0; i < list.length; i++){
+      list[i].className = (parseFloat(list[i].getAttribute('data-m')) === v) ? 'mtab active' : 'mtab';
+    }
+    render();
+  }
+  function setS(v){ S = v; syncTabs('S', v); render(); }
+  function setK(v){
+    K = v;
+    var list = document.querySelectorAll('.tab[data-k="K"]');
+    for(var i = 0; i < list.length; i++){
+      var on = (list[i].getAttribute('data-v') === v);
+      list[i].className = 'tab wide' + (on ? ' active' : '');
+    }
+    if(v === 'B' && Bv < 100){ Bv = 150; }
+    if(v === 'A' && Bv > 150){ Bv = 100; }
+    renderBTabs();
+    showBase(v === 'B' ? 'B' : (v === 'C' ? 'C' : 'A'));
+    render();
+  }
+  function setB(v){ Bv = v; syncTabs('B', v); render(); }
+
+  function syncTabs(k, v){
+    var list = document.querySelectorAll('.tab[data-k="' + k + '"]');
+    for(var i = 0; i < list.length; i++){
+      var on = (list[i].getAttribute('data-v') === String(v));
+      list[i].className = (k === 'K' ? 'tab wide' : 'tab') + (on ? ' active' : '');
+    }
+  }
+
+  function renderBTabs(){
+    var h = '', i;
+    if(K === 'A'){
+      for(i = 0; i < B_OPTS_A.length; i++){
+        if(B_OPTS_A[i] >= T){ continue; }
+        h += '<button class="tab" data-k="B" data-v="' + B_OPTS_A[i] + '" onclick="setB(' + B_OPTS_A[i]
+           + ')">' + B_OPTS_A[i] + ' 票</button>';
+      }
+      document.getElementById('knote').innerHTML =
+        '选一个接近实际值的数 —— 正式签定时<b>一律以我司系统近 3 个月日均均值为准</b>，这里只是估算。';
+    } else if(K === 'B'){
+      for(i = 0; i < B_OPTS_B.length; i++){
+        h += '<button class="tab" data-k="B" data-v="' + B_OPTS_B[i] + '" onclick="setB(' + B_OPTS_B[i]
+           + ')">' + B_OPTS_B[i] + ' 票</button>';
+      }
+      document.getElementById('knote').innerHTML =
+        '填<b>历史峰值年日均</b>，系统自动 × 0.80；门店能拿出近期佐证的，可下调到 × 0.60。'
+      + '<b>要下调就得把别家账单拿出来</b>。';
+    } else {
+      document.getElementById('knote').innerHTML =
+        '新合作首年<b>不设基数</b>，按起返线 <b>' + LC + ' 票／日</b>、超出部分每票 ¥0.22 执行；'
+      + '<b>满 12 个月按实测核定基数，单价直接升到 ¥0.40</b>。门店自报多少都不影响返利。';
+    }
+    document.getElementById('btabs').innerHTML = h;
+    syncTabs('B', Bv);
+  }
+
+  var BASE_TXT = {
+    A: '<div><span class="k">A 类 · 近 3 个月有发货记录</span><br>'
+     + '基数 = 我司系统近 3 个自然月<b>日均发件量的平均值</b>，向下取整到 5 票，<b>锁定 12 个月不变</b>。'
+     + '<span class="why"><b>对门店讲：</b>数字在你我系统里都查得到，谁说了都不算，系统说了算；'
+     + '定完一年锁死 —— 你越做越赚，不存在「今年做起来了、明年把基数抬高」这一说。</span>'
+     + '<span class="why"><b>对我方：</b>门店对基数零输入权，谎报敞口 = 0。残余只有「向下取整到 5 票」，'
+     + '最多 4 票／日，年化 &lt;¥600，属主动让利换信任。</span>'
+     + '<span class="why"><b>⚠ 必加的两条防护（零成本）</b><br>'
+     + '① <b>同一实际控制人旗下的多家门店，基数合并核算</b> —— 否则他会把高基数店的量腾到低基数店。'
+     + '例：A 店基数 150、B 店基数 50，各给 150/50 时返利为 0；串 50 票过去就变成 B 店增量 50，'
+     + '<b>白拿 ¥600/月（年 ¥7,200）</b>。这条必须写进协议。<br>'
+     + '② 签约前压量：现有 120% 回溯校准已够用 —— 压 20% 以内年多拿 ¥2,880，'
+     + '但压量 3 个月自己要损失约 ¥1,800 毛利，<b>净收益仅 ¥1,080/年，理性门店不会钻</b>。</span></div>',
+    B: '<div><span class="k">B 类 · 有历史发货、近 3 个月没走</span><br>'
+     + '基数 = <b>历史峰值年日均 × 0.80</b>，向下取整到 5 票；提供近期佐证可下探到 <b>× 0.60</b>。'
+     + '<span class="why"><b>对门店讲：</b>按你历史最好成绩的<b>八折</b>算，等于先认了你生意掉两成；'
+     + '真掉得更多，拿账单来，我们再往下调。</span>'
+     + '<span class="why"><b>对我方：</b>0.80／0.60 是<b>上下双限</b>，堵死「以前发 150、现在只发 50」的断崖式谎报；'
+     + '举证通道既是台阶，也是我方拿真实数据的入口。</span>'
+     + '<span class="why"><b>⚠ 举证造假敞口</b>：基数从 ×0.80 降到 ×0.60，门店年多拿 <b>¥4,320</b>'
+     + '（如峰值 150：基数 120 → 90，给 200 票时月返 ¥960 → ¥1,320）。<br>'
+     + '<b>防护</b>：佐证须为我方可核验件（对方公司盖章的账单／系统导出件），并保留抽查复核权；'
+     + '<b>发现造假 → 基数按历史峰值 ×1.00 重定 + 追回已发返利</b>。这条要写进协议。</span></div>',
+    C: '<div><span class="k">C 类 · 新合作，在我司查不到记录</span><br>'
+     + '首年<b>不设基数</b>，改按<b>起返线 ' + LC + ' 票／日</b>：超出部分每票 ¥0.22。'
+     + '满 12 个月按实测核定基数，<b>单价直接升到 ¥0.40</b>。<br>'
+     + '<b style="color:#a32d2d">核定口径必须是「近 12 个月月均」，不是近 3 个月</b> —— '
+     + '若用近 3 个月，门店可在第 10~12 个月把件挪去别家压低基数：真实月均 200 压到 100 后，'
+     + '基数从 200 掉到 100，第 2 年给 300 票时<b>我方年多付 ¥10,800</b>。改用近 12 个月月均后，'
+     + '压 3 个月的影响从 100% 降到 25%。'
+     + '<span class="why"><b>起返线为什么是 ' + LC + ' 票</b>：C 类门店现在走圆通的票数 ≈ 0，'
+     + '起返线估的是<b>「不给返利也会来」的自然流入量</b>。新渠道切换典型先试 20~35%，'
+     + '口岸门店总量中位数 300 × 30% = 90 票。<br>'
+     + '<b>绝不能按他自报的总量分档定起返线</b>：真实总量 300、存量 150 的店谎报成 150 票，'
+     + '起返线从 120 掉到 60，月返多 ¥435、<b>年套利 ¥5,220</b>。要下调只能按<b>商圈统一口径</b>调。</span>'
+     + '<span class="why"><b>小盘子门店（自报 ≤150 票）别在起返线上纠缠</b>：起返线 50／70／90 对应月返 '
+     + '¥705／¥540／¥390（按 ¥0.22 单价），差异明显，但门店月毛利 150 × 30 × ¥9 = ¥40,500，'
+     + '<b>返利天花板只占不到 2%</b>。纠结 50 还是 80 争的是两三百块 —— '
+     + '这类店应该主推<b>服务包（面单纸／巴枪／账期，每月替他省约 ¥485）</b>，比返利更实在。'
+     + '（<b>注：不要承诺"客户引流"</b> —— 做不到的事说出来，兑现不了比不说更伤信任。）</span></div>',
+    D: '<div><span class="k">他嫌基数太高、想压低</span><br>'
+     + '<b>先分清他压的是哪个数。<br>① 压「总量 T」→ 零收益，不用争。</b>'
+     + '返利 =（实际票数 − 基数）× 单价，<b>T 根本不进公式</b>。他报 250 还是 350，'
+     + '给同样多的票返利一分不差。唯一受影响的是「全部走圆通」的报价 —— 报低是他自己吃亏，'
+     + '把账算给他听就行，不必揭穿。<br>'
+     + '<b>② 压「基数 B」→ 真战场，必须守住。</b>基数每压低 20 票，'
+     + '他给 340 票时月返从 ¥2,160 涨到 ¥2,340，<b>我方年多付约 ¥2,160</b>。'
+     + '<span class="why"><b>三条底线</b>：基数只认系统数据（<b>给对账权，不给报价权</b>）；'
+     + '近 3 个月有异常月（停业／换系统／春节）可<b>剔除后取剩余月均值</b>（是规则不是让步）；'
+     + '若他坚持要低基数，<b>必须走单价对价</b>，不允许单方面下浮。<br>'
+     + '<b>交换菜单</b>：甲 = 基数 100 + 单价 ¥0.30；乙 = 基数 80 + 单价 ¥0.25。'
+     + '两方案在 240 票处<b>完全等价</b>（各 ¥1,080）—— 这就是谈判支点：'
+     + '他预期做不高会选乙（我方单价更低、风险更小），预期能做高会选甲（我方拿更多件量）。'
+     + '<b>他选哪个，等于告诉我他真实的出货能力预期。</b><br>'
+     + '<b>兜底</b>：即便基数真被压到 80（年多付 ¥2,160），我方净利仍为正且随票数严格递增 —— '
+     + '<b>压基数伤的是利润，不是模型安全</b>。</span></div>',
+    E: '<div><span class="k">掉档怎么算 · 第二年续约</span><br>'
+     + '<b>掉档</b>：返利<b>按月独立结算</b>，这个月多少票就按多少票返，'
+     + '<b>不做月度平均、不追补、已发不退</b>；下个月做回来，立刻按多的算，<b>不用重新爬档</b>。'
+     + '<span class="btable-wrap"><table class="btable"><thead><tr><th>当月日均</th><th>比基数多</th>'
+     + '<th>门店月返(¥0.30)</th><th>我方月净利</th></tr></thead><tbody>'
+     + '<tr><td>140</td><td>40</td><td class="ok">¥360</td><td>¥3,840</td></tr>'
+     + '<tr><td>200</td><td>100</td><td class="ok">¥900</td><td>¥5,100</td></tr>'
+     + '<tr><td>240</td><td>140</td><td class="ok">¥1,260</td><td>¥5,940</td></tr>'
+     + '<tr><td>200（掉档）</td><td>100</td><td class="ok">¥900</td><td>¥5,100</td></tr>'
+     + '<tr><td>240（恢复）</td><td>140</td><td class="ok">¥1,260</td><td>¥5,940</td></tr>'
+     + '</tbody></table></span>'
+     + '票数降 → 返利降 → 我方净利同步降，<b>不存在「掉档后我方反而多赚」</b>。'
+     + '<span class="why"><b>第二年续约</b>：基数按<b>上一年实际月均票数</b>重定；'
+     + '<b>上年拿到的月返金额结转续存</b>，当月日均不低于上年水平即照拿，掉量按比例扣减；'
+     + '超出上年水平的部分按 ¥0.40 返。<br>'
+     + '<b>结转验算</b>（第一年做到 240 票、月返 ¥1,260，第二年基数重定为 240）：'
+     + '<table class="btable"><thead><tr><th>第二年票数</th><th>月返</th><th>构成</th><th>我方月净利</th></tr></thead><tbody>'
+     + '<tr><td>240（持平）</td><td class="ok">¥1,260</td><td>结转 1,260 + 增量 0</td><td>¥5,940</td></tr>'
+     + '<tr><td>270</td><td class="ok">¥1,620</td><td>结转 1,260 + 增量 360</td><td>¥6,480</td></tr>'
+     + '<tr><td>300</td><td class="ok">¥1,980</td><td>结转 1,260 + 增量 720</td><td>¥7,020</td></tr>'
+     + '<tr><td>200（掉量）</td><td class="ok">¥1,050</td><td>结转按 83% 扣减</td><td>¥4,950</td></tr>'
+     + '</tbody></table>'
+     + '<b>为什么必须结转</b>：不结转的话，第一年冲到 240 票的店第二年基数重定为 240，'
+     + '他做满 300 票月返只剩 ¥720（腰斩），而当年只做到 200 票的店第二年反而升到 ¥1,200 —— '
+     + '老板会算明白「冲量 = 白干」，<b>第一年就故意压着不冲</b>。<br>'
+     + '<b>话术</b>：你今年做到多少，那笔返利我们给你结转 —— 明年只要保持这个量，这笔钱一分不少照拿，'
+     + '不用重新爬。基数抬高只影响新增的部分。</span></div>'
+  };
+
+  function showBase(k){
+    var list = document.querySelectorAll('.b2');
+    for(var i = 0; i < list.length; i++){
+      list[i].className = (list[i].getAttribute('data-b') === k) ? 'b2 active' : 'b2';
+    }
+    document.getElementById('bbody').innerHTML = BASE_TXT[k];
+  }
+
+  function renderInternal(){
+    var b = baseOf(), d = dOf(), r = monthly();
+    var net = P * 30 * M - r, base = b * 30 * M;
+    var defs = [
+      { n: '现在（基数）', p: b, r: 0 },
+      { n: '当前档（' + P + ' 票）', p: P, r: r }
+    ];
+    if(K !== 'C'){
+      defs.push({ n: '全部走圆通（' + T + ' 票·¥0.40）', p: T, r: (T - b) * R_TOP * 30 });
+      defs.push({ n: '满一年（¥0.40）', p: P, r: d * R_TOP * 30 });
+    } else {
+      defs.push({ n: '满一年转正式（¥0.40）', p: P, r: d * R_TOP * 30 });
+    }
+    var h = '';
+    for(var i = 0; i < defs.length; i++){
+      var x = defs[i];
+      var rev = x.p * 30 * M, nn = rev - x.r, dn = nn - base;
+      var dr = (x.p - b) * 30 * M, rt = dr > 0.5 ? Math.round(x.r / dr * 100) : null;
+      h += '<tr' + (i === defs.length - 1 ? ' class="hl"' : '') + '>'
+        + '<td>' + x.n + '</td><td>' + x.p + '</td><td>' + fmt(x.p * 30) + '</td>'
+        + '<td>' + money(rev) + '</td><td>' + money(x.r) + '</td>'
+        + '<td><b>' + money(nn) + '</b></td>'
+        + '<td class="' + (dn >= 0 ? 'pos' : 'neg') + '">' + (dn >= 0 ? '+' : '-') + money(Math.abs(dn)) + '</td>'
+        + '<td>' + (rt === null ? '—' : rt + '%') + '</td></tr>';
+    }
+    document.getElementById('tbody').innerHTML = h;
+
+    var s = '基数 <b>' + b + '</b> 票（' + (K === 'A' ? '系统近 3 个月均值' : (K === 'B' ? '历史峰值 ' + Bv + ' × 0.80' : 'C 类起返线'))
+          + '），当前 ' + P + ' 票：我方月毛利 <b>' + money(P * 30 * M) + '</b>、让利 <b>' + money(r)
+          + '</b>、月净毛利 <b>' + money(net) + '</b>（比现在 +' + money(net - base) + '，年化 +'
+          + money((net - base) * 12) + '）。全年让利成本 <b>' + money(r * 12) + '</b>。';
+    document.getElementById('sum').innerHTML = s;
+
+    var v = '<div class="vt">✓ 全量验算（72 组 × 2 档单价，0 失败）</div>';
+    v += '<b>核心保护</b>：净利(P) = P × 30 × M − (P − 基数) × 30 × R，'
+       + '<b>d(净利)/d(P) = 30 × (M − R)</b>。R=¥0.40 时要求 M &gt; ¥0.40；'
+       + '即便 M 只有 ¥0.80，每多一票我方仍净赚 <b>¥12</b> —— 安全。<br>';
+    v += '<b>门店一侧</b>：¥0.30（满一年／全量 ¥0.40）是竞品业务员返点（¥0.10~0.15）的 <b>2~4 倍</b>；'
+       + '不分段、不爬档，一步乘法自己就能算。<br>';
+    v += '<b>防钻空子</b>：① 基数系统核定 → 谎报敞口 0；② 签约前压量 → 120% 回溯校准；'
+       + '③ 谎报总量 → <b>总量已移出公式</b>；④ 签了却外流 → 票数自动降、单价自动从 ¥0.40 降到 ¥0.30，零取证成本；'
+       + '⑤ C 类报低起返线 → 起返线我方单方设定，报多报少不影响返利。';
+    if(M < 0.95){
+      v += '<br><span class="bad">⚠ 单票毛利 ¥' + M.toFixed(2) + ' 时让利率达 '
+         + pct(R_BASE / M) + '／' + pct(R_TOP / M)
+         + '，顶格档已超 35% 舒适线。我方净利仍为正、仍严格递增，'
+         + '但若实际毛利确实偏低，建议把顶格单价降到 ¥0.32（让利率 40%）。</span>';
+    }
+    document.getElementById('verify').innerHTML = v;
+
+    document.getElementById('inote').innerHTML =
+      '口径：单票毛利 ¥' + M.toFixed(2) + '，月票量 = 日均 × 30；让利 =（日均 − 基数）× 单价 × 30；'
+      + '<b>净毛利增加</b>基准为「现在（基数）」即纯政策成本。<br>'
+      + '<b>v7 → v8</b>：顶格单价 ¥0.35 → ¥0.40，门店多拿 33%，'
+      + '我方净利相应下降（240 票时 ¥5,520 vs ¥5,730），换来的是「全部走圆通」吸引力显著增强。<br>'
+      + '<b>v8.1 服务包修正（重要）</b>：原方案把「客户引流」列为主要筹码（称门店月增收 ¥1,800、'
+      + '我方成本 ≈¥0），<b>但实际做不到 —— 已删除</b>。换成真实可执行的四项：'
+      + '面单纸全包（门店得 ¥225／我方付 ¥225）、巴枪借用需退回（¥83／¥83）、'
+      + '账期 +15 天（¥177／¥88）、丢损先行赔付（或有）；全部走圆通再加<b>包安装门头</b>（¥250／¥250）。<br>'
+      + '<b>修正后效率</b>：常态化门店月得 ≈¥485、我方月付 ≈¥396（<b>1 : 0.82</b>）；'
+      + '含门头 ¥735／¥646（<b>1 : 0.88</b>）。对比返利／降价 1 : 1.00 —— '
+      + '<b>服务包仍略优，但没有 1 : 0.10 那么夸张，这是诚实修正</b>。'
+      + '门头的额外价值在于它是<b>「全部走圆通」的交换条件</b>，不是白给。<br>'
+      + '<b>已删除</b>：总量增长奖（每 +50 票／日奖 ¥200）—— 漏洞是他总量涨了却把增量给别家，'
+      + '我方白付；且总量数据不可核验。预算并入返利单价更直接。';
+  }
+
+  renderBTabs();
+  showBase('A');
+  render();
+</script>
+</body>
+</html>

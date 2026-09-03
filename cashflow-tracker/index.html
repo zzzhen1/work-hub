@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>90天现金流实测记账</title>
+<style>
+:root{--p:#6b4fd8;--pl:#f0ecff;--pd:#4a35a8;--g:#0a8f4e;--r:#d93636;--t1:#1c1c28;--t2:#5a5a72;--bg:#f6f5fa;--card:#fff;--line:#e8e6f0}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--t1);padding-bottom:90px;font-size:15px}
+.wrap{max-width:560px;margin:0 auto;padding:14px}
+.hd{background:linear-gradient(135deg,#6b4fd8,#8a6ff0);color:#fff;border-radius:16px;padding:18px 18px 16px;margin-bottom:14px}
+.hd h1{font-size:19px;font-weight:700}
+.hd .sub{font-size:12px;opacity:.85;margin-top:5px;line-height:1.6}
+.hd .rule{font-size:11px;opacity:.75;margin-top:8px;border-top:1px solid rgba(255,255,255,.25);padding-top:8px;line-height:1.7}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(80,60,160,.06)}
+.card h2{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card h2 .dot{width:6px;height:16px;border-radius:3px;background:var(--p)}
+.seg{display:flex;gap:8px;margin-bottom:12px}
+.seg button{flex:1;padding:10px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-size:15px;font-weight:600;color:var(--t2)}
+.seg button.on-in{border-color:var(--g);background:#e9f9f0;color:var(--g)}
+.seg button.on-out{border-color:#e0761f;background:#fdf1e6;color:#e0761f}
+.seg button.on-debt{border-color:var(--r);background:#fdecec;color:var(--r)}
+.seg button.on-xfer{border-color:#0a7fa8;background:#e6f4fb;color:#0a7fa8}
+.amt-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.amt-row .yen{font-size:26px;font-weight:800;color:var(--pd)}
+#amt{flex:1;font-size:30px;font-weight:800;border:none;border-bottom:2.5px solid var(--p);padding:6px 4px;outline:none;background:transparent;width:100%;font-family:inherit}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cats button{padding:8px 13px;border:1.5px solid var(--line);background:#fff;border-radius:20px;font-size:13.5px;color:var(--t2)}
+.cats button.sel{border-color:var(--p);background:var(--pl);color:var(--pd);font-weight:600}
+.row2{display:flex;gap:10px;margin-bottom:12px}
+.row2 input{flex:1;padding:10px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;outline:none}
+.row2 input:focus{border-color:var(--p)}
+.btn-main{width:100%;padding:14px;background:var(--p);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit}
+.btn-main:active{background:var(--pd)}
+.toast{position:fixed;top:18%;left:50%;transform:translateX(-50%);background:rgba(30,20,80,.92);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
+.toast.show{opacity:1}
+.list{max-height:340px;overflow-y:auto}
+.li{display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13.5px}
+.li .l1{color:var(--t1);font-weight:600}
+.li .l2{color:var(--t2);font-size:11.5px;margin-top:2px}
+.li .amt-in{color:var(--g);font-weight:700}
+.li .amt-out{color:#e0761f;font-weight:700}
+.li .amt-debt{color:var(--r);font-weight:700}
+.li .amt-xfer{color:#0a7fa8;font-weight:700}
+.li .del{color:#bbb;padding:6px;font-size:16px;margin-left:8px}
+.li .del:active{color:var(--r)}
+.snaprow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.snaprow input{flex:1;min-width:100px;padding:9px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;font-family:inherit;outline:none}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.sum-b{background:var(--bg);border-radius:12px;padding:12px}
+.sum-b .k{font-size:11.5px;color:var(--t2);margin-bottom:4px}
+.sum-b .v{font-size:19px;font-weight:800}
+.sum-b .v.in{color:var(--g)}.sum-b .v.out{color:#e0761f}.sum-b .v.debt{color:var(--r)}.sum-b .v.net{color:var(--pd)}
+.note{font-size:12px;color:var(--t2);line-height:1.7;background:#fffbe8;border:1px solid #f5e6a8;border-radius:10px;padding:10px;margin-top:10px}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:50}
+.tabs button{flex:1;padding:11px 0 13px;border:none;background:#fff;font-size:12.5px;color:var(--t2);font-family:inherit}
+.tabs button .ic{display:block;font-size:20px;margin-bottom:2px}
+.tabs button.on{color:var(--p);font-weight:700}
+.btn-s{padding:11px;border:none;border-radius:10px;font-size:14px;font-weight:600;font-family:inherit;flex:1}
+.btn-p{background:var(--p);color:#fff}
+.btn-o{background:#fff;border:1.5px solid var(--p);color:var(--pd)}
+.msel{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.msel button{padding:7px 12px;border:1.5px solid var(--line);background:#fff;border-radius:18px;font-size:13px;color:var(--t2)}
+.msel button.on{border-color:var(--p);background:var(--pl);color:var(--pd);font-weight:700}
+table.brk{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+table.brk td{padding:6px 2px;border-bottom:1px solid var(--line)}
+table.brk td:last-child{text-align:right;font-weight:600}
+.hide{display:none}
+#fileImp{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <h1>90天现金流实测 · 现金收付制记账</h1>
+    <div class="sub">只记「钱实际进出」的流水 + 每月一次余额盘点，月末两数对勾稽，得出真实月结余 X。</div>
+    <div class="rule"><b>三条铁律：</b>① 赊账不记、五格内部互转不记；但「信用卡套现到账」必须记（套现/内部页签）——套现进来的钱不是结余，不记会导致月结余虚高、误判经营状况；② 还款必须单列分类，一笔都不能混；③ 每月最后一天盘一次总余额（5个格子填满），漏记的流水会被勾稽差暴露。</div>
+  </div>
+
+  <!-- Tab1 记一笔 -->
+  <div id="tab1">
+    <div class="card">
+      <h2><span class="dot"></span>记一笔</h2>
+      <div class="seg" id="segType">
+        <button data-t="in" onclick="setType('in')">收入</button>
+        <button data-t="out" class="on-out" onclick="setType('out')">支出</button>
+        <button data-t="debt" onclick="setType('debt')">还款</button>
+        <button data-t="xfer" onclick="setType('xfer')">套现/内部</button>
+      </div>
+      <div class="amt-row"><span class="yen">¥</span><input id="amt" type="number" inputmode="decimal" placeholder="0"></div>
+      <div class="cats" id="cats"></div>
+      <div class="row2">
+        <input id="note" type="text" placeholder="备注（可选，如：10月房租）">
+        <input id="date" type="date">
+      </div>
+      <button class="btn-main" onclick="saveEntry()">保存</button>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>最近记录 <span id="cnt" style="font-size:12px;color:var(--t2);font-weight:400"></span></h2>
+      <div class="list" id="recent"></div>
+    </div>
+  </div>
+
+  <!-- Tab2 盘点 -->
+  <div id="tab2" class="hide">
+    <div class="card">
+      <h2><span class="dot"></span>余额盘点（每月1日和最后一天各一次）</h2>
+      <div class="row2"><input id="snapDate" type="date"><input id="snapNote" type="text" placeholder="标注（期初/期末）"></div>
+      <div class="snaprow">
+        <input id="s1" type="number" inputmode="decimal" placeholder="现金">
+        <input id="s2" type="number" inputmode="decimal" placeholder="银行卡">
+        <input id="s3" type="number" inputmode="decimal" placeholder="微信">
+        <input id="s4" type="number" inputmode="decimal" placeholder="支付宝">
+        <input id="s5" type="number" inputmode="decimal" placeholder="预充值池">
+      </div>
+      <button class="btn-main" onclick="saveSnap()">保存盘点</button>
+      <div class="note">五个格子 = 你的全部「可动用钱」。两期盘点之差就是最可靠的月结余（不怕漏记流水）。预充值池单列，是为了监控它有没有被挪去填缺口——这正是 v5 报告要盯的核心风险。</div>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>盘点记录</h2>
+      <div class="list" id="snapList"></div>
+    </div>
+  </div>
+
+  <!-- Tab3 月报 -->
+  <div id="tab3" class="hide">
+    <div class="card">
+      <h2><span class="dot"></span>月度汇总</h2>
+      <div class="msel" id="msel"></div>
+      <div class="sum-grid" id="sumGrid"></div>
+      <table class="brk" id="brk"></table>
+      <div class="note" id="recon"></div>
+    </div>
+  </div>
+
+  <!-- Tab4 导出 -->
+  <div id="tab4" class="hide">
+    <div class="card">
+      <h2><span class="dot"></span>导出 / 备份</h2>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <button class="btn-s btn-p" onclick="expCSV()">导出CSV（发给AI测算）</button>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-s btn-o" onclick="expJSON()">备份JSON</button>
+        <button class="btn-s btn-o" onclick="document.getElementById('fileImp').click()">导入恢复</button>
+      </div>
+      <input type="file" id="fileImp" accept=".json" onchange="impJSON(this)">
+      <div class="note">每月结束后点「导出CSV」，把文件发给我，我直接拉取流水和盘点做错算核对：月结余X、预充值池变动、每笔还款与计划比对、使用率修复进度。CSV含UTF-8签名，Excel双击直接打开不乱码。</div>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>☁️ 云同步（与工作台同库，防丢失）</h2>
+      <div id="cloudBox"></div>
+      <div class="note">数据实时存手机本地，同时自动同步到云端（与你工作台同一个云数据库，但用<b>专属同步码 260901</b>，与工作台/雨辰的数据完全隔离，永不混淆）。换手机、误删、清浏览器数据都不怕：新设备打开本页 → 云同步 → 输入同步码 260901 即可全部恢复。每次记完一笔约 3 秒后自动上传。</div>
+    </div>
+    <div class="card">
+      <h2><span class="dot"></span>分类速查</h2>
+      <table class="brk" id="catRef"></table>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="on" data-tab="tab1" onclick="showTab('tab1',this)"><span class="ic">✏️</span>记一笔</button>
+  <button data-tab="tab2" onclick="showTab('tab2',this)"><span class="ic">📸</span>盘点</button>
+  <button data-tab="tab3" onclick="showTab('tab3',this)"><span class="ic">📊</span>月报</button>
+  <button data-tab="tab4" onclick="showTab('tab4',this)"><span class="ic">📤</span>导出</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS={
+ in:["应收账款·出货费","预充值面单收入","赔款收入","其他收入"],
+ out:["员工工资","系统充值","房租税点","车辆油电保险维修","杂费赔偿","刷单","其他经营","家庭生活","学费教育","运动"],
+ debt:["还款·微众","还款·总部金融","还款·招行房贷","还款·平安抵押","还款·招商卡","还款·中信卡","还款·浦发卡"],
+ xfer:["套现·招商卡","套现·中信卡","套现·浦发卡","套现手续费","其他内部划转"]
+};
+const LS_E="debt90_entries",LS_S="debt90_snaps";
+let entries=JSON.parse(localStorage.getItem(LS_E)||"[]");
+let snaps=JSON.parse(localStorage.getItem(LS_S)||"[]");
+let curType="out",curCat="";
+
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
+function saveLS(){localStorage.setItem(LS_E,JSON.stringify(entries));localStorage.setItem(LS_S,JSON.stringify(snaps));try{localStorage.setItem(LS_UPD,JSON.stringify(Date.now()))}catch(e){};cloudSyncDebounced()}
+
+function showTab(id,btn){
+ ["tab1","tab2","tab3","tab4"].forEach(t=>document.getElementById(t).classList.add("hide"));
+ document.getElementById(id).classList.remove("hide");
+ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on"));
+ btn.classList.add("on");
+ if(id==="tab3")renderMonth();
+}
+
+function setType(t){
+ curType=t;
+ document.querySelectorAll("#segType button").forEach(b=>{b.className=""});
+ const btn=document.querySelector('#segType button[data-t="'+t+'"]');
+ btn.className={in:"on-in",out:"on-out",debt:"on-debt",xfer:"on-xfer"}[t]||"";
+ curCat="";
+ renderCats();
+}
+function renderCats(){
+ const box=document.getElementById("cats");box.innerHTML="";
+ CATS[curType].forEach(c=>{
+  const b=document.createElement("button");b.textContent=c;
+  if(c===curCat)b.classList.add("sel");
+  b.onclick=()=>{curCat=c;renderCats()};
+  box.appendChild(b);
+ });
+}
+function saveEntry(){
+ const amt=parseFloat(document.getElementById("amt").value);
+ if(!amt||amt<=0){toast("请输入金额");return}
+ if(!curCat){toast("请选择分类");return}
+ const e={d:document.getElementById("date").value||today(),t:curType,c:curCat,a:Math.round(amt*100)/100,n:document.getElementById("note").value.trim(),ts:Date.now()};
+ entries.push(e);saveLS();
+ document.getElementById("amt").value="";document.getElementById("note").value="";
+ renderRecent();toast("已记 "+(curType==="in"?"+":"-")+e.a+" "+e.c);
+}
+function delEntry(ts){
+ entries=entries.filter(e=>e.ts!==ts);saveLS();renderRecent();toast("已删除");
+}
+function renderRecent(){
+ const box=document.getElementById("recent");
+ const es=entries.slice().sort((a,b)=>b.ts-a.ts).slice(0,50);
+ document.getElementById("cnt").textContent="共 "+entries.length+" 笔";
+ box.innerHTML=es.map(e=>{
+  const cls={in:"amt-in",out:"amt-out",debt:"amt-debt",xfer:"amt-xfer"}[e.t]||"amt-out";
+  const sign=e.t==="in"?"+":(e.t==="xfer"?"⇄":"−");
+  return '<div class="li"><div><div class="l1">'+e.c+'</div><div class="l2">'+e.d+(e.n?" · "+e.n:"")+'</div></div><div style="display:flex;align-items:center"><span class="'+cls+'">'+sign+e.a.toLocaleString()+'</span><span class="del" onclick="delEntry('+e.ts+')">✕</span></div></div>';
+ }).join("")||'<div style="color:var(--t2);font-size:13px;padding:8px 0">暂无记录</div>';
+}
+function saveSnap(){
+ const s={d:document.getElementById("snapDate").value||today(),n:document.getElementById("snapNote").value.trim(),
+  v:[s1.value,s2.value,s3.value,s4.value,s5.value].map(x=>parseFloat(x)||0),ts:Date.now()};
+ const total=s.v.reduce((a,b)=>a+b,0);
+ snaps.push(s);saveLS();renderSnaps();
+ ["s1","s2","s3","s4","s5"].forEach(id=>document.getElementById(id).value="");
+ toast("已盘点，总余额 "+total.toLocaleString());
+}
+function renderSnaps(){
+ const box=document.getElementById("snapList");
+ const ss=snaps.slice().sort((a,b)=>b.d.localeCompare(a.d));
+ box.innerHTML=ss.map(s=>{
+  const total=s.v.reduce((a,b)=>a+b,0);
+  return '<div class="li"><div><div class="l1">'+s.d+(s.n?" · "+s.n:"")+'</div><div class="l2">现金'+fmt(s.v[0])+' 银行'+fmt(s.v[1])+' 微信'+fmt(s.v[2])+' 支付宝'+fmt(s.v[3])+' 预充值池'+fmt(s.v[4])+'</div></div><div class="amt-debt" style="font-weight:700">'+total.toLocaleString()+'</div></div>';
+ }).join("")||'<div style="color:var(--t2);font-size:13px;padding:8px 0">暂无盘点</div>';
+}
+function fmt(n){return n?n.toLocaleString():"0"}
+function months(){
+ const set={};entries.forEach(e=>{set[e.d.slice(0,7)]=1});snaps.forEach(s=>{set[s.d.slice(0,7)]=1});
+ return Object.keys(set).sort().reverse();
+}
+function renderMonth(){
+ const ms=months();const box=document.getElementById("msel");
+ if(!ms.length){document.getElementById("sumGrid").innerHTML="";document.getElementById("brk").innerHTML="";document.getElementById("recon").textContent="暂无数据，先去记几笔。";return}
+ box.innerHTML=ms.map((m,i)=>'<button data-m="'+m+'" class="'+(i===0?"on":"")+'">'+m+'</button>').join("");
+ box.querySelectorAll("button").forEach(b=>b.onclick=()=>{box.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");calcMonth(b.dataset.m)});
+ calcMonth(ms[0]);
+}
+function calcMonth(m){
+ const es=entries.filter(e=>e.d.slice(0,7)===m);
+ let tin=0,tout=0,tdebt=0,txf=0;const brk={};
+ es.forEach(e=>{
+  if(e.t==="in")tin+=e.a;else if(e.t==="out")tout+=e.a;else if(e.t==="xfer")txf+=e.a;else tdebt+=e.a;
+  brk[e.c]=(brk[e.c]||0)+e.a;
+ });
+ const net=tin-tout-tdebt;
+ document.getElementById("sumGrid").innerHTML=
+  '<div class="sum-b"><div class="k">收入合计</div><div class="v in">+'+fmt(Math.round(tin))+'</div></div>'+
+  '<div class="sum-b"><div class="k">经营+家庭支出</div><div class="v out">−'+fmt(Math.round(tout))+'</div></div>'+
+  '<div class="sum-b"><div class="k">还款合计（七笔）</div><div class="v debt">−'+fmt(Math.round(tdebt))+'</div></div>'+
+  '<div class="sum-b"><div class="k">套现/内部划转</div><div class="v" style="color:#0a7fa8">'+fmt(Math.round(txf))+'</div></div>'+
+  '<div class="sum-b"><div class="k">当月净流量</div><div class="v net">'+(net>=0?"+":"−")+fmt(Math.abs(Math.round(net)))+'</div></div>';
+ const rows=Object.entries(brk).sort((a,b)=>b[1]-a[1]);
+ document.getElementById("brk").innerHTML="<tr><td colspan='2' style='font-weight:700;color:var(--pd);border-bottom:1.5px solid var(--p)'>分类明细</td></tr>"+
+  rows.map(([k,v])=>"<tr><td>"+k+"</td><td>"+fmt(Math.round(v))+"</td></tr>").join("");
+ // 勾稽
+ const ss=snaps.filter(s=>s.d.slice(0,7)===m).sort((a,b)=>a.d.localeCompare(b.d));
+ const rec=document.getElementById("recon");
+ if(ss.length>=2){
+  const b0=ss[0].v.reduce((a,b)=>a+b,0),b1=ss[ss.length-1].v.reduce((a,b)=>a+b,0);
+  const diff=b1-b0,gap=diff-(net+txf);
+  const xReal=diff-txf;
+  rec.innerHTML="<b>勾稽核对：</b>期初（"+ss[0].d+"）"+fmt(b0)+" → 期末（"+ss[ss.length-1].d+"）"+fmt(b1)+"，余额变动 <b>"+(diff>=0?"+":"")+fmt(diff)+"</b>；流水净流量 "+(net>=0?"+":"")+fmt(Math.round(net))+" + 套现/划转 "+fmt(Math.round(txf))+"。<br>差值 <b style='color:"+(Math.abs(gap)>2000?"#d93636":"#0a8f4e")+"'>"+(gap>=0?"+":"")+fmt(Math.round(gap))+"</b>"+(Math.abs(gap)>2000?" ⚠️ 差异偏大，可能有漏记，请核对。":" ✅ 流水与盘点对得上，本数据可信。")+"<br><b>真实月结余 X ≈ "+fmt(Math.round(xReal))+"</b>（余额变动 − 套现/内部划转，套现的钱不是你的钱）"+(txf>30000?"<br>⚠️ 本月套现/划转 "+fmt(Math.round(txf))+"，超过3万——依赖套现周转的迹象，发我CSV时我会单独分析。":"");
+ }else{
+  rec.innerHTML="<b>勾稽核对：</b>本月盘点不足 2 次（现有 "+ss.length+" 次），无法计算可靠月结余。月末最后一天记得去「盘点」页记录五个格子。";
+ }
+}
+function dl(name,content,type){
+ const blob=new Blob(["\ufeff"+content],{type:type||"text/csv;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();
+}
+function expCSV(){
+ let csv="日期,类型,分类,金额,备注\n";
+ entries.slice().sort((a,b)=>a.d.localeCompare(b.d)).forEach(e=>{
+  csv+=[e.d,{in:"收入",out:"支出",debt:"还款",xfer:"套现/内部"}[e.t]||"其他",e.c,e.a,'"'+(e.n||"").replace(/"/g,'""')+'"'].join(",")+"\n";
+ });
+ csv+="\n盘点日期,标注,现金,银行卡,微信,支付宝,预充值池,总余额\n";
+ snaps.slice().sort((a,b)=>a.d.localeCompare(b.d)).forEach(s=>{
+  csv+=[s.d,s.n||"",...s.v,s.v.reduce((a,b)=>a+b,0)].join(",")+"\n";
+ });
+ dl("现金流实测_"+today()+".csv",csv);toast("CSV已导出");
+}
+function expJSON(){
+ dl("现金流实测备份_"+today()+".json",JSON.stringify({entries,snaps},null,1),"application/json");
+ toast("备份已导出");
+}
+function impJSON(inp){
+ const f=inp.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{try{
+  const d=JSON.parse(r.result);
+  if(d.entries)entries=d.entries;if(d.snaps)snaps=d.snaps;
+  saveLS();renderRecent();renderSnaps();toast("已恢复 "+entries.length+" 笔流水");
+ }catch(e){toast("文件格式错误")}};
+ r.readAsText(f);
+}
+// ===== Cloud Sync（与工作台共用同一 Supabase 项目，专属同步码隔离数据）=====
+const SUPA_URL='https://kbawjwoutvihqybrgkgq.supabase.co';
+const SUPA_KEY='sb_publishable_DgJzYOru9Bx_Rp7YvRio1Q_r71sqyhY';
+const CF_SYNC_CODE='260901';           // 记账工具专属同步码（工作台=193617，雨辰=816816，互不干扰）
+const LS_CLOUD='debt90_cloudCfg',LS_UPD='debt90_updatedAt',LS_LSYNC='debt90_lastCloudSync';
+let _syncTimer=null,_cloudBusy=false;
+function cloudCfg(){try{return JSON.parse(localStorage.getItem(LS_CLOUD))}catch(e){return null}}
+function localUpd(){try{return JSON.parse(localStorage.getItem(LS_UPD))||0}catch(e){return 0}}
+function supaHeaders(){return{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
+function renderCloudUI(){
+ const box=document.getElementById("cloudBox");if(!box)return;
+ const cfg=cloudCfg();
+ if(!cfg){
+  box.innerHTML='<button class="btn-s btn-p" style="width:100%" onclick="enableCloud()">☁️ 开启云同步</button>';
+  return;
+ }
+ let s;
+ const last=(()=>{try{return JSON.parse(localStorage.getItem(LS_LSYNC))||0}catch(e){return 0}})();
+ if(!last)s='<span style="color:#e0761f">● 待同步</span>';
+ else{const diff=Date.now()-last;
+  s=diff<60000?'<span style="color:var(--g)">● 刚刚同步</span>':diff<3600000?'<span style="color:var(--g)">● '+Math.floor(diff/60000)+'分钟前同步</span>':'<span style="color:var(--t2)">● '+new Date(last).toLocaleString("zh-CN",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})+'同步</span>';}
+ box.innerHTML='<div style="font-size:13px;margin-bottom:10px">'+s+'</div>'
+  +'<div style="display:flex;gap:10px"><button class="btn-s btn-p" onclick="cloudSyncNow()">立即同步</button>'
+  +'<button class="btn-s btn-o" onclick="disconnectCloud()">断开</button></div>'
+  +'<div style="font-size:12px;color:var(--t2);margin-top:8px">同步码: <b>'+CF_SYNC_CODE+'</b> — 换设备输入此码即可恢复全部数据</div>';
+}
+async function enableCloud(){
+ toast("☁️ 连接中...");
+ try{
+  const t=await fetch(SUPA_URL+"/rest/v1/workbench_data?select=sync_code&limit=1",{headers:supaHeaders()});
+  if(!t.ok){toast("连接失败 "+t.status+"，稍后重试或先用JSON备份");return}
+ }catch(e){toast("网络错误，稍后重试");return}
+ localStorage.setItem(LS_CLOUD,JSON.stringify({code:CF_SYNC_CODE}));
+ await cloudPull();
+ await cloudPush();
+ renderCloudUI();
+ toast("☁️ 云同步已开启，数据已受保护");
+}
+async function cloudPush(){
+ const cfg=cloudCfg();if(!cfg||_cloudBusy)return;
+ _cloudBusy=true;
+ try{
+  const local={app:"debt90",entries:entries,snaps:snaps,updatedAt:localUpd()};
+  // 先拉云端，云端更新则放弃本次推送（以新者为准，防旧数据覆盖）
+  const r0=await fetch(SUPA_URL+"/rest/v1/workbench_data?sync_code=eq."+CF_SYNC_CODE+"&select=data&limit=1",{headers:supaHeaders()});
+  if(r0.ok){const rows=await r0.json();
+   if(rows.length&&rows[0].data&&rows[0].data.updatedAt>local.updatedAt){_cloudBusy=false;await cloudPull();return}}
+  const resp=await fetch(SUPA_URL+"/rest/v1/workbench_data",{
+   method:"POST",
+   headers:Object.assign(supaHeaders(),{"Content-Type":"application/json","Prefer":"resolution=merge-duplicates"}),
+   body:JSON.stringify({sync_code:CF_SYNC_CODE,data:local,updated_at:new Date().toISOString()})
+  });
+  if(resp.ok)try{localStorage.setItem(LS_LSYNC,JSON.stringify(Date.now()))}catch(e){}
+ }catch(e){}
+ _cloudBusy=false;
+}
+async function cloudPull(){
+ const cfg=cloudCfg();if(!cfg)return false;
+ try{
+  const resp=await fetch(SUPA_URL+"/rest/v1/workbench_data?sync_code=eq."+CF_SYNC_CODE+"&select=data,updated_at&limit=1",{headers:supaHeaders()});
+  if(!resp.ok)return false;
+  const rows=await resp.json();
+  if(!rows||!rows.length||!rows[0].data)return false;
+  const d=rows[0].data;
+  if(!d||d.app!=="debt90"||!(d.updatedAt>localUpd()))return false;
+  entries=d.entries||[];snaps=d.snaps||[];
+  localStorage.setItem(LS_E,JSON.stringify(entries));localStorage.setItem(LS_S,JSON.stringify(snaps));
+  try{localStorage.setItem(LS_UPD,JSON.stringify(d.updatedAt))}catch(e){}
+  try{localStorage.setItem(LS_LSYNC,JSON.stringify(Date.now()))}catch(e){}
+  renderRecent();renderSnaps();
+  return true;
+ }catch(e){return false}
+}
+async function cloudSyncNow(){
+ toast("☁️ 同步中...");
+ await cloudPush();
+ const got=await cloudPull();
+ toast(got?"☁️ 已同步最新数据":"☁️ 已是最新");
+ renderCloudUI();
+}
+function disconnectCloud(){
+ localStorage.removeItem(LS_CLOUD);localStorage.removeItem(LS_LSYNC);
+ renderCloudUI();toast("已断开云同步（本地数据保留）");
+}
+function cloudSyncDebounced(){
+ if(!cloudCfg())return;
+ clearTimeout(_syncTimer);
+ _syncTimer=setTimeout(()=>{cloudPush()},3000);
+}
+// init
+document.getElementById("date").value=today();
+document.getElementById("snapDate").value=today();
+setType("out");renderRecent();renderSnaps();renderCloudUI();
+if(cloudCfg())cloudPull().then(()=>renderCloudUI());
+const ref=document.getElementById("catRef");
+ref.innerHTML=["in","out","debt","xfer"].flatMap(t=>CATS[t].map(c=>"<tr><td>"+c+"</td><td style='color:var(--t2)'>"+({in:"收入",out:"支出",debt:"还款",xfer:"套现/内部"})[t]+"</td></tr>")).join("");
+</script>
+</body>
+</html>
