@@ -230,8 +230,8 @@ function buildMirrors(){
     return;
   }
   var pages  = 'https://' + USER + '.github.io/' + REPO + '/';
-  var jsd    = 'https://cdn.jsdelivr.net/gh/' + USER + '/' + REPO + '@' + BRANCH + '/';
-  var fastly = 'https://fastly.jsdelivr.net/gh/' + USER + '/' + REPO + '@' + BRANCH + '/';
+  var jsd    = 'https://cdn.jsdelivr.net/gh/' + USER + '/' + REPO + '@' + BRANCH + '/index.html';
+  var fastly = 'https://fastly.jsdelivr.net/gh/' + USER + '/' + REPO + '@' + BRANCH + '/index.html';
 
   var here = location.href.split('#')[0];
   var list = [
