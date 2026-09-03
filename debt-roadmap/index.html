@@ -52,8 +52,51 @@ li b{color:var(--pd)}
 .chart-wrap svg{width:100%;height:auto;display:block}
 .chart-cap{font-size:11.5px;color:var(--t2);padding:6px 8px 4px;line-height:1.7}
 </style>
-</head>
+</head><meta name="robots" content="noindex,nofollow,noarchive,max-image-preview:none">
+
+<style id="__lkcss">
+#__lock{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;
+  justify-content:center;background:#f5f6f8;padding:20px;font-family:-apple-system,
+  BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+#__lock .b{background:#fff;border:1px solid #e3e6ea;border-radius:14px;
+  padding:28px 26px;max-width:340px;width:100%;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.08)}
+#__lock .i{font-size:30px;margin-bottom:8px}
+#__lock h3{font-size:16px;color:#1a1d21;margin-bottom:6px}
+#__lock p{font-size:13px;color:#6b7280;margin-bottom:16px;line-height:1.6}
+#__lock input{width:100%;padding:11px 13px;font-size:16px;border:1px solid #d5d9de;
+  border-radius:8px;text-align:center;letter-spacing:2px;outline:none;box-sizing:border-box}
+#__lock input:focus{border-color:#4a5bd6}
+#__lock button{margin-top:12px;width:100%;padding:11px;background:#4a5bd6;color:#fff;
+  border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+#__lock button:active{background:#3a4bc0}
+#__lock .e{color:#a32d2d;font-size:12px;margin-top:10px;min-height:16px}
+#__lock .h{font-size:11px;color:#9aa1ab;margin-top:14px}
+#__popup{position:fixed;inset:0;z-index:99998;display:none;align-items:center;
+  justify-content:center;background:rgba(20,22,26,.45);padding:20px}
+#__popup .b{background:#fff;border-radius:14px;padding:24px 22px;max-width:320px;width:100%;
+  text-align:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+#__popup h3{font-size:15px;margin-bottom:6px;color:#1a1d21}
+#__popup p{font-size:12px;color:#6b7280;margin-bottom:14px}
+#__popup input{width:100%;padding:10px 12px;font-size:16px;border:1px solid #d5d9de;
+  border-radius:8px;text-align:center;letter-spacing:2px;outline:none;box-sizing:border-box}
+#__popup button{margin-top:11px;width:100%;padding:10px;background:#4a5bd6;color:#fff;
+  border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+#__popup .c{margin-top:9px;font-size:13px;color:#6b7280;cursor:pointer}
+#__popup .e{color:#a32d2d;font-size:12px;margin-top:8px;min-height:15px}
+</style>
+
 <body>
+<div id="__lock"><div class="b">
+  <div class="i">🔒</div>
+  <h3>需要口令才能查看</h3>
+  <p>本页面包含个人财务信息<br>请输入访问口令</p>
+  <input type="password" id="__lin" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="__lbtn">进入</button>
+  <div class="e" id="__lerr"></div>
+  <div class="h">输一次后，这台设备会记住 30 天</div>
+</div></div>
+<div id="__sec" style="display:none">
 <h1>债务重组 · 执行总路线图</h1>
 <div class="sub">2026-08-31 晚更新（增补：余额节点视图 + 门店承包/挽回修正）· 总债 496 万 · 净利润口径 · 唯一敌人：月缺口 2~6 万 + 日历错配</div>
 
@@ -326,5 +369,102 @@ li b{color:var(--pd)}
 </div>
 
 <div class="foot">口径：净利润 4.33 万/月（年均）· 谷底 2029-04 · 转折点 2029-05 · 决战日 2033-02-06<br>余额快照：平安按年化 6% 估算、循环余额按 2028-05 清零假设 · 待数据回传后更新<br>本方案零逾期是全部地基——保住它，时间站在你这边</div>
+
+</div>
+<div id="__popup"><div class="b">
+  <h3>🔒 内部内容需要口令</h3>
+  <p>这一部分是我方内部测算，不对外展示</p>
+  <input type="password" id="__pin" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="__pok">确认</button>
+  <div class="e" id="__pe"></div>
+  <div class="c" id="__pc">取消</div>
+</div></div>
+<script>
+(function(){
+  var SHA='ab3d93c1376613e8502d81920eee25b0826799e507c2a72cdc6a2702664cd95d', DJB=2154654327, KEY='whub_ok', DAYS=30;
+  function djb(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;}return h;}
+  function sha(s){
+    if(window.crypto&&crypto.subtle&&window.TextEncoder){
+      return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))
+        .then(function(d){
+          return Array.prototype.map.call(new Uint8Array(d),function(x){
+            return ('0'+x.toString(16)).slice(-2);
+          }).join('');
+        });
+    }
+    return Promise.reject('no-subtle');
+  }
+  function verify(p){
+    return sha(p).then(function(h){
+      if(h===SHA) return true;
+      return djb(p)===DJB;
+    }).catch(function(){ return djb(p)===DJB; });
+  }
+  function ok(){
+    try{ var v=localStorage.getItem(KEY); if(!v) return false;
+      return parseInt(v,10)>Date.now(); }catch(e){ return false; }
+  }
+  function grant(){ try{ localStorage.setItem(KEY,String(Date.now()+DAYS*86400000)); }catch(e){} }
+
+  window.__LK={ok:ok,grant:grant,verify:verify};
+
+  var pop=document.getElementById('__popup');
+  var inp=document.getElementById('__pin');
+  var err=document.getElementById('__pe');
+  var cb=null;
+
+  function close(){ if(pop) pop.style.display='none'; if(inp) inp.value=''; if(err) err.textContent=''; cb=null; }
+  function ask(onOk){
+    cb=onOk; if(!pop) return;
+    pop.style.display='flex';
+    setTimeout(function(){ if(inp) inp.focus(); },60);
+  }
+  function submit(){
+    var v=(inp&&inp.value||'').trim();
+    if(!v){ if(err) err.textContent='请输入口令'; return; }
+    verify(v).then(function(r){
+      if(r){ grant(); var f=cb; close(); if(f) f(); }
+      else { if(err) err.textContent='口令不对，再试一次'; if(inp){inp.value='';inp.focus();} }
+    });
+  }
+  var okb=document.getElementById('__pok');
+  if(okb) okb.onclick=submit;
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter'){ submit(); } };
+  var cb2=document.getElementById('__pc');
+  if(cb2) cb2.onclick=close;
+  if(pop) pop.onclick=function(e){ if(e.target===pop) close(); };
+
+  window.__LK.ask=ask;
+})();
+</script>
+
+<script>
+(function(){
+  var lock=document.getElementById('__lock');
+  var sec=document.getElementById('__sec');
+  var inp=document.getElementById('__lin');
+  var err=document.getElementById('__lerr');
+  function show(){
+    if(lock) lock.style.display='none';
+    if(sec) sec.style.display='';
+    document.documentElement.style.overflow='';
+  }
+  if(window.__LK&&window.__LK.ok()){ show(); }
+  else { document.documentElement.style.overflow='hidden'; }
+  function go(){
+    var v=(inp&&inp.value||'').trim();
+    if(!v){ if(err) err.textContent='请输入口令'; return; }
+    window.__LK.verify(v).then(function(r){
+      if(r){ window.__LK.grant(); show(); }
+      else { if(err) err.textContent='口令不对，再试一次'; if(inp){inp.value='';inp.focus();} }
+    });
+  }
+  var b=document.getElementById('__lbtn');
+  if(b) b.onclick=go;
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter') go(); };
+  setTimeout(function(){ if(inp) inp.focus(); },80);
+})();
+</script>
+
 </body>
 </html>
