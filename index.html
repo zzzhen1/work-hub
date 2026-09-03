@@ -125,9 +125,9 @@
 <div class="wrap">
 
   <div class="note">
-    <b>换网址提醒（记账工具）</b><br>
-    记账数据存在浏览器本地，<b>按网址隔离</b>。第一次在新网址打开时，
-    如果看不到以前记的账，不是数据丢了 —— 在记账工具里输入<b>同步码 260901</b> 即可从云端恢复。
+    <b>换网址提醒（数据不丢）</b><br>
+    记账工具和工作台的数据都存在云端，<b>按同步码隔离</b>。第一次在新网址打开时如果看不到以前的数据，
+    不是丢了 —— 输各自的同步码即可从云端恢复：<b>记账 260901 / 我的 193617 / 雨辰 816816 / 啟辰 QC-QICHEN-01</b>。
   </div>
 
   <a class="card" href="rebate-plan/index.html">
@@ -178,11 +178,59 @@
     <div class="go">打开</div>
   </a>
 
+  <a class="card" href="workbench/index.html" data-hub-lock="1">
+    <div class="top">
+      <h2>我的工作台 <span class="lkmini">🔒</span></h2>
+    </div>
+    <div class="desc">
+      学习 / 工作 / 运动 / 财务四模块每日打卡。云端同步，多设备一致。
+      同步码 <b>193617</b>。
+    </div>
+    <div class="meta">
+      <span class="tag live">已迁固定网址</span>
+      <span class="tag">同步码 193617</span>
+      <span class="tag time" id="t4">—</span>
+    </div>
+    <div class="go">打开</div>
+  </a>
+
+  <a class="card" href="yuchen/index.html" data-hub-lock="1">
+    <div class="top">
+      <h2>雨辰的工作台 <span class="lkmini">🔒</span></h2>
+    </div>
+    <div class="desc">
+      雨辰专用：学习 12 项任务打卡 + 报告激励。iPad 打开，云端同步。
+      同步码 <b>816816</b>。
+    </div>
+    <div class="meta">
+      <span class="tag live">已迁固定网址</span>
+      <span class="tag">同步码 816816</span>
+      <span class="tag time" id="t5">—</span>
+    </div>
+    <div class="go">打开</div>
+  </a>
+
+  <a class="card" href="qichen/index.html" data-hub-lock="1">
+    <div class="top">
+      <h2>啟辰的工作台 <span class="lkmini">🔒</span></h2>
+    </div>
+    <div class="desc">
+      啟辰专用：学习 / 运动 / 报告三页打卡，成就墙 + 双倒计时。iPad 打开，云端同步。
+      同步码 <b>QC-QICHEN-01</b>。
+    </div>
+    <div class="meta">
+      <span class="tag live">已迁固定网址</span>
+      <span class="tag">同步码 QC-QICHEN-01</span>
+      <span class="tag time" id="t6">—</span>
+    </div>
+    <div class="go">打开</div>
+  </a>
+
   <div class="box">
     <h3>📌 关于网址</h3>
     <ul>
       <li>这个入口页的网址<b>永久不变</b>，以后所有更新都只改内容、不换网址。</li>
-      <li>三个子页面用相对链接，跟着入口页走，也不用单独记。</li>
+      <li>子页面用相对链接，跟着入口页走，也不用单独记。</li>
       <li>如果哪天打开很慢或打不开，用下面的<b>备用地址</b>，内容完全一样。</li>
     </ul>
   </div>
@@ -210,7 +258,10 @@ var BRANCH = 'main';
 var ITEMS = [
   { id:'t1', file:'rebate-plan/index.html' },
   { id:'t2', file:'debt-roadmap/index.html' },
-  { id:'t3', file:'cashflow-tracker/index.html' }
+  { id:'t3', file:'cashflow-tracker/index.html' },
+  { id:'t4', file:'workbench/index.html' },
+  { id:'t5', file:'yuchen/index.html' },
+  { id:'t6', file:'qichen/index.html' }
 ];
 
 function fillDates(map){

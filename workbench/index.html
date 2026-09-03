@@ -1,0 +1,4613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="我的工作台">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%234f46e5' width='100' height='100' rx='22'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>台</text></svg>">
+<title>我的工作台</title>
+<meta name="code-sync-ts" content="2026-08-24T13:55:05.228Z">
+<style>
+:root {
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --accent: #4f46e5;
+  --accent-light: #eef2ff;
+  --green: #16a34a;
+  --green-light: #dcfce7;
+  --orange: #ea580c;
+  --orange-light: #fff7ed;
+  --blue: #2563eb;
+  --blue-light: #eff6ff;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --border: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  padding-bottom: calc(80px + var(--safe-bottom));
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header */
+.header {
+  background: var(--card);
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-left h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.header-left .date {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ring-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.ring-label {
+  font-size: 9px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+
+/* Content */
+.content {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Tab Content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.tab-content.animate-in {
+  animation: fadeUp 0.25s ease-out;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section */
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 8px 0 10px;
+  padding-left: 4px;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-icon.work { background: #eef2ff; color: #4f46e5; }
+.card-icon.learn { background: #dcfce7; color: #16a34a; }
+.card-icon.sport { background: #fff7ed; color: #ea580c; }
+.card-icon.review { background: #fef3c7; color: #d97706; }
+.card-icon.payroll { background: #fce7f3; color: #db2777; }
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+.card.done {
+  opacity: 0.55;
+  border-color: var(--border);
+}
+.card.done .card-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-secondary);
+}
+
+/* Checklist */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.checklist li:last-child { border-bottom: none; }
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.checkbox.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checkbox.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+}
+.checklist-text {
+  font-size: 14px;
+  flex: 1;
+  transition: color 0.2s;
+}
+.checklist-text.done {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+.checklist-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.badge-p1 { background: #fef2f2; color: #dc2626; }
+.badge-p2 { background: #fff7ed; color: #ea580c; }
+.badge-p3 { background: #eff6ff; color: #2563eb; }
+
+/* Progress bar */
+.progress-wrap { margin-top: 12px; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.progress-bar {
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  background: var(--accent);
+}
+.progress-fill.green { background: var(--green); }
+.progress-fill.orange { background: var(--orange); }
+.progress-fill.blue { background: var(--blue); }
+
+/* Video Card */
+.video-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.video-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+.video-link:active { background: var(--bg); }
+.video-thumb {
+  width: 100px;
+  height: 60px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.video-thumb.eng { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.video-thumb.tennis { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.video-thumb.golf { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.video-thumb.reading { background: linear-gradient(135deg, #fa709a, #fee140); }
+.video-link-body { flex: 1; min-width: 0; }
+.video-link-arrow { font-size: 16px; color: var(--subtext); flex-shrink: 0; }
+.video-info {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+}
+.video-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.video-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.video-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 14px;
+}
+.btn-sm {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-sm:active { transform: scale(0.96); }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-accent {
+  background: var(--accent);
+  color: white;
+}
+
+/* Check-in Card */
+.checkin-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.checkin-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.checkin-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.checkin-icon.tennis { background: #fef2f2; }
+.checkin-icon.golf { background: #ecfdf5; }
+.checkin-icon.strength { background: #eff6ff; }
+.checkin-info { flex: 1; min-width: 0; }
+.checkin-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+.checkin-target {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.checkin-dots {
+  display: flex;
+  gap: 4px;
+}
+.dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.dot.done {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.dot.done::after { content: '✓'; }
+.btn-checkin {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-checkin:active { transform: scale(0.97); }
+.btn-checkin.ready {
+  background: var(--accent);
+  color: white;
+}
+.btn-checkin.done-btn {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120px);
+  background: #1f2937;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 999;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  z-index: 100;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+  gap: 2px;
+}
+.nav-item.active { color: var(--accent); }
+.nav-icon { font-size: 22px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 600; }
+
+/* Add Task Button */
+.add-task-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px dashed var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.add-task-btn:active { background: #f9fafb; border-color: var(--accent); color: var(--accent); }
+
+/* Notes */
+.note-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+  margin-top: 8px;
+}
+.note-input:focus { border-color: var(--accent); }
+.note-save {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.saved-note {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  line-height: 1.5;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+/* vocab section */
+.vocab-section {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--accent-light);
+  border-radius: 10px;
+}
+.vocab-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.vocab-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(79,70,229,0.1);
+  gap: 8px;
+}
+.vocab-item:last-child { border-bottom: none; }
+.vocab-main { display: flex; justify-content: space-between; align-items: center; flex: 1; min-width: 0; }
+.vocab-word { font-weight: 600; }
+.vocab-meaning { color: var(--text-secondary); font-size: 12px; }
+.btn-ex {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-ex:active { background: var(--accent-light); }
+.vocab-example {
+  font-size: 12px;
+  color: var(--text);
+  padding: 6px 10px;
+  background: rgba(79,70,229,0.06);
+  border-radius: 6px;
+  margin: 0 0 6px 0;
+  line-height: 1.5;
+  border-left: 3px solid var(--accent);
+}
+.btn-vocab {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  margin-top: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Surplus dots (超额完成) */
+.dot.surplus {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: white;
+}
+.dot.surplus::after { content: '🔥'; font-size: 9px; }
+.btn-checkin.surplus-btn {
+  background: var(--orange-light);
+  color: var(--orange);
+}
+.undo-link {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.undo-link:active { color: var(--accent); }
+
+/* Report Tab */
+.report-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.report-tab {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.report-tab.active {
+  background: var(--accent);
+  color: white;
+}
+.report-period-label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.report-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.report-stat:last-child { border-bottom: none; }
+.report-stat-label { font-size: 13px; color: var(--text-secondary); }
+.report-stat-value { font-size: 14px; font-weight: 600; }
+.report-stat-value.good { color: var(--green); }
+.report-stat-value.warn { color: var(--orange); }
+.report-stat-value.bad { color: var(--red); }
+.report-stat-value.surplus { color: var(--orange); }
+.report-analysis {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  padding: 14px 14px 14px 16px;
+  background: var(--accent-light);
+  border-radius: 10px;
+  margin-top: 10px;
+  border-left: 4px solid var(--accent);
+}
+.report-review-block {
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.report-review-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.report-review-text {
+  font-size: 13px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+.share-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.share-btn:active { transform: scale(0.97); }
+.data-migration {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.dm-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.dm-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-right: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.dm-btn:active { background: var(--bg); }
+
+/* Cloud Sync */
+.cloud-sync-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.sync-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.sync-status-text {
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+}
+.sync-code-display {
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--accent-light);
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.sync-code-display b {
+  color: var(--accent);
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+.cloud-help {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 8px;
+  padding: 10px;
+  background: var(--bg);
+  border-radius: 8px;
+  display: none;
+}
+.cloud-help.show { display: block; }
+.cloud-help b { color: var(--text); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.diag-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 14px; }
+.diag-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex: 0 0 auto; }
+.diag-dot.ok { background: #22c55e; }
+.diag-dot.fail { background: #ef4444; }
+.diag-name { font-weight: 600; color: var(--text, #1d1d1f); }
+.diag-msg { color: var(--text-secondary, #6e6e73); font-size: 12px; margin-top: 2px; line-height: 1.4; }
+.modal-card {
+  background: var(--card);
+  width: 100%;
+  max-width: 560px;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px calc(24px + var(--safe-bottom));
+  animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.modal-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.modal-field { margin-bottom: 14px; }
+.modal-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.modal-input {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+}
+.modal-input:focus { border-color: var(--accent); }
+.sync-code-input-row {
+  display: flex;
+  gap: 8px;
+}
+.sync-code-input-row .modal-input { flex: 1; }
+.sync-code-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--accent);
+  background: var(--accent-light);
+  color: var(--accent);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.sync-code-btn:active { opacity: 0.7; }
+.modal-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.modal-btn {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.modal-btn.cancel {
+  background: var(--bg);
+  color: var(--text-secondary);
+}
+.modal-btn.confirm {
+  background: var(--accent);
+  color: white;
+}
+.modal-btn:active { opacity: 0.8; }
+.modal-btn.confirm:disabled {
+  opacity: 0.5;
+}
+.modal-link {
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 8px;
+}
+.report-badge {
+  position: absolute;
+  top: 2px;
+  right: 50%;
+  transform: translateX(20px);
+  background: var(--red);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+/* Report modal */
+.report-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  -webkit-tap-highlight-color: transparent;
+}
+.report-modal-overlay.show {
+  display: flex;
+  animation: rmFadeIn 0.25s ease;
+}
+@keyframes rmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.report-modal {
+  background: var(--card);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  animation: rmSlideUp 0.3s ease;
+}
+@keyframes rmSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.rm-header {
+  padding: 18px 20px 10px;
+  text-align: center;
+  border-bottom: 1px solid #f3f4f6;
+}
+.rm-header-icon {
+  font-size: 36px;
+  margin-bottom: 4px;
+}
+.rm-header-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.rm-header-period {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.rm-body {
+  padding: 16px 20px;
+}
+.rm-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.rm-stat-row:last-child { border-bottom: none; }
+.rm-stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.rm-stat-val {
+  font-size: 14px;
+  font-weight: 600;
+}
+.rm-stat-val.good { color: var(--green); }
+.rm-stat-val.warn { color: var(--orange); }
+.rm-stat-val.bad { color: var(--red); }
+.rm-analysis {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--accent-light);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 12px;
+}
+.rm-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 18px;
+}
+.rm-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.rm-btn-later {
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.rm-btn-view {
+  background: var(--accent);
+  color: white;
+}
+.rm-btn:active { transform: scale(0.96); }
+
+/* Monthly Payments Card */
+.pay-section {
+  margin-bottom: 14px;
+}
+.pay-section:last-child { margin-bottom: 0; }
+.pay-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.pay-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pay-item:last-child { border-bottom: none; }
+.pay-item.done { opacity: 0.5; }
+.pay-item-info { flex: 1; min-width: 0; }
+.pay-item-name { font-size: 13px; font-weight: 600; }
+.pay-item-detail { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+.pay-item-amount { font-size: 14px; font-weight: 700; color: var(--text); }
+.pay-item-amount.paid { color: var(--green); }
+.pay-item-amount.urgent { color: var(--red); }
+.pay-item-amount.due-soon { color: var(--orange); }
+.pay-status {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  min-width: 36px;
+  text-align: center;
+}
+.pay-status.done { background: var(--green-light); color: var(--green); }
+.pay-status.pending { background: var(--orange-light); color: var(--orange); }
+.pay-status.idle { background: #f3f4f6; color: var(--text-secondary); }
+.pay-status.urgent { background: var(--red-light); color: var(--red); }
+.pay-register-prompt {
+  background: var(--accent-light);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 6px 0;
+  border-left: 3px solid var(--accent);
+}
+.pay-register-prompt label { font-size: 12px; font-weight: 600; color: var(--accent); display: block; margin-bottom: 4px; }
+.pay-register-row { display: flex; gap: 6px; }
+.pay-register-row input {
+  flex: 1;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  outline: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+}
+.pay-register-row input:focus { border-color: var(--accent); }
+.pay-register-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.pay-register-btn:active { opacity: 0.7; }
+.pay-check-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+.pay-check-btn:active { background: var(--bg); }
+.pay-check-btn.done { background: var(--green-light); color: var(--green); border-color: var(--green); }
+.pay-summary {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 8px 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+.pay-summary b { color: var(--text); }
+</style>
+<script>/*__lsShim*/
+(function(){
+  var P='wb_', K='whub_ok';
+  function real(k){return k===K?k:P+k;}
+  try{
+    var d=Object.getOwnPropertyDescriptor(window,'localStorage');
+    if(!d||!d.configurable) return;
+    var orig=window.localStorage;
+    var proxy={
+      getItem:function(k){return orig.getItem(real(k));},
+      setItem:function(k,v){orig.setItem(real(k),v);},
+      removeItem:function(k){orig.removeItem(real(k));},
+      key:function(i){
+        var n=0;
+        for(var j=0;j<orig.length;j++){var k=orig.key(j);
+          if(k&&k.indexOf(P)===0){if(n===i)return k.substring(P.length);n++;}}
+        return null;
+      },
+      clear:function(){
+        var del=[];
+        for(var j=0;j<orig.length;j++){var k=orig.key(j);
+          if(k&&k.indexOf(P)===0)del.push(k);}
+        for(var j2=0;j2<del.length;j2++)orig.removeItem(del[j2]);
+      }
+    };
+    Object.defineProperty(proxy,'length',{get:function(){
+      var n=0;
+      for(var j=0;j<orig.length;j++){var k=orig.key(j);
+        if(k&&k.indexOf(P)===0)n++;}
+      return n;
+    }});
+    Object.defineProperty(window,'localStorage',{value:proxy,configurable:true});
+  }catch(e){}
+})();
+</script>
+
+</head><meta name="robots" content="noindex,nofollow,noarchive,max-image-preview:none">
+
+<style id="__lkcss">
+#__lock{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;
+  justify-content:center;background:#f5f6f8;padding:20px;font-family:-apple-system,
+  BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+#__lock .b{background:#fff;border:1px solid #e3e6ea;border-radius:14px;
+  padding:28px 26px;max-width:340px;width:100%;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.08)}
+#__lock .i{font-size:30px;margin-bottom:8px}
+#__lock h3{font-size:16px;color:#1a1d21;margin-bottom:6px}
+#__lock p{font-size:13px;color:#6b7280;margin-bottom:16px;line-height:1.6}
+#__lock input{width:100%;padding:11px 13px;font-size:16px;border:1px solid #d5d9de;
+  border-radius:8px;text-align:center;letter-spacing:2px;outline:none;box-sizing:border-box}
+#__lock input:focus{border-color:#4a5bd6}
+#__lock button{margin-top:12px;width:100%;padding:11px;background:#4a5bd6;color:#fff;
+  border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+#__lock button:active{background:#3a4bc0}
+#__lock .e{color:#a32d2d;font-size:12px;margin-top:10px;min-height:16px}
+#__lock .h{font-size:11px;color:#9aa1ab;margin-top:14px}
+#__popup{position:fixed;inset:0;z-index:99998;display:none;align-items:center;
+  justify-content:center;background:rgba(20,22,26,.45);padding:20px}
+#__popup .b{background:#fff;border-radius:14px;padding:24px 22px;max-width:320px;width:100%;
+  text-align:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+#__popup h3{font-size:15px;margin-bottom:6px;color:#1a1d21}
+#__popup p{font-size:12px;color:#6b7280;margin-bottom:14px}
+#__popup input{width:100%;padding:10px 12px;font-size:16px;border:1px solid #d5d9de;
+  border-radius:8px;text-align:center;letter-spacing:2px;outline:none;box-sizing:border-box}
+#__popup button{margin-top:11px;width:100%;padding:10px;background:#4a5bd6;color:#fff;
+  border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+#__popup .c{margin-top:9px;font-size:13px;color:#6b7280;cursor:pointer}
+#__popup .e{color:#a32d2d;font-size:12px;margin-top:8px;min-height:15px}
+</style>
+
+<body>
+
+<div id="__lock"><div class="b">
+  <div class="i">🔒</div>
+  <h3>需要口令才能查看</h3>
+  <p>本页面为私人工作台<br>请输入访问口令</p>
+  <input type="password" id="__lin" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="__lbtn">进入</button>
+  <div class="e" id="__lerr"></div>
+  <div class="h">输一次后，这台设备会记住 30 天</div>
+</div></div>
+
+
+<!-- Report popup modal -->
+<div class="report-modal-overlay" id="reportModalOverlay">
+  <div class="report-modal">
+    <div class="rm-header">
+      <div class="rm-header-icon" id="rmIcon">📊</div>
+      <div class="rm-header-title" id="rmTitle">周报已生成</div>
+      <div class="rm-header-period" id="rmPeriod"></div>
+    </div>
+    <div class="rm-body" id="rmBody"></div>
+    <div class="rm-actions">
+      <button class="rm-btn rm-btn-later" onclick="dismissReportModal()">稍后阅读</button>
+      <button class="rm-btn rm-btn-view" onclick="viewReportNow()">立即查看</button>
+    </div>
+  </div>
+</div>
+
+<!-- CC bill reminder modal -->
+<div class="modal-overlay" id="ccBillModal">
+  <div class="modal-card">
+    <div class="modal-title" id="ccBillModalTitle">🔔 账单登记提醒</div>
+    <div class="modal-desc" id="ccBillModalDesc"></div>
+    <div class="modal-field">
+      <label>账单金额</label>
+      <input class="modal-input" id="ccBillModalInput" type="number" placeholder="输入账单金额" inputmode="decimal">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeCCBillModal()">稍后</button>
+      <button class="modal-btn confirm" onclick="confirmCCBillModal()">登记</button>
+    </div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <h1>我的工作台</h1>
+    <div class="date" id="dateDisplay"></div>
+  </div>
+  <div class="header-right" id="headerRings">
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ===== 工作 Tab ===== -->
+  <div class="tab-content active" id="tab-work">
+    <div class="section-title">📋 每日工作</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon work">💻</div>
+        <div>
+          <div class="card-title">每日工作任务</div>
+          <div class="card-subtitle">今日必做事项</div>
+        </div>
+      </div>
+      <ul class="checklist" id="ccrChecklist">
+        <li data-id="daily-1" onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          <span class="checklist-text">CCR 数据处理</span>
+        </li>
+        <li data-id="daily-2" onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          <span class="checklist-text">业务量监控</span>
+        </li>
+        <li data-id="daily-3" onclick="toggleCheck(this)">
+          <div class="checkbox"></div>
+          <span class="checklist-text">服务质量问题点监控分析</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section-title" style="margin-top: 20px;">📅 周期工作</div>
+
+    <div class="card" id="monthlyBilling">
+      <div class="card-header">
+        <div class="card-icon payroll">📄</div>
+        <div>
+          <div class="card-title">月初客户账单推送</div>
+          <div class="card-subtitle" id="billingHint">每月 5 日 · 推送客户账单</div>
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>本月状态</span>
+            <span id="billingStatus">待处理</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="billingProgressBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <ul class="checklist" id="billingChecklist">
+          <li data-id="bill-1" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">生成并推送客户账单</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" id="dailyReviewCard">
+      <div class="card-header">
+        <div class="card-icon review">📝</div>
+        <div>
+          <div class="card-title">日复盘及记录</div>
+          <div class="card-subtitle" id="dailyReviewHint">每日记录 · 总结今天</div>
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <textarea class="note-input" id="reviewInput" placeholder="今天的复盘和记录..." oninput="_markDirty()" onfocus="_lockReviewScroll()" onblur="_unlockReviewScroll()"></textarea>
+        <button class="note-save" onmousedown="event.preventDefault()" onclick="saveDailyReview()">保存记录</button>
+        <div class="saved-note" id="reviewNote" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- 月度待还款项 -->
+    <div class="card" id="monthlyPayments">
+      <div class="card-header">
+        <div class="card-icon payroll">💳</div>
+        <div>
+          <div class="card-title">月度待还款项</div>
+          <div class="card-subtitle" id="paymentHint">信用卡 · 贷款 · 工资单</div>
+        </div>
+      </div>
+      <div id="paymentContent" style="margin-top: 8px;"></div>
+    </div>
+
+    <div class="card" id="monthlyPayroll">
+      <div class="card-header">
+        <div class="card-icon payroll">💰</div>
+        <div>
+          <div class="card-title">每月底工资单检查与发放</div>
+          <div class="card-subtitle">提醒：每月 20 日 & 25 日 · 月底最后工作日核对并发放</div>
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>本月状态</span>
+            <span id="payrollStatus">未到月底</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="payrollProgressBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <ul class="checklist" id="payrollChecklist">
+          <li data-id="pay-1" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">考核数据核对上传</span>
+          </li>
+          <li data-id="pay-2" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">税点上帐</span>
+          </li>
+          <li data-id="pay-3" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">理赔换单上传</span>
+          </li>
+          <li data-id="pay-4" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">重复进线及服务态度延上传</span>
+          </li>
+          <li data-id="pay-5" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">倒包不彻底上传</span>
+          </li>
+          <li data-id="pay-6" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">高温补贴上传</span>
+          </li>
+          <li data-id="pay-7" onclick="toggleCheck(this)">
+            <div class="checkbox"></div>
+            <span class="checklist-text">工资单推送</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 学习 Tab ===== -->
+  <div class="tab-content" id="tab-learn">
+    <div class="section-title">🎬 每日学习</div>
+
+    <!-- English Learning -->
+    <div class="video-card">
+      <a class="video-link" id="engVideoLink" href="https://www.bilibili.com/video/BV18SqAYoEMV" target="_blank">
+        <div class="video-thumb eng">🎬</div>
+        <div class="video-link-body">
+          <div class="video-title" id="engVideoTitle">看老友记学英语 逐句精讲</div>
+          <div class="video-meta">⏱ 约15分钟 · 点击观看</div>
+        </div>
+        <div class="video-link-arrow">▶</div>
+      </a>
+      <div class="video-actions">
+        <button class="btn-sm btn-outline" onclick="switchEngVideo()">▶ 下一集</button>
+        <button class="btn-sm btn-accent" onclick="markLearnDone('english')" id="engDoneBtn">✅ 完成打卡</button>
+      </div>
+      <div class="vocab-section" id="engVocab">
+        <div class="vocab-title">📖 今日关键词汇与短语</div>
+        <div id="vocabList"></div>
+        <button class="btn-vocab" onclick="speakVocab()">🔊 跟读练习模式</button>
+      </div>
+    </div>
+
+    <!-- Tennis Learning -->
+    <div class="video-card">
+      <a class="video-link" id="tennisVideoLink" href="https://www.bilibili.com/video/BV1rt421g7KE" target="_blank">
+        <div class="video-thumb tennis">🎾</div>
+        <div class="video-link-body">
+          <div class="video-title" id="tennisVideoTitle">前言：自学网球的方法论</div>
+          <div class="video-meta" id="tennisVideoMeta">⏱ 从零开始的网球自习系列课 · 第1/9集</div>
+        </div>
+        <div class="video-link-arrow">▶</div>
+      </a>
+      <div class="video-actions">
+        <button class="btn-sm btn-outline" onclick="switchTennisVideo()">🔄 换一集</button>
+        <button class="btn-sm btn-accent" onclick="markLearnDone('tennis')" id="tennisDoneBtn">✅ 完成打卡</button>
+      </div>
+    </div>
+
+    <!-- Golf Learning -->
+    <div class="video-card">
+      <a class="video-link" id="golfVideoLink" href="https://www.bilibili.com/video/BV1ut4y1B7d6" target="_blank">
+        <div class="video-thumb golf">⛳</div>
+        <div class="video-link-body">
+          <div class="video-title" id="golfVideoTitle">No.1 挥杆基本框架</div>
+          <div class="video-meta" id="golfVideoMeta">⏱ 零缺陷挥杆系列 · 第1/6集</div>
+        </div>
+        <div class="video-link-arrow">▶</div>
+      </a>
+      <div class="video-actions">
+        <button class="btn-sm btn-outline" onclick="switchGolfVideo()">🔄 换一集</button>
+        <button class="btn-sm btn-accent" onclick="markLearnDone('golf')" id="golfDoneBtn">✅ 完成打卡</button>
+      </div>
+    </div>
+
+    <!-- Reading -->
+    <div class="video-card">
+      <div class="video-link" style="cursor:default">
+        <div class="video-thumb reading">📖</div>
+        <div class="video-link-body">
+          <div class="video-title">每日阅读 30 分钟</div>
+          <div class="video-meta">⏱ 30分钟 · 自由阅读</div>
+        </div>
+      </div>
+      <div class="video-actions">
+        <span style="font-size:12px;color:var(--text-secondary);flex:1">书籍、文章、资讯均可</span>
+        <button class="btn-sm btn-accent" onclick="markLearnDone('reading')" id="readingDoneBtn">✅ 完成打卡</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 12px;">
+      <div class="card-header">
+        <div class="card-icon learn">📊</div>
+        <div>
+          <div class="card-title">今日学习进度</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>完成情况</span>
+          <span id="learnProgress">0/4</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill green" id="learnProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 运动 Tab ===== -->
+  <div class="tab-content" id="tab-sport">
+    <div class="section-title">🏃 本周运动</div>
+
+    <div class="checkin-card">
+      <div class="checkin-row">
+        <div class="checkin-icon tennis">🎾</div>
+        <div class="checkin-info">
+          <div class="checkin-name">网球</div>
+          <div class="checkin-target" id="tennisTarget">目标：每周 2 次</div>
+        </div>
+        <div class="checkin-dots" id="tennisDots"></div>
+      </div>
+      <button class="btn-checkin ready" id="tennisCheckinBtn" onclick="checkin('tennis')">
+        🎾 打卡签到
+      </button>
+      <div class="undo-link" id="tennisUndo" style="display:none" onclick="undoCheckin('tennis')">↩️ 撤销上次打卡</div>
+    </div>
+
+    <div class="checkin-card">
+      <div class="checkin-row">
+        <div class="checkin-icon golf">⛳</div>
+        <div class="checkin-info">
+          <div class="checkin-name">高尔夫</div>
+          <div class="checkin-target" id="golfTarget">目标：每周 2 次</div>
+        </div>
+        <div class="checkin-dots" id="golfDots"></div>
+      </div>
+      <button class="btn-checkin ready" id="golfCheckinBtn" onclick="checkin('golf')">
+        ⛳ 打卡签到
+      </button>
+      <div class="undo-link" id="golfUndo" style="display:none" onclick="undoCheckin('golf')">↩️ 撤销上次打卡</div>
+    </div>
+
+    <div class="checkin-card">
+      <div class="checkin-row">
+        <div class="checkin-icon strength">💪</div>
+        <div class="checkin-info">
+          <div class="checkin-name">力量训练</div>
+          <div class="checkin-target" id="strengthTarget">目标：每周 2 次</div>
+        </div>
+        <div class="checkin-dots" id="strengthDots"></div>
+      </div>
+      <button class="btn-checkin ready" id="strengthCheckinBtn" onclick="checkin('strength')">
+        💪 打卡签到
+      </button>
+      <div class="undo-link" id="strengthUndo" style="display:none" onclick="undoCheckin('strength')">↩️ 撤销上次打卡</div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <div class="card-header">
+        <div class="card-icon sport">📊</div>
+        <div>
+          <div class="card-title">本周运动总进度</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>完成情况</span>
+          <span id="sportProgress">0/6</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill orange" id="sportProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 报告 Tab ===== -->
+  <div class="tab-content" id="tab-report">
+    <div class="report-tabs">
+      <button class="report-tab active" onclick="switchReportPeriod('week')" id="rp-week">周报</button>
+      <button class="report-tab" onclick="switchReportPeriod('month')" id="rp-month">月报</button>
+      <button class="report-tab" onclick="switchReportPeriod('year')" id="rp-year">年报</button>
+    </div>
+    <div id="reportContent"></div>
+    <div class="data-migration">
+      <div class="dm-title">📱 数据迁移（换设备时使用）</div>
+      <button class="dm-btn" onclick="exportAllData()">📤 导出全部数据</button>
+      <button class="dm-btn" onclick="document.getElementById('importInput').click()">📥 导入数据</button>
+      <input type="file" id="importInput" accept=".json" style="display:none" onchange="if(this.files[0])importData(this.files[0])">
+    </div>
+    <div class="cloud-sync-section">
+      <div class="dm-title">☁️ 云端同步</div>
+      <div id="cloudSyncContent"></div>
+      <div class="cloud-help" id="cloudHelp">
+        <b>设置步骤（约5分钟）：</b><br>
+        1. 打开 supabase.com 注册免费账号<br>
+        2. 新建项目（随便取个名字，设个数据库密码）<br>
+        3. 左侧菜单点「SQL Editor」，粘贴以下SQL并运行：<br>
+        <textarea readonly style="width:100%;font-size:11px;font-family:monospace;margin:6px 0;padding:8px;border-radius:6px;background:#1e1e1e;color:#e0e0e0;border:1px solid #444;min-height:90px;" onclick="this.select()">CREATE TABLE workbench_data (
+  sync_code TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE workbench_data ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "allow_all" ON workbench_data
+  FOR ALL USING (true) WITH CHECK (true);</textarea>
+        4. 左下角点「Project Settings」→「API」<br>
+        5. 复制「Project URL」和「anon public」密钥<br>
+        6. 回到这里填入，点「测试并连接」
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Cloud Setup Modal -->
+<div class="modal-overlay" id="cloudModal">
+  <div class="modal-card">
+    <div class="modal-title">☁️ 开启云同步</div>
+    <div class="modal-desc">连接 Supabase 免费云数据库后，所有设备数据自动同步。首次使用需要先注册并建表。<span class="modal-link" onclick="document.getElementById('cloudHelp').classList.toggle('show')">查看设置步骤</span></div>
+    <div class="modal-field">
+      <label>Supabase Project URL</label>
+      <input class="modal-input" id="supabaseUrl" type="text" placeholder="https://xxxxx.supabase.co" autocomplete="off">
+      <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">只需域名，不要带 /rest/v1/</div>
+    </div>
+    <div class="modal-field">
+      <label>API Key（新版用 sb_publishable_ 开头）</label>
+      <input class="modal-input" id="supabaseKey" type="text" placeholder="eyJhbGciOi... 或 sb_publishable_..." autocomplete="off">
+    </div>
+    <div class="modal-field">
+      <label>同步码（6位数字）</label>
+      <div class="sync-code-input-row">
+        <input class="modal-input" id="syncCode" type="text" placeholder="点右侧生成" maxlength="6" inputmode="numeric" autocomplete="off">
+        <button class="sync-code-btn" onclick="generateSyncCode()">生成</button>
+      </div>
+      <div class="modal-hint">首次使用点「生成」。换设备时输入<b>相同的同步码</b>即可配对，数据自动同步。</div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeCloudModal()">取消</button>
+      <button class="modal-btn confirm" id="cloudTestBtn" onclick="testAndSaveCloud()">测试并连接</button>
+    </div>
+  </div>
+</div>
+
+<!-- 应用内自检报告 -->
+<div class="modal-overlay" id="diagModal" onclick="if(event.target===this)closeDiagModal()">
+  <div class="modal-card">
+    <div class="modal-title">🔧 应用内自检 <span id="diagSummary" style="font-size:13px;font-weight:400"></span></div>
+    <div id="diagList" style="margin-top:8px"></div>
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="modal-btn cancel" onclick="closeDiagModal()">关闭</button>
+      <button class="modal-btn confirm" onclick="runSelfCheck(true)">重新检测</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('work')" id="nav-work">
+    <span class="nav-icon">💼</span>
+    <span class="nav-label">工作</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('learn')" id="nav-learn">
+    <span class="nav-icon">📚</span>
+    <span class="nav-label">学习</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('sport')" id="nav-sport">
+    <span class="nav-icon">🏃</span>
+    <span class="nav-label">运动</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('report')" id="nav-report" style="position:relative;">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">报告</span>
+    <span class="report-badge" id="reportNavBadge" style="display:none;">新</span>
+  </button>
+</nav>
+
+<script>
+// ===== HELPERS =====
+function getDateKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getWeekKey() {
+  const d = new Date();
+  const day = d.getDay(); // 0=Sun
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+  const monday = new Date(d.setDate(diff));
+  return monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
+}
+
+function getMonthKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+
+// ===== IndexedDB Storage (reliable on iOS) =====
+const DB_NAME = 'workbench_db';
+const DB_STORE = 'kv';
+let _db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    if (_db) return resolve(_db);
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(DB_STORE); };
+    req.onsuccess = () => { _db = req.result; resolve(_db); };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbGet(key) {
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const req = tx.objectStore(DB_STORE).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  }));
+}
+
+function dbSet(key, val) {
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(val, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+// ─── Data versioning & migration ───
+// Bump this when data structure changes. migrateData() handles the upgrade.
+const DATA_VERSION = 3;
+
+// Deep merge: stored data wins, but missing keys get filled from fallback.
+// Prevents data loss when new fields are added to data structures.
+function mergeData(stored, fallback) {
+  if (stored === null || stored === undefined) return fallback;
+  if (typeof fallback !== 'object' || fallback === null) return stored;
+  if (Array.isArray(fallback)) return stored; // arrays: stored wins entirely
+  if (typeof stored !== 'object' || stored === null) return fallback;
+  const result = { ...fallback };
+  for (const k in stored) {
+    if (k in fallback && typeof fallback[k] === 'object' && !Array.isArray(fallback[k]) && fallback[k] !== null) {
+      result[k] = mergeData(stored[k], fallback[k]);
+    } else {
+      result[k] = stored[k];
+    }
+  }
+  return result;
+}
+
+function loadData(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === null) return fallback;
+    const parsed = JSON.parse(v);
+    // Deep merge: if both are objects, fill missing fields from fallback
+    if (typeof fallback === 'object' && fallback !== null && !Array.isArray(fallback) && typeof parsed === 'object' && parsed !== null) {
+      return mergeData(parsed, fallback);
+    }
+    return parsed;
+  }
+  catch(e) { return fallback; }
+}
+
+function saveData(key, val) {
+  // localStorage is the primary store
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+  // IndexedDB is silent backup — never touches localStorage
+  dbSet(key, val).catch(() => {});
+  // Cloud sync (debounced, no-op if not configured)
+  cloudSyncDebounced();
+}
+
+// On cold start: if localStorage was wiped but IndexedDB has data, restore it
+function restoreFromDB() {
+  return openDB().then(db => new Promise(resolve => {
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const keysReq = tx.objectStore(DB_STORE).getAllKeys();
+    const valsReq = tx.objectStore(DB_STORE).getAll();
+    let restored = 0;
+    keysReq.onsuccess = () => {};
+    valsReq.onsuccess = () => {
+      const keys = keysReq.result, vals = valsReq.result;
+      keys.forEach((k, i) => {
+        if (!localStorage.getItem(k)) {
+          try { localStorage.setItem(k, JSON.stringify(vals[i])); restored++; } catch(e) {}
+        }
+      });
+      if (restored > 0) showToast('🔄 已从备份恢复 ' + restored + ' 条数据');
+      resolve();
+    };
+    valsReq.onerror = () => resolve();
+  })).catch(() => {});
+}
+
+
+
+// ===== DATE DISPLAY =====
+function updateDate() {
+  const d = new Date();
+  const weekdays = ['日','一','二','三','四','五','六'];
+  const str = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 星期'+weekdays[d.getDay()];
+  document.getElementById('dateDisplay').textContent = str;
+  renderRings();
+}
+
+function renderRings() {
+  const now = new Date();
+  const y = now.getFullYear();
+
+  // 元旦: Jan 1 of next year
+  const newYear = new Date(y + 1, 0, 1);
+  // 春节 2027: Feb 6; 2028: Jan 26
+  const springFestival = y === 2026 ? new Date(2027, 1, 6) : new Date(y + 1, 1, 6);
+  // start of current cycle: last New Year / last Spring Festival
+  const yearStart = new Date(y, 0, 1);
+  const sfStart = y === 2026 ? new Date(2026, 1, 17) : new Date(y, 1, 17);
+
+  const items = [
+    { label: '元旦', target: newYear, start: yearStart, color: '#f43f5e' },
+    { label: '春节', target: springFestival, start: sfStart, color: '#f97316' }
+  ];
+
+  let html = '';
+  items.forEach(item => {
+    const total = item.target - item.start;
+    const elapsed = now - item.start;
+    const remaining = Math.max(0, Math.ceil((item.target - now) / 86400000));
+    const pct = Math.min(100, Math.max(0, elapsed / total));
+    const r = 19;
+    const circ = 2 * Math.PI * r;
+    const offset = circ * (1 - pct);
+
+    html += `<div class="ring-group">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="${item.color}" stroke-width="3"
+          stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
+          stroke-linecap="round" transform="rotate(-90 22 22)"/>
+        <text x="22" y="19" text-anchor="middle" font-size="10" font-weight="700" fill="#1d1d1f">${remaining}</text>
+        <text x="22" y="31" text-anchor="middle" font-size="7" fill="#6e6e73">天</text>
+      </svg>
+      <span class="ring-label">${item.label}</span>
+    </div>`;
+  });
+
+  document.getElementById('headerRings').innerHTML = html;
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ===== TAB SWITCH =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active', 'animate-in'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+  const content = document.getElementById('tab-' + tab);
+  content.classList.add('active', 'animate-in');
+  document.getElementById('nav-' + tab).classList.add('active');
+
+  if (tab === 'work') {
+    renderWorkTab();
+    // CC bill reminder popup - once per day
+    const _ccKey = 'ccBillReminder-' + getDateKey();
+    if (!sessionStorage.getItem(_ccKey)) {
+      sessionStorage.setItem(_ccKey, '1');
+      setTimeout(checkCCBillReminder, 600);
+    }
+  }
+  if (tab === 'learn') renderLearnTab();
+  if (tab === 'sport') renderSportTab();
+  if (tab === 'report') {
+    renderReportTab();
+    renderCloudSyncUI();
+    document.getElementById('reportNavBadge').style.display = 'none';
+  }
+}
+
+// ====================
+//  WORK TAB
+// ====================
+function renderWorkTab() {
+  const today = getDateKey();
+  const data = loadData('work-' + today, { daily: [], review: '' });
+
+  // Daily checklist
+  document.querySelectorAll('#ccrChecklist li').forEach(li => {
+    const id = li.dataset.id;
+    const cb = li.querySelector('.checkbox');
+    const txt = li.querySelector('.checklist-text');
+    if (data.daily.includes(id)) {
+      cb.classList.add('checked');
+      txt.classList.add('done');
+    } else {
+      cb.classList.remove('checked');
+      txt.classList.remove('done');
+    }
+  });
+
+  // Daily review
+  const dailyReview = loadData('dailyReview-' + today, '');
+  const ri = document.getElementById('reviewInput');
+  const rn = document.getElementById('reviewNote');
+  const reviewSaveBtn = document.querySelector('#dailyReviewCard .note-save');
+  // 预填已保存内容：仅当用户当前不在编辑此 textarea 时才回填（避免被渲染覆盖打断正在输入的内容）；
+  // 也避免输入时切换 tab 回来内容被清；重启浏览器后能立刻看到原文继续编辑保存
+  const savedReview = dailyReview || (data && data.review) || '';
+  const isEditing = (ri === document.activeElement);
+  if (savedReview && !isEditing && ri.value.trim() === '') ri.value = savedReview;
+  // 输入框 + 保存按钮永远可见、可继续编辑保存（绝不锁定）
+  ri.style.display = 'block';
+  if (reviewSaveBtn) reviewSaveBtn.style.display = 'inline-block';
+  if (savedReview) {
+    rn.textContent = '✅ 今日已保存 · 可继续修改补充';
+    rn.style.display = 'block';
+  } else {
+    rn.style.display = 'none';
+  }
+
+  // Monthly payments
+  renderMonthlyPayments();
+
+  // Monthly billing
+  const mk = getMonthKey();
+  const bdata = loadData('billing-' + mk, []);
+  const isDay5 = new Date().getDate() === 5;
+  document.querySelectorAll('#billingChecklist li').forEach(li => {
+    const id = li.dataset.id;
+    const cb = li.querySelector('.checkbox');
+    const txt = li.querySelector('.checklist-text');
+    if (bdata.includes(id)) {
+      cb.classList.add('checked');
+      txt.classList.add('done');
+    } else {
+      cb.classList.remove('checked');
+      txt.classList.remove('done');
+    }
+  });
+  const bs = document.getElementById('billingStatus');
+  const bpb = document.getElementById('billingProgressBar');
+  const bh = document.getElementById('billingHint');
+  if (bdata.length > 0) {
+    bs.textContent = '本月已完成 ✅';
+    bpb.style.width = '100%';
+    bh.textContent = '每月 5 日 · 账单已推送 ✅';
+  } else if (isDay5) {
+    bs.textContent = '⚠️ 今天是 5 日，请推送账单！';
+    bpb.style.width = '0%';
+    bh.textContent = '🔔 提醒：今天是账单推送日！';
+  } else if (new Date().getDate() < 5) {
+    bs.textContent = '等待 5 日到期';
+    bpb.style.width = '0%';
+    bh.textContent = '每月 5 日 · 还有 ' + (5 - new Date().getDate()) + ' 天';
+  } else {
+    bs.textContent = '5 日已过';
+    bpb.style.width = '0%';
+    bh.textContent = '每月 5 日 · 下月待处理';
+  }
+
+  // Monthly payroll
+  const pdata = loadData('payroll-' + mk, []);
+  const todayDay = new Date().getDate();
+  const isLastDay = isLastWorkingDay();
+  const isDay20 = todayDay === 20;
+  const isDay25 = todayDay === 25;
+  document.querySelectorAll('#payrollChecklist li').forEach(li => {
+    const id = li.dataset.id;
+    const cb = li.querySelector('.checkbox');
+    const txt = li.querySelector('.checklist-text');
+    if (pdata.includes(id)) {
+      cb.classList.add('checked');
+      txt.classList.add('done');
+    } else {
+      cb.classList.remove('checked');
+      txt.classList.remove('done');
+    }
+  });
+  const ps = document.getElementById('payrollStatus');
+  const ppb = document.getElementById('payrollProgressBar');
+  if (pdata.length === 7) {
+    ps.textContent = '本月已完成 ✅';
+    ppb.style.width = '100%';
+  } else if (isLastDay && pdata.length > 0) {
+    ps.textContent = '进行中 ' + pdata.length + '/7';
+    ppb.style.width = (pdata.length/7*100) + '%';
+  } else if (isLastDay) {
+    ps.textContent = '⚠️ 今天是月底，请处理！';
+    ppb.style.width = '0%';
+  } else if (isDay20 || isDay25) {
+    ps.textContent = '🔔 提醒：今天 ' + todayDay + ' 日，开始准备！';
+    ppb.style.width = '0%';
+  } else {
+    ps.textContent = '待处理（20日 & 25日提醒）';
+    ppb.style.width = '0%';
+  }
+
+  sortWorkCards();
+}
+
+function sortWorkCards() {
+  const tab = document.getElementById('tab-work');
+  const cards = tab.querySelectorAll(':scope > .card');
+  const mk = getMonthKey();
+  const bdata = loadData('billing-' + mk, []);
+  const pdata = loadData('payroll-' + mk, []);
+  const today = getDateKey();
+  const dailyData = loadData('work-' + today, { daily: [], review: '' });
+  const dailyReview = loadData('dailyReview-' + today, '');
+
+  cards.forEach(card => {
+    // 日复盘卡：固定位置，永不被排序沉底（用户要求：保存后留在原位置，不沉到页面底部）
+    if (card.id === 'dailyReviewCard') {
+      card.classList.remove('done');
+      return;
+    }
+    let allDone = false;
+
+    if (card.querySelector('#ccrChecklist')) {
+      allDone = dailyData.daily.length >= 3;
+    } else if (card.id === 'monthlyBilling') {
+      allDone = bdata.length >= 1;
+    } else if (card.id === 'monthlyPayroll') {
+      allDone = pdata.length >= 7;
+    }
+
+    if (allDone) {
+      card.classList.add('done');
+      tab.appendChild(card);
+    } else {
+      card.classList.remove('done');
+    }
+  });
+}
+
+function isLastWorkingDay() {
+  const d = new Date();
+  const month = d.getMonth();
+  const year = d.getFullYear();
+  let check = new Date(year, month + 1, 0); // last day
+  while (check.getDay() === 0 || check.getDay() === 6) {
+    check.setDate(check.getDate() - 1);
+  }
+  return d.getDate() === check.getDate() && d.getMonth() === check.getMonth();
+}
+
+function toggleCheck(el) {
+  const today = getDateKey();
+  const data = loadData('work-' + today, { daily: [], review: '' });
+  const id = el.dataset.id;
+
+  if (id.startsWith('daily-')) {
+    const idx = data.daily.indexOf(id);
+    if (idx >= 0) data.daily.splice(idx, 1);
+    else data.daily.push(id);
+    saveData('work-' + today, data);
+    renderWorkTab();
+    const n = data.daily.length;
+    if (n === 3) showToast('🎉 今日工作全部完成！');
+    else if (n > 0) showToast('✅ 已完成 ' + n + '/3');
+  } else if (id.startsWith('bill-')) {
+    const mk = getMonthKey();
+    const bdata = loadData('billing-' + mk, []);
+    const idx = bdata.indexOf(id);
+    if (idx >= 0) bdata.splice(idx, 1);
+    else bdata.push(id);
+    saveData('billing-' + mk, bdata);
+    renderWorkTab();
+    if (bdata.length > 0) showToast('✅ 账单已确认');
+  } else if (id.startsWith('pay-')) {
+    const mk = getMonthKey();
+    const pdata = loadData('payroll-' + mk, []);
+    const idx = pdata.indexOf(id);
+    if (idx >= 0) pdata.splice(idx, 1);
+    else pdata.push(id);
+    saveData('payroll-' + mk, pdata);
+    renderWorkTab();
+    if (pdata.length === 7) showToast('🎉 工资单全部完成！');
+  }
+}
+
+function saveDailyReview() {
+  const today = getDateKey();
+  const ri = document.getElementById('reviewInput');
+  const val = ri.value.trim();
+  if (!val) { showToast('请输入复盘内容'); return; }
+  saveData('dailyReview-' + today, val);
+
+  const data = loadData('work-' + today, { daily: [], review: '' });
+  data.review = val;
+  saveData('work-' + today, data);
+
+  _reviewDirty = false; // 已保存，解除"未保存输入"标记
+  showToast('✅ 日复盘已保存');
+  // 立即上云（与财务数据一致，key 级合并不会覆盖其它数据）
+  if (typeof cloudPush === 'function') cloudPush();
+  // ===== 根治：滚动锁定 → 解锁 → 精确滚回原位置 =====
+  // 进入输入框时 body 已被锁成 fixed（_lockReviewScroll），iOS 收键盘无可滚动；
+  // 这里先失焦收键盘，再解锁并把视口设回「进入输入框之前」的 __rsY，卡片留在原位置。
+  const restoreY = (window.__rsY != null) ? window.__rsY : (window.scrollY || window.pageYOffset || 0);
+  const beforeY = window.scrollY || window.pageYOffset || 0;
+  ri.blur(); // 收起键盘
+  _unlockReviewScroll();
+  window.__rsY = null;
+  const _restore = () => window.scrollTo(0, restoreY);
+  _restore();
+  requestAnimationFrame(_restore);
+  setTimeout(_restore, 60);
+  setTimeout(_restore, 200);
+  // 调试读数（仅 ?diagscroll 显示），用于确认真机 scrollY 行为，避免再靠猜测
+  if (/[?&]diagscroll/.test(location.search)) {
+    setTimeout(() => showToast('🔍 rsY=' + restoreY + ' before=' + beforeY + ' after=' + (window.scrollY||0)), 400);
+  }
+  // 若此前因"有未保存输入"推迟了代码自动更新，保存后立刻补上重载（不丢输入）
+  if (_pendingCodeReload && _pendingCode) {
+    _pendingCodeReload = false;
+    const code = _pendingCode; _pendingCode = null;
+    _doCodeReload(code);
+  }
+}
+
+// ====================
+//  MONTHLY PAYMENTS
+// ====================
+const CC_CONFIG = [
+  { id: 'gf',  name: '广发', registerDay: 6,  repayDay: 26, repayMonthOffset: 0 },
+  { id: 'zx',  name: '中信', registerDay: 10, repayDay: 29, repayMonthOffset: 0 },
+  { id: 'pf',  name: '浦发', registerDay: 21, repayDay: 10, repayMonthOffset: 1 },
+  { id: 'zx2', name: '招信', registerDay: 25, repayDay: 13, repayMonthOffset: 1 },
+];
+
+const LOAN_INIT = {
+  wz:  { name: '微众',    repayDay: 4,  monthly: 16290, remainingPeriods: 21,  remainingAmount: 322557 },
+  zb:  { name: '总部金融', repayDay: 4,  monthly: 18900, remainingPeriods: 33,  remainingAmount: 620813 },
+  zfd: { name: '招房贷',  repayDay: 9,  monthly: 17000, remainingPeriods: null, endDate: '2033-02-06', remainingAmount: 2730000 },
+  ma:  { name: '妈平安',  repayDay: 20, monthly: 14000, remainingPeriods: null, remainingAmount: 960000 },
+};
+
+function getLoanState() {
+  const stored = loadData('loanState', null);
+  return mergeData(stored, LOAN_INIT);
+}
+
+// Calculate the next repayment date and billing month for a credit card
+function getCardCycle(card) {
+  const now = new Date();
+  const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let repayDate, billYear, billMonth;
+
+  if (card.repayMonthOffset === 0) {
+    // Same month: register and repay in same month
+    repayDate = new Date(now.getFullYear(), now.getMonth(), card.repayDay);
+    if (repayDate >= todayMid) {
+      billYear = now.getFullYear();
+      billMonth = now.getMonth();
+    } else {
+      const next = new Date(now.getFullYear(), now.getMonth() + 1, card.repayDay);
+      billYear = next.getFullYear();
+      billMonth = next.getMonth();
+      repayDate = next;
+    }
+  } else {
+    // Next month: register in month M, repay in month M+1
+    repayDate = new Date(now.getFullYear(), now.getMonth(), card.repayDay);
+    if (repayDate >= todayMid) {
+      // This month's repayment is upcoming; billing month was last month
+      const bd = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      billYear = bd.getFullYear();
+      billMonth = bd.getMonth();
+    } else {
+      // This month's repayment passed; next is next month, billing month is this month
+      repayDate = new Date(now.getFullYear(), now.getMonth() + 1, card.repayDay);
+      billYear = now.getFullYear();
+      billMonth = now.getMonth();
+    }
+  }
+
+  const billKey = billYear + '-' + String(billMonth + 1).padStart(2, '0');
+  const daysUntil = Math.ceil((repayDate - now) / 86400000);
+  return { billKey, repayDate, daysUntil };
+}
+
+function fmtMoney(n) {
+  return '¥' + (n || 0).toLocaleString('zh-CN');
+}
+
+function renderMonthlyPayments() {
+  const container = document.getElementById('paymentContent');
+  if (!container) return;
+  let html = '';
+
+  // === 信用卡 ===
+  html += '<div class="pay-section">';
+  html += '<div class="pay-section-title">💳 信用卡</div>';
+
+  // Calculate cycles, pre-compute paid status, then sort: unpaid first, paid last
+  const cardsWithCycles = CC_CONFIG.map(c => {
+    const cycle = getCardCycle(c);
+    const paid = loadData('ccPaid-' + c.id + '-' + cycle.billKey, false);
+    return { card: c, cycle, paid };
+  });
+  cardsWithCycles.sort((a, b) => {
+    if (a.paid !== b.paid) return a.paid ? 1 : -1; // unpaid first
+    return a.cycle.daysUntil - b.cycle.daysUntil;   // then by urgency
+  });
+
+  cardsWithCycles.forEach(({ card, cycle, paid }) => {
+    const billAmount = loadData('ccBill-' + card.id + '-' + cycle.billKey, null);
+
+    // Check if register day has passed for this billing month
+    const billYear = parseInt(cycle.billKey.substring(0, 4));
+    const billMonth = parseInt(cycle.billKey.substring(5, 7)) - 1;
+    const registerDate = new Date(billYear, billMonth, card.registerDay);
+    const now = new Date();
+    const registerPassed = now >= registerDate;
+
+    const isUrgent = cycle.daysUntil <= 3 && !paid;
+    const isDueSoon = cycle.daysUntil <= 7 && !paid && !isUrgent;
+
+    let statusClass = 'idle', statusText = '';
+    if (paid) { statusClass = 'done'; statusText = '✅ 已还款'; }
+    else if (isUrgent) { statusClass = 'urgent'; statusText = cycle.daysUntil <= 0 ? '⚠️ 逾期' : '🔴 ' + cycle.daysUntil + '天'; }
+    else if (isDueSoon) { statusClass = 'pending'; statusText = '🟠 ' + cycle.daysUntil + '天'; }
+    else { statusClass = 'idle'; statusText = cycle.daysUntil + '天'; }
+
+    // Layout: amount on top left, status/countdown on right, name+detail below
+    html += '<div class="pay-item' + (paid ? ' done' : '') + '" style="flex-direction:column;align-items:stretch;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+    // Left: amount + name + detail
+    html += '<div style="flex:1;min-width:0;">';
+    if (billAmount !== null) {
+      html += '<span class="pay-item-amount ' + (paid ? 'paid' : isUrgent ? 'urgent' : isDueSoon ? 'due-soon' : '') + '">' + fmtMoney(billAmount) + '</span>';
+    } else {
+      html += '<span class="pay-item-amount" style="color:var(--text-secondary);font-size:12px">未登记</span>';
+    }
+    html += '<div class="pay-item-info">';
+    html += '<div class="pay-item-name">' + card.name + '</div>';
+    html += '<div class="pay-item-detail">登记' + card.registerDay + '日 · 还款' + card.repayDay + (card.repayMonthOffset ? '日(次月)' : '日') + '</div>';
+    html += '</div>';
+    html += '</div>';
+    // Right: countdown badge + paid button stacked
+    html += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">';
+    html += '<span class="pay-status ' + statusClass + '">' + statusText + '</span>';
+    if (billAmount !== null && !paid) {
+      html += '<button class="pay-check-btn" onclick="markCCPaid(\'' + card.id + '\', \'' + cycle.billKey + '\')">标记已还款</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Register prompt - only when bill is out (register day passed)
+    if (registerPassed && billAmount === null && !paid) {
+      html += '<div class="pay-register-prompt">';
+      html += '<label>🔔 ' + card.name + '账单已出，请登记金额</label>';
+      html += '<div class="pay-register-row">';
+      html += '<input type="number" id="ccInput-' + card.id + '" placeholder="输入账单金额" inputmode="decimal">';
+      html += '<button class="pay-register-btn" onclick="saveCCBill(\'' + card.id + '\', \'' + cycle.billKey + '\')">登记</button>';
+      html += '</div>';
+      html += '</div>';
+    }
+  });
+  html += '</div>';
+
+  // === 贷款 ===
+  html += '<div class="pay-section">';
+  html += '<div class="pay-section-title">🏦 贷款</div>';
+  const loanState = getLoanState();
+  const mk = getMonthKey();
+  const loanPaid = loadData('loanPaid-' + mk, {});
+
+  // Sort loans: unpaid first (by repayDay), paid last
+  const loanIds = Object.keys(LOAN_INIT).sort((a, b) => {
+    const aPaid = loanPaid[a] || false;
+    const bPaid = loanPaid[b] || false;
+    if (aPaid !== bPaid) return aPaid ? 1 : -1; // unpaid first
+    return LOAN_INIT[a].repayDay - LOAN_INIT[b].repayDay;
+  });
+
+  loanIds.forEach(id => {
+    const loan = LOAN_INIT[id];
+    const state = loanState[id] || { remainingPeriods: loan.remainingPeriods, remainingAmount: loan.remainingAmount };
+    const paid = loanPaid[id] || false;
+    const today = new Date().getDate();
+    const isUrgent = !paid && today >= loan.repayDay;
+
+    let statusClass = 'idle', statusText = '';
+    if (paid) { statusClass = 'done'; statusText = '✅ 已还'; }
+    else if (isUrgent) { statusClass = 'urgent'; statusText = '🔴 待还'; }
+    else { statusClass = 'pending'; statusText = loan.repayDay + '日还'; }
+
+    // Layout: amount on left, status + button stacked on right
+    html += '<div class="pay-item' + (paid ? ' done' : '') + '" style="flex-direction:column;align-items:stretch;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
+    // Left: amount + name + detail
+    html += '<div style="flex:1;min-width:0;">';
+    html += '<span class="pay-item-amount ' + (paid ? 'paid' : isUrgent ? 'urgent' : '') + '">' + fmtMoney(loan.monthly) + '</span>';
+    html += '<div class="pay-item-info">';
+    html += '<div class="pay-item-name">' + loan.name + '</div>';
+    let detail = '每月' + loan.repayDay + '日';
+    if (state.remainingPeriods !== null && state.remainingPeriods !== undefined) {
+      detail += ' · 剩' + state.remainingPeriods + '期';
+    }
+    if (loan.endDate) detail += ' · 至' + loan.endDate;
+    detail += ' · 剩余' + fmtMoney(state.remainingAmount);
+    html += '<div class="pay-item-detail">' + detail + '</div>';
+    html += '</div>';
+    html += '</div>';
+    // Right: status badge + paid button stacked
+    html += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">';
+    html += '<span class="pay-status ' + statusClass + '">' + statusText + '</span>';
+    if (!paid) {
+      html += '<button class="pay-check-btn" onclick="markLoanPaid(\'' + id + '\')">标记已还款</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // === 工资单 ===
+  html += '<div class="pay-section">';
+  html += '<div class="pay-section-title">💰 工资单待发</div>';
+  const payrollTrack = loadData('payrollTrack-' + mk, { total: 0, payments: [] });
+  const totalPaid = (payrollTrack.payments || []).reduce((s, a) => s + a, 0);
+  const remaining = (payrollTrack.total || 0) - totalPaid;
+  const today = new Date().getDate();
+  const isRegisterDay = today === 3;
+
+  if (!payrollTrack.total || payrollTrack.total === 0) {
+    // Always show register prompt — no date restriction
+    html += '<div class="pay-register-prompt">';
+    html += '<label>💰 登记本月待发工资总额</label>';
+    html += '<div class="pay-register-row">';
+    html += '<input type="number" id="payrollTotalInput" placeholder="输入待发总额" inputmode="decimal">';
+    html += '<button class="pay-register-btn" onclick="savePayrollTotal()">登记</button>';
+    html += '</div>';
+    html += '</div>';
+  } else {
+    html += '<div class="pay-item">';
+    html += '<div class="pay-item-info">';
+    html += '<div class="pay-item-name">本月工资单</div>';
+    html += '<div class="pay-item-detail">总额 ' + fmtMoney(payrollTrack.total) + ' · 已发 ' + fmtMoney(totalPaid) + '</div>';
+    html += '</div>';
+    const cls = remaining <= 0 ? 'paid' : 'urgent';
+    html += '<span class="pay-item-amount ' + cls + '">' + fmtMoney(remaining) + '</span>';
+    html += '</div>';
+
+    if (remaining > 0) {
+      html += '<div class="pay-register-prompt">';
+      html += '<label>记录一笔发放</label>';
+      html += '<div class="pay-register-row">';
+      html += '<input type="number" id="payrollPayInput" placeholder="输入发放金额" inputmode="decimal">';
+      html += '<button class="pay-register-btn" onclick="recordPayrollPayment()">记录</button>';
+      html += '</div>';
+      html += '</div>';
+    } else {
+      html += '<div class="pay-summary">✅ 本月工资已全部发放</div>';
+    }
+  }
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function saveCCBill(cardId, billKey) {
+  const input = document.getElementById('ccInput-' + cardId);
+  if (!input || !input.value) { showToast('请输入金额'); return; }
+  const amount = parseFloat(input.value);
+  if (isNaN(amount) || amount <= 0) { showToast('金额无效'); return; }
+  saveData('ccBill-' + cardId + '-' + billKey, amount);
+  showToast('✅ 账单已登记: ' + fmtMoney(amount));
+  renderMonthlyPayments();
+  cloudPush(); // 财务关键数据立即上云，不等 debounce
+}
+
+function markCCPaid(cardId, billKey) {
+  saveData('ccPaid-' + cardId + '-' + billKey, true);
+  showToast('✅ 已标记还款');
+  renderMonthlyPayments();
+  cloudPush(); // 财务关键数据立即上云，不等 debounce
+}
+
+// CC bill reminder popup
+let _ccBillModalQueue = [];
+let _ccBillModalIdx = 0;
+
+function checkCCBillReminder() {
+  _ccBillModalQueue = [];
+  _ccBillModalIdx = 0;
+  CC_CONFIG.forEach(card => {
+    const cycle = getCardCycle(card);
+    const billAmount = loadData('ccBill-' + card.id + '-' + cycle.billKey, null);
+    const paid = loadData('ccPaid-' + card.id + '-' + cycle.billKey, false);
+    // Check if register day has passed
+    const billYear = parseInt(cycle.billKey.substring(0, 4));
+    const billMonth = parseInt(cycle.billKey.substring(5, 7)) - 1;
+    const registerDate = new Date(billYear, billMonth, card.registerDay);
+    const registerPassed = new Date() >= registerDate;
+    if (registerPassed && billAmount === null && !paid) {
+      _ccBillModalQueue.push({ card, cycle });
+    }
+  });
+  if (_ccBillModalQueue.length > 0) showNextCCBillModal();
+}
+
+function showNextCCBillModal() {
+  if (_ccBillModalIdx >= _ccBillModalQueue.length) {
+    closeCCBillModal();
+    return;
+  }
+  const { card, cycle } = _ccBillModalQueue[_ccBillModalIdx];
+  const remaining = _ccBillModalQueue.length - _ccBillModalIdx;
+  document.getElementById('ccBillModalTitle').textContent = '🔔 ' + card.name + '账单已出';
+  document.getElementById('ccBillModalDesc').innerHTML = '请登记' + card.name + '本期账单金额' + (remaining > 1 ? ' <span style="color:var(--text-secondary);font-size:12px">（还有' + remaining + '张待登记）</span>' : '');
+  const input = document.getElementById('ccBillModalInput');
+  input.value = '';
+  input.placeholder = '输入账单金额';
+  document.getElementById('ccBillModal').classList.add('show');
+  setTimeout(() => input.focus(), 100);
+}
+
+function closeCCBillModal() {
+  document.getElementById('ccBillModal').classList.remove('show');
+}
+
+function confirmCCBillModal() {
+  const input = document.getElementById('ccBillModalInput');
+  if (!input.value) { showToast('请输入金额'); return; }
+  const amount = parseFloat(input.value);
+  if (isNaN(amount) || amount <= 0) { showToast('金额无效'); return; }
+  const { card, cycle } = _ccBillModalQueue[_ccBillModalIdx];
+  saveData('ccBill-' + card.id + '-' + cycle.billKey, amount);
+  showToast('✅ ' + card.name + '账单已登记: ' + fmtMoney(amount));
+  _ccBillModalIdx++;
+  renderMonthlyPayments();
+  showNextCCBillModal();
+}
+
+// CC bill modal event listeners
+document.getElementById('ccBillModal').addEventListener('click', function(e) {
+  if (e.target === this) closeCCBillModal();
+});
+document.getElementById('ccBillModalInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); confirmCCBillModal(); }
+});
+
+function markLoanPaid(loanId) {
+  const mk = getMonthKey();
+  const loanPaid = loadData('loanPaid-' + mk, {});
+  loanPaid[loanId] = true;
+  saveData('loanPaid-' + mk, loanPaid);
+
+  // Decrement remaining periods and amount
+  const loanState = getLoanState();
+  const loan = LOAN_INIT[loanId];
+  if (loanState[loanId]) {
+    if (loanState[loanId].remainingPeriods !== null && loanState[loanId].remainingPeriods !== undefined) {
+      loanState[loanId].remainingPeriods = Math.max(0, loanState[loanId].remainingPeriods - 1);
+    }
+    loanState[loanId].remainingAmount = Math.max(0, loanState[loanId].remainingAmount - loan.monthly);
+    saveData('loanState', loanState);
+  }
+  showToast('✅ ' + loan.name + '已还款 ' + fmtMoney(loan.monthly));
+  renderMonthlyPayments();
+}
+
+function savePayrollTotal() {
+  const input = document.getElementById('payrollTotalInput');
+  if (!input || !input.value) { showToast('请输入金额'); return; }
+  const total = parseFloat(input.value);
+  if (isNaN(total) || total <= 0) { showToast('金额无效'); return; }
+  const mk = getMonthKey();
+  saveData('payrollTrack-' + mk, { total: total, payments: [] });
+  showToast('✅ 工资总额已登记: ' + fmtMoney(total));
+  renderMonthlyPayments();
+}
+
+function recordPayrollPayment() {
+  const input = document.getElementById('payrollPayInput');
+  if (!input || !input.value) { showToast('请输入金额'); return; }
+  const amount = parseFloat(input.value);
+  if (isNaN(amount) || amount <= 0) { showToast('金额无效'); return; }
+  const mk = getMonthKey();
+  const track = loadData('payrollTrack-' + mk, { total: 0, payments: [] });
+  if (!track.payments) track.payments = [];
+  track.payments.push(amount);
+  saveData('payrollTrack-' + mk, track);
+  const totalPaid = track.payments.reduce((s, a) => s + a, 0);
+  const remaining = track.total - totalPaid;
+  showToast('✅ 已记录发放 ' + fmtMoney(amount) + ' · 剩余 ' + fmtMoney(Math.max(0, remaining)));
+  renderMonthlyPayments();
+}
+
+// ====================
+//  LEARN TAB
+// ====================
+// English — 老友记 逐句精讲 系列（单视频多分P，按顺序逐集学习，不循环）
+// 只保留老友记这一个系列；全1030集按分P顺序学下去
+const engSeries = {
+  id: 'BV18SqAYoEMV',        // 看老友记学英语 逐句精讲（全1030集，分P）
+  title: '看老友记学英语 逐句精讲',
+  totalParts: 1030
+};
+
+// Tennis & Golf: multi-series structure, fetched from cloud
+// Each subject = array of series, each series = { name, videos: [{id,title,desc}] }
+let _videoSeries = {
+  tennis: [
+    {
+      name: '从零开始的网球自习系列课（叶修鸽哥）',
+      videos: [
+        { id: 'BV1rt421g7KE', title: '前言：自学网球的方法论', desc: '系列概览' },
+        { id: 'BV12f421Z7Wn', title: '序章：网球基础认知', desc: '30分钟系统入门' },
+        { id: 'BV1WZ421n7tt', title: '正手篇：从零开始学正手', desc: '核心击球技术' },
+        { id: 'BV1fp421S7BM', title: '反手篇：从零开始学反手', desc: '反手击球技术' },
+        { id: 'BV1zJ4m1A7Sc', title: '削球截击篇：切削与网前', desc: '进阶技术' },
+        { id: 'BV1kW42197MW', title: '手腕篇：手腕发力原理', desc: '发力细节' },
+        { id: 'BV11w4m1k7gm', title: '发球篇：从零开始学发球', desc: '发球技术' },
+        { id: 'BV1h24qenEqf', title: '发球下肢篇：发球动力链', desc: '下肢发力' },
+        { id: 'BV1tf421S7rt', title: '脚下篇：步法与移动', desc: '38分钟详解' },
+      ]
+    },
+    {
+      name: '从零开始系列教学（爱打网球的Aiwen）',
+      videos: [
+        { id: 'BV1924y117xh', title: '正手❶握拍', desc: '东方vs半西方' },
+        { id: 'BV18D4y1v7YC', title: '正手❷站位', desc: '开放式vs关闭式' },
+        { id: 'BV11M411U7FF', title: '正手❹降拍头', desc: '拍头下降技巧' },
+        { id: 'BV1Gx4y1g7xK', title: '正手❺发力技巧', desc: '动力链传导' },
+        { id: 'BV1kY411Y7Xe', title: '正手❻挥拍轨迹', desc: '从引拍到随挥' },
+        { id: 'BV1Av4y1e7Un', title: '正手❼击球点', desc: '击球位置与时机' },
+        { id: 'BV1Qv4y1Y77y', title: '正手❽收拍', desc: '随挥与收拍' },
+      ]
+    },
+  ],
+  golf: [
+    {
+      name: '零缺陷挥杆系列（瞧瞧看看AA）',
+      videos: [
+        { id: 'BV1ut4y1B7d6', title: 'No.1 挥杆基本框架', desc: '16分钟系统入门' },
+        { id: 'BV1pZ4y1F7id', title: 'No.2 右手角色', desc: '右手在挥杆中的作用' },
+        { id: 'BV1o84y1F7cn', title: 'No.3 左手任务', desc: '左手控制与引导' },
+        { id: 'BV1ff4y1p7mH', title: 'No.4 挥杆进阶', desc: '上下杆转换' },
+        { id: 'BV1Q84y1F7FG', title: 'No.5 左手下杆动作', desc: '下杆启动' },
+        { id: 'BV1yM4y1u74u', title: 'No.7 下杆锁核心', desc: '核心稳定性' },
+      ]
+    },
+    {
+      name: '蓄力与发力系列（GOLFTEC深圳高特）',
+      videos: [
+        { id: 'BV1b34y1e7c1', title: '①右手臂动作', desc: '蓄力与发力' },
+        { id: 'BV1aF411T7Ad', title: '②左手臂动作', desc: '蓄力与发力' },
+        { id: 'BV1J5411d7fV', title: '③立腕', desc: '手腕蓄力技巧' },
+        { id: 'BV1J34y1Y7z3', title: '④手腕扭转', desc: '发力释放' },
+      ]
+    },
+  ],
+};
+
+// Fetch video series from cloud (called on app load)
+async function fetchVideoSeries() {
+  const cfg = getCloudConfig();
+  if (!cfg) return;
+  try {
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data?sync_code=eq.VIDEO_SERIES&select=data&limit=1', {
+      headers: { 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + cfg.anonKey }
+    });
+    if (!resp.ok) return;
+    const rows = await resp.json();
+    if (rows && rows.length > 0 && rows[0].data) {
+      const cloud = rows[0].data;
+      if (cloud.tennis && cloud.tennis.length > 0) _videoSeries.tennis = cloud.tennis;
+      if (cloud.golf && cloud.golf.length > 0) _videoSeries.golf = cloud.golf;
+    }
+  } catch(e) { /* silent fallback to defaults */ }
+}
+
+// Persistent video index — tracks series + episode per subject
+// Format: { english: 0, tennis: { s: 0, e: 0 }, golf: { s: 0, e: 0 } }
+function getVideoIdx() {
+  const stored = loadData('learnVideoIdx', null);
+  const merged = mergeData(stored, { english: 1, tennis: { s: 0, e: 0 }, golf: { s: 0, e: 0 } });
+  // Migrate old format (plain number → { s: 0, e: 0 })
+  if (typeof merged.tennis === 'number') merged.tennis = { s: 0, e: 0 };
+  if (typeof merged.golf === 'number') merged.golf = { s: 0, e: 0 };
+  // English: 老友记分P顺序（1-based）；旧数组下标或越界值统一重置为第1集
+  if (typeof merged.english !== 'number' || merged.english < 1 || merged.english > engSeries.totalParts) {
+    merged.english = 1;
+  }
+  return merged;
+}
+function saveVideoIdx(idx) {
+  saveData('learnVideoIdx', idx);
+}
+
+// Set video link/title in DOM from series + episode index
+function setVideoByIndex(type, seriesIdx, epIdx) {
+  if (type === 'english') {
+    const p = Math.max(1, Math.min(epIdx, engSeries.totalParts));
+    const link = document.getElementById('engVideoLink');
+    const title = document.getElementById('engVideoTitle');
+    if (link) link.href = 'https://www.bilibili.com/video/' + engSeries.id + '?p=' + p;
+    if (title) title.textContent = engSeries.title + ' · 第' + p + '/' + engSeries.totalParts + '集';
+    return;
+  }
+  const seriesList = _videoSeries[type];
+  if (!seriesList || seriesList.length === 0) return;
+  const series = seriesList[Math.min(seriesIdx, seriesList.length - 1)];
+  if (!series || !series.videos || series.videos.length === 0) return;
+  // If epIdx is beyond last video, clamp to last (series complete state)
+  const isComplete = epIdx >= series.videos.length;
+  const video = isComplete ? series.videos[series.videos.length - 1] : series.videos[epIdx];
+  const linkId = type === 'tennis' ? 'tennisVideoLink' : 'golfVideoLink';
+  const titleId = type === 'tennis' ? 'tennisVideoTitle' : 'golfVideoTitle';
+  const metaId = type === 'tennis' ? 'tennisVideoMeta' : 'golfVideoMeta';
+  const link = document.getElementById(linkId);
+  const title = document.getElementById(titleId);
+  const meta = document.getElementById(metaId);
+  if (link) link.href = 'https://www.bilibili.com/video/' + video.id;
+  const epDisplay = isComplete ? series.videos.length : epIdx + 1;
+  if (title) title.textContent = (isComplete ? '✅ ' : '') + video.title;
+  if (meta) meta.textContent = '⏱ ' + series.name + ' · 第' + epDisplay + '/' + series.videos.length + '集';
+}
+
+// English: 老友记 逐句精讲 — 按分P顺序学下去（点击「下一集」顺延，不随机、不循环）
+function switchEngVideo() {
+  const idx = getVideoIdx();
+  const next = (idx.english || 1) + 1;
+  if (next > engSeries.totalParts) {
+    showToast('🎉 老友记已全部学完！新内容更新中...', 4000);
+    return;
+  }
+  idx.english = next;
+  saveVideoIdx(idx);
+  setVideoByIndex('english', 0, next);
+  showToast('▶ 第 ' + next + '/' + engSeries.totalParts + ' 集');
+}
+
+function switchTennisVideo() {
+  const idx = getVideoIdx();
+  const series = _videoSeries.tennis[idx.tennis.s];
+  if (!series) return;
+  idx.tennis.e = (idx.tennis.e + 1) % series.videos.length;
+  saveVideoIdx(idx);
+  setVideoByIndex('tennis', idx.tennis.s, idx.tennis.e);
+  showToast('🔄 ' + series.name + ' ' + (idx.tennis.e + 1) + '/' + series.videos.length);
+}
+
+function switchGolfVideo() {
+  const idx = getVideoIdx();
+  const series = _videoSeries.golf[idx.golf.s];
+  if (!series) return;
+  idx.golf.e = (idx.golf.e + 1) % series.videos.length;
+  saveVideoIdx(idx);
+  setVideoByIndex('golf', idx.golf.s, idx.golf.e);
+  showToast('🔄 ' + series.name + ' ' + (idx.golf.e + 1) + '/' + series.videos.length);
+}
+
+function markLearnDone(type) {
+  const today = getDateKey();
+  const stored = loadData('learn-' + today, null);
+  const data = mergeData(stored, { english: false, tennis: false, golf: false, reading: false });
+  data[type] = !data[type];
+  saveData('learn-' + today, data);
+
+  // Auto-advance video on completion
+  if (data[type]) {
+    const idx = getVideoIdx();
+    if (type === 'english') {
+      // 老友记 逐句精讲：按分P顺序推进，不循环
+      const next = (idx.english || 1) + 1;
+      if (next > engSeries.totalParts) {
+        showToast('🎉 老友记已全部学完！新内容更新中...', 4000);
+      } else {
+        idx.english = next;
+        saveVideoIdx(idx);
+        setVideoByIndex('english', 0, next);
+        showToast('✅ 打卡成功！下一集已就绪');
+      }
+    } else if (type !== 'reading') {
+      // Tennis/Golf: multi-series, no loop
+      const seriesList = _videoSeries[type];
+      if (seriesList && seriesList.length > 0) {
+        const cur = idx[type];
+        const series = seriesList[cur.s];
+        if (series && series.videos) {
+          cur.e++;
+          if (cur.e >= series.videos.length) {
+            // Current series done — advance to next
+            cur.s++;
+            cur.e = 0;
+            if (cur.s >= seriesList.length) {
+              // All series done — no loop!
+              cur.s = seriesList.length - 1;
+              cur.e = series.videos.length; // beyond last = complete state
+              showToast('🎉 ' + (type === 'tennis' ? '网球' : '高尔夫') + '全部系列已学完！新内容更新中...', 4000);
+            } else {
+              showToast('🎉 本系列已学完！自动切换到下一系列', 3000);
+            }
+          } else {
+            showToast('✅ 打卡成功！下一集已就绪');
+          }
+        }
+      }
+      saveVideoIdx(idx);
+    }
+  }
+  // If un-marking (not completed), keep current video — no change
+
+  renderLearnTab();
+  if (!data[type]) {
+    showToast('↩️ 已取消打卡');
+  } else if (type === 'reading') {
+    showToast('✅ 打卡成功');
+  }
+}
+
+// ===== DAILY VOCAB POOL — rotates by day-of-year =====
+const VOCAB_SETS = [
+  [
+    { en: "I'm getting pretty good at this", zh: "我越来越擅长这个了" },
+    { en: "incredible", zh: "不可思议的" },
+    { en: "You have no respect for anybody's privacy", zh: "你完全不尊重别人的隐私" },
+    { en: "trembling", zh: "颤抖" },
+    { en: "desperate, needy, pathetic", zh: "绝望的、缺爱的、可悲的" },
+  ],
+  [
+    { en: "How you doin'?", zh: "你最近怎么样？（搭讪金句）" },
+    { en: "We were on a break!", zh: "我们当时在分手期！" },
+    { en: "Could it BE any more obvious?", zh: "还能再明显点吗？" },
+    { en: "hang out", zh: "闲逛、一起待着" },
+    { en: "crush on someone", zh: "暗恋某人" },
+  ],
+  [
+    { en: "I'll be there for you", zh: "我会一直在你身边" },
+    { en: "flip out", zh: "情绪失控、发飙" },
+    { en: "give someone the benefit of the doubt", zh: "姑且相信某人" },
+    { en: "get over it", zh: "走出来、释怀" },
+    { en: "That's not what I meant", zh: "我不是那个意思" },
+  ],
+  [
+    { en: "What's the worst that could happen?", zh: "最坏能怎样？" },
+    { en: "I couldn't agree more", zh: "我完全同意" },
+    { en: "a piece of cake", zh: "小菜一碟" },
+    { en: "under the weather", zh: "身体不舒服" },
+    { en: "Let's call it a day", zh: "今天就到此为止吧" },
+  ],
+  [
+    { en: "You're killing me", zh: "你快把我逼疯了" },
+    { en: "fair enough", zh: "有道理、说得通" },
+    { en: "make up your mind", zh: "做决定吧" },
+    { en: "out of the blue", zh: "突然、出乎意料" },
+    { en: "bear with me", zh: "请稍等我一下" },
+  ],
+  [
+    { en: "I'm not buying it", zh: "我才不信" },
+    { en: "ring a bell", zh: "听起来耳熟" },
+    { en: "on the same page", zh: "达成共识" },
+    { en: "break a leg", zh: "祝你好运" },
+    { en: "It's not rocket science", zh: "这又不是什么难事" },
+  ],
+  [
+    { en: "cut to the chase", zh: "说重点" },
+    { en: "I've had enough", zh: "我受够了" },
+    { en: "keep me posted", zh: "随时告诉我进展" },
+    { en: "so far so good", zh: "目前为止还不错" },
+    { en: "no big deal", zh: "没什么大不了的" },
+  ],
+  [
+    { en: "You nailed it", zh: "你做得太棒了" },
+    { en: "out of my league", zh: "高攀不起" },
+    { en: "give it a shot", zh: "试一试" },
+    { en: "the ball is in your court", zh: "该你做决定了" },
+    { en: "Let it go", zh: "放下吧" },
+  ],
+  [
+    { en: "I'm all ears", zh: "洗耳恭听" },
+    { en: "hit the sack", zh: "上床睡觉" },
+    { en: "piece of my mind", zh: "直说我的想法（带火气）" },
+    { en: "make sense", zh: "有道理、说得通" },
+    { en: "for real?", zh: "真的假的？" },
+  ],
+  [
+    { en: "That's so typical of you", zh: "你果然是这风格" },
+    { en: "catch up", zh: "叙旧、赶上进度" },
+    { en: "freak out", zh: "情绪崩溃、抓狂" },
+    { en: "It's a long story", zh: "说来话长" },
+    { en: "I owe you one", zh: "我欠你一个人情" },
+  ],
+  [
+    { en: "Don't push my buttons", zh: "别故意惹我" },
+    { en: "take it easy", zh: "别急、放轻松" },
+    { en: "lose track of time", zh: "忘了时间" },
+    { en: "It slipped my mind", zh: "我搞忘了" },
+    { en: "Who knows?", zh: "谁知道呢？" },
+  ],
+  [
+    { en: "I can't help it", zh: "我忍不住" },
+    { en: "bring it on", zh: "放马过来" },
+    { en: "go with the flow", zh: "顺其自然" },
+    { en: "No worries", zh: "没事、别担心" },
+    { en: "I mean it", zh: "我是认真的" },
+  ],
+  [
+    { en: "You can say that again", zh: "你说得太对了" },
+    { en: "make up for it", zh: "弥补" },
+    { en: "What are the odds?", zh: "概率有多大？／太巧了" },
+    { en: "cross your fingers", zh: "祈求好运" },
+    { en: "I'm done with this", zh: "我不干了" },
+  ],
+  [
+    { en: "It's now or never", zh: "机不可失" },
+    { en: "take it for granted", zh: "视为理所当然" },
+    { en: "That figures", zh: "果然如此" },
+    { en: "easier said than done", zh: "说起来容易做起来难" },
+    { en: "I second that", zh: "我附议" },
+  ],
+];
+
+function getDayOfYear() {
+  const d = new Date();
+  const start = new Date(d.getFullYear(), 0, 0);
+  return Math.floor((d - start) / 86400000);
+}
+
+function renderVocab() {
+  const set = VOCAB_SETS[getDayOfYear() % VOCAB_SETS.length];
+  const list = document.getElementById('vocabList');
+  list.innerHTML = set.map((v, i) => {
+    const ex = VOCAB_EXAMPLES[v.en];
+    let html = '<div class="vocab-item"><div class="vocab-main">'
+      + '<span class="vocab-word">' + v.en + '</span>'
+      + '<span class="vocab-meaning">' + v.zh + '</span></div>';
+    if (ex) {
+      html += '<button class="btn-ex" onclick="toggleVocabExample(' + i + ')">例句</button>';
+    }
+    html += '</div>';
+    if (ex) {
+      html += '<div class="vocab-example" id="vocab-ex-' + i + '" style="display:none">' + ex + '</div>';
+    }
+    return html;
+  }).join('');
+}
+
+function toggleVocabExample(idx) {
+  const el = document.getElementById('vocab-ex-' + idx);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// Example sentences for words/phrases (not full sentences)
+const VOCAB_EXAMPLES = {
+  "incredible": "The view from the top was incredible — you could see the whole city.",
+  "trembling": "Her hands were trembling when she opened the letter.",
+  "desperate, needy, pathetic": "He looked desperate, calling her ten times in one hour.",
+  "hang out": "Do you want to hang out this weekend? We could grab some coffee.",
+  "crush on someone": "I had a huge crush on her in high school, but never told her.",
+  "flip out": "My mom flipped out when she saw the dent on the car.",
+  "give someone the benefit of the doubt": "I don't fully believe him, but I'll give him the benefit of the doubt this time.",
+  "get over it": "It's been a month — you need to get over it and move on.",
+  "a piece of cake": "The exam was a piece of cake. I finished in twenty minutes.",
+  "under the weather": "I'm feeling a bit under the weather today, so I'll work from home.",
+  "fair enough": "'I can't afford it right now.' 'Fair enough, maybe next time.'",
+  "make up your mind": "We've been looking at the menu for twenty minutes — make up your mind!",
+  "out of the blue": "She called me out of the blue after five years of no contact.",
+  "bear with me": "The system is still loading — bear with me for a second.",
+  "ring a bell": "That name rings a bell, but I can't remember where I heard it.",
+  "on the same page": "Let's make sure we're on the same page before we talk to the client.",
+  "break a leg": "You have your audition today? Break a leg!",
+  "cut to the chase": "We don't have much time, so let's cut to the chase.",
+  "keep me posted": "I'll be in meetings all day — just keep me posted if anything happens.",
+  "so far so good": "How's the new job? So far so good.",
+  "no big deal": "I forgot to bring drinks — no big deal, we can buy some here.",
+  "out of my league": "She's way out of my league — smart, beautiful, and successful.",
+  "give it a shot": "I've never tried cooking Thai food, but I'll give it a shot.",
+  "the ball is in your court": "I've made my offer — the ball is in your court now.",
+  "hit the sack": "It's past midnight. I'm gonna hit the sack.",
+  "piece of my mind": "If he does that again, I'll give him a piece of my mind.",
+  "make sense": "That makes sense — no wonder she was upset.",
+  "for real?": "You got the promotion? For real? That's amazing!",
+  "catch up": "Let's grab lunch and catch up — it's been ages!",
+  "freak out": "Don't freak out, but I accidentally broke your mug.",
+  "take it easy": "Take it easy, everything's going to be fine.",
+  "lose track of time": "I was reading and completely lost track of time.",
+  "bring it on": "A new challenge? Bring it on!",
+  "go with the flow": "I don't have a plan — I'm just gonna go with the flow.",
+  "make up for it": "I'm sorry I was late — let me buy dinner to make up for it.",
+  "cross your fingers": "Cross your fingers — the results come out tomorrow.",
+  "take it for granted": "We take clean water for granted, but many people don't have it.",
+  "easier said than done": "'Just quit and travel.' 'Easier said than done — I have bills to pay.'",
+};
+
+function renderLearnTab() {
+  const today = getDateKey();
+  const stored = loadData('learn-' + today, null);
+  const data = mergeData(stored, { english: false, tennis: false, golf: false, reading: false });
+  const names = { english: '英语视频', tennis: '网球视频', golf: '高尔夫练习', reading: '每日阅读' };
+  const btns = { english: 'engDoneBtn', tennis: 'tennisDoneBtn', golf: 'golfDoneBtn', reading: 'readingDoneBtn' };
+
+  // Restore video positions from persisted index
+  const vIdx = getVideoIdx();
+  setVideoByIndex('english', 0, vIdx.english);
+  setVideoByIndex('tennis', vIdx.tennis.s, vIdx.tennis.e);
+  setVideoByIndex('golf', vIdx.golf.s, vIdx.golf.e);
+
+  let count = 0;
+  for (const [k, v] of Object.entries(data)) {
+    if (v) count++;
+    const btn = document.getElementById(btns[k]);
+    if (!btn) continue;
+    if (v) {
+      btn.textContent = '✅ 已完成';
+      btn.className = 'btn-sm btn-outline';
+      btn.style.background = '#dcfce7';
+      btn.style.color = '#16a34a';
+      btn.style.borderColor = '#86efac';
+    } else {
+      btn.textContent = '✅ 完成打卡';
+      btn.className = 'btn-sm btn-accent';
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }
+  }
+
+  document.getElementById('learnProgress').textContent = count + '/4';
+  document.getElementById('learnProgressBar').style.width = (count/4*100) + '%';
+  renderVocab();
+}
+
+// Vocabulary speak — reads today's words from DOM
+function speakVocab() {
+  const words = [...document.querySelectorAll('#vocabList .vocab-word')]
+    .map(el => el.textContent);
+  showToast('🔊 请大声跟读以下单词和短语！');
+  let i = 0;
+  function speakNext() {
+    if (i >= words.length) { showToast('🎉 跟读练习完成！'); return; }
+    const u = new SpeechSynthesisUtterance(words[i]);
+    u.lang = 'en-US';
+    u.rate = 0.85;
+    u.onend = () => { i++; setTimeout(speakNext, 1500); };
+    speechSynthesis.speak(u);
+  }
+  speechSynthesis.cancel();
+  speakNext();
+}
+
+// ====================
+//  SPORT TAB
+// ====================
+const SPORT_TARGET = 2;
+
+function checkin(type) {
+  const wk = getWeekKey();
+  const data = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+  data[type]++;
+  saveData('sport-' + wk, data);
+  renderSportTab();
+  const labels = { tennis: '🎾 网球', golf: '⛳ 高尔夫', strength: '💪 力量训练' };
+  if (data[type] > SPORT_TARGET) {
+    showToast('🔥 ' + labels[type] + ' 超额完成！已打卡 ' + data[type] + ' 次');
+  } else if (data[type] === SPORT_TARGET) {
+    showToast('🎉 ' + labels[type] + ' 已达标！');
+  } else {
+    showToast('✅ ' + labels[type] + ' 打卡成功 (' + data[type] + '/' + SPORT_TARGET + ')');
+  }
+}
+
+function undoCheckin(type) {
+  const wk = getWeekKey();
+  const data = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+  if (data[type] > 0) {
+    data[type]--;
+    saveData('sport-' + wk, data);
+    renderSportTab();
+    const labels = { tennis: '🎾 网球', golf: '⛳ 高尔夫', strength: '💪 力量训练' };
+    showToast('↩️ ' + labels[type] + ' 已撤销 (剩余 ' + data[type] + ')');
+  }
+}
+
+function renderSportTab() {
+  const wk = getWeekKey();
+  const data = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+
+  function updateSport(type, dotsId, btnId, targetId, undoId) {
+    const n = data[type];
+    const surplus = Math.max(0, n - SPORT_TARGET);
+    const dotsContainer = document.getElementById(dotsId);
+
+    // Render target dots + surplus dots
+    let dotsHTML = '';
+    for (let i = 0; i < SPORT_TARGET; i++) {
+      dotsHTML += '<div class="dot' + (i < n ? ' done' : '') + '"></div>';
+    }
+    for (let i = 0; i < surplus; i++) {
+      dotsHTML += '<div class="dot surplus"></div>';
+    }
+    dotsContainer.innerHTML = dotsHTML;
+
+    // Target text
+    const targetEl = document.getElementById(targetId);
+    if (n > SPORT_TARGET) {
+      targetEl.textContent = '目标：每周 ' + SPORT_TARGET + ' 次 · 已完成 ' + n + ' 次 🔥';
+    } else {
+      targetEl.textContent = '目标：每周 ' + SPORT_TARGET + ' 次 · 已完成 ' + n + ' 次';
+    }
+
+    // Button
+    const btn = document.getElementById(btnId);
+    const icons = {tennis:'🎾',golf:'⛳',strength:'💪'};
+    if (n > SPORT_TARGET) {
+      btn.textContent = '🔥 超额 ' + n + ' 次 · 再打一次';
+      btn.className = 'btn-checkin surplus-btn';
+    } else if (n === SPORT_TARGET) {
+      btn.textContent = '🎉 本周已达标 · 再打一次';
+      btn.className = 'btn-checkin done-btn';
+    } else {
+      btn.textContent = icons[type] + ' 打卡签到 (' + n + '/' + SPORT_TARGET + ')';
+      btn.className = 'btn-checkin ready';
+    }
+
+    // Undo link
+    document.getElementById(undoId).style.display = n > 0 ? 'block' : 'none';
+  }
+
+  updateSport('tennis', 'tennisDots', 'tennisCheckinBtn', 'tennisTarget', 'tennisUndo');
+  updateSport('golf', 'golfDots', 'golfCheckinBtn', 'golfTarget', 'golfUndo');
+  updateSport('strength', 'strengthDots', 'strengthCheckinBtn', 'strengthTarget', 'strengthUndo');
+
+  const actualTotal = data.tennis + data.golf + data.strength;
+  const targetTotal = SPORT_TARGET * 3;
+  const el = document.getElementById('sportProgress');
+  if (actualTotal > targetTotal) {
+    el.textContent = actualTotal + '/' + targetTotal + ' 🔥';
+  } else {
+    el.textContent = actualTotal + '/' + targetTotal;
+  }
+  document.getElementById('sportProgressBar').style.width = Math.min(100, actualTotal/targetTotal*100) + '%';
+}
+
+// ====================
+//  REPORT TAB
+// ====================
+let _reportPeriod = 'week';
+
+function switchReportPeriod(p) {
+  _reportPeriod = p;
+  document.querySelectorAll('.report-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('rp-' + p).classList.add('active');
+  renderReportTab();
+}
+
+// --- Date helpers ---
+function fmtDateKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getWeekStart(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset * 7);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(d.getFullYear(), d.getMonth(), diff);
+}
+
+function getMonthStart(offset) {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth() + offset, 1);
+}
+
+function getYearStart(offset) {
+  const d = new Date();
+  return new Date(d.getFullYear() + offset, 0, 1);
+}
+
+function getDatesRange(start, end) {
+  const dates = [];
+  const d = new Date(start);
+  while (d <= end) {
+    dates.push(new Date(d));
+    d.setDate(d.getDate() + 1);
+  }
+  return dates;
+}
+
+function countWeekdays(start, end) {
+  let count = 0;
+  const d = new Date(start);
+  while (d <= end) {
+    if (d.getDay() !== 0 && d.getDay() !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
+}
+
+// --- Data collection ---
+function collectDailyData(start, end) {
+  const dates = getDatesRange(start, end);
+  let workDone = 0, workTotal = 0;
+  let learnDone = 0, learnTotal = 0;
+  dates.forEach(d => {
+    if (d.getDay() === 0 || d.getDay() === 6) return; // skip weekends
+    workTotal++;
+    learnTotal++;
+    const key = 'work-' + fmtDateKey(d);
+    const w = loadData(key, { daily: [], review: '' });
+    if (w.daily && w.daily.length >= 3) workDone++;
+    const l = loadData('learn-' + fmtDateKey(d), { english: false, tennis: false, golf: false, reading: false });
+    if (l.english && l.tennis && l.golf && l.reading) learnDone++;
+  });
+  return { workDone, workTotal, learnDone, learnTotal };
+}
+
+function collectSportData(start, end) {
+  // Iterate weeks overlapping the range
+  const sports = { tennis: 0, golf: 0, strength: 0 };
+  const weekStart = new Date(start);
+  while (weekStart <= end) {
+    // Calculate week key matching getWeekKey logic
+    const d = new Date(weekStart);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d.getFullYear(), d.getMonth(), diff);
+    const wk = monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
+    const s = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+    sports.tennis += s.tennis || 0;
+    sports.golf += s.golf || 0;
+    sports.strength += s.strength || 0;
+    weekStart.setDate(weekStart.getDate() + 7);
+  }
+  return sports;
+}
+
+function collectReviews(start, end) {
+  const reviews = [];
+
+  // Collect daily reviews (new format)
+  const dayStart = new Date(start);
+  while (dayStart <= end) {
+    const dateKey = fmtDateKey(dayStart);
+    const text = loadData('dailyReview-' + dateKey, '');
+    if (text) {
+      reviews.push({ date: (dayStart.getMonth()+1) + '/' + dayStart.getDate(), text, sortDate: new Date(dayStart) });
+    }
+    dayStart.setDate(dayStart.getDate() + 1);
+  }
+
+  // Backward compat: collect old weekly reviews (only if no daily reviews in that week)
+  const weekStart = new Date(start);
+  while (weekStart <= end) {
+    const d = new Date(weekStart);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d.getFullYear(), d.getMonth(), diff);
+    const wk = monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
+    const text = loadData('review-' + wk, '');
+    if (text) {
+      const weekEnd = new Date(monday);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      let hasDaily = false;
+      const checkDate = new Date(monday);
+      while (checkDate <= weekEnd) {
+        if (loadData('dailyReview-' + fmtDateKey(checkDate), '')) { hasDaily = true; break; }
+        checkDate.setDate(checkDate.getDate() + 1);
+      }
+      if (!hasDaily) {
+        reviews.push({ date: (monday.getMonth()+1) + '/' + monday.getDate() + ' - ' + (weekEnd.getMonth()+1) + '/' + weekEnd.getDate(), text, sortDate: new Date(monday) });
+      }
+    }
+    weekStart.setDate(weekStart.getDate() + 7);
+  }
+
+  reviews.sort((a, b) => a.sortDate - b.sortDate);
+  return reviews;
+}
+
+// --- Report generators ---
+function generateWeeklyReport() {
+  const start = getWeekStart(0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+  const wk = getWeekKey();
+
+  const daily = collectDailyData(start, end);
+  const sport = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+  const weekReviews = collectReviews(start, end);
+  const weekdays = countWeekdays(start, end);
+
+  let html = '<div class="report-period-label">📅 周报 ' + wk + '（' + (start.getMonth()+1) + '/' + start.getDate() + ' - ' + (end.getMonth()+1) + '/' + end.getDate() + '）</div>';
+
+  // Stats card
+  html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">完成情况</div></div></div>';
+  const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+  html += '<div class="report-stat"><span class="report-stat-label">工作日完成率</span><span class="report-stat-value ' + (workPct>=80?'good':workPct>=50?'warn':'bad') + '">' + workPct + '% (' + daily.workDone + '/' + daily.workTotal + '天)</span></div>';
+  const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+  html += '<div class="report-stat"><span class="report-stat-label">学习完成率</span><span class="report-stat-value ' + (learnPct>=80?'good':learnPct>=50?'warn':'bad') + '">' + learnPct + '% (' + daily.learnDone + '/' + daily.learnTotal + '天)</span></div>';
+
+  // Sport stats
+  const sportItems = [
+    { name: '🎾 网球', count: sport.tennis, target: 2 },
+    { name: '⛳ 高尔夫', count: sport.golf, target: 2 },
+    { name: '💪 力量训练', count: sport.strength, target: 2 },
+  ];
+  sportItems.forEach(s => {
+    const cls = s.count > s.target ? 'surplus' : s.count >= s.target ? 'good' : 'warn';
+    const suffix = s.count > s.target ? ' 🔥超额' : s.count >= s.target ? ' ✅' : '';
+    html += '<div class="report-stat"><span class="report-stat-label">' + s.name + '</span><span class="report-stat-value ' + cls + '">' + s.count + '/' + s.target + suffix + '</span></div>';
+  });
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+  html += '<div class="report-stat"><span class="report-stat-label">运动总次数</span><span class="report-stat-value">' + sportTotal + '/6' + (sportTotal > 6 ? ' 🔥' : '') + '</span></div>';
+  html += '</div>';
+
+  // Review
+  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">本周复盘 (' + weekReviews.length + '篇)</div></div></div>';
+  if (weekReviews.length > 0) {
+    weekReviews.forEach(r => {
+      html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
+    });
+  } else {
+    html += '<div class="report-stat-label" style="padding:8px 0">本周暂无复盘记录</div>';
+  }
+  html += '</div>';
+
+  // Analysis
+  html += '<div class="report-analysis">' + generateWeeklyAnalysis(workPct, learnPct, sport) + '</div>';
+
+  // Share button
+  html += '<button class="share-btn" onclick="shareReport(\'' + wk + '\')">📤 分享周报</button>';
+
+  return html;
+}
+
+function generateWeeklyAnalysis(workPct, learnPct, sport) {
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+  const sportPct = Math.round(sportTotal / 6 * 100);
+  let html = '⚡ <b>本周诊断</b><br><br>';
+
+  // --- 工作 ---
+  if (workPct === 0) {
+    html += '🔴 <b>工作零完成。</b>CCR、业务量、服务质量三项是每日底线，漏一天月底汇总就对不上。<br>';
+    html += '<b>→ 办法：</b>今天先只勾CCR一项，降低启动门槛——打开工作台就先点掉它。<br>';
+  } else if (workPct < 50) {
+    html += '🟠 <b>工作' + workPct + '%，过半天数有遗漏。</b>月底报告数据会有缺口，回头补也记不清做了什么。<br>';
+    html += '<b>→ 办法：</b>把工作台加到手机首屏，早上第一件事打开它，3项总共5分钟。<br>';
+  } else if (workPct < 80) {
+    html += '🟡 <b>工作' + workPct + '%，差' + (80-workPct) + '%达标。</b>偶尔遗漏说明还没形成肌肉记忆。<br>';
+    html += '<b>→ 办法：</b>设一个每天10:00的日历提醒，标题就叫"工作台打卡"。<br>';
+  } else {
+    html += '🟢 <b>工作' + workPct + '%，稳。</b>';
+    if (workPct === 100) html += '本周全勤，重点可以转向复盘质量而非打卡本身。';
+    html += '<br>';
+  }
+
+  // --- 学习 ---
+  if (learnPct === 0) {
+    html += '🔴 <b>学习本周零完成。</b>英语+网球+高尔夫加起来每天才25分钟，一次没看说明习惯没建立。<br>';
+    html += '<b>→ 办法：</b>绑到已有习惯后面——比如"刷完牙→看英语视频→点打卡"。<br>';
+  } else if (learnPct < 50) {
+    html += '🟠 <b>学习' + learnPct + '%。</b>碎片时间就能做的事排到了最后，说明优先级太低。<br>';
+    html += '<b>→ 办法：</b>把B站链接存到收藏夹第一个，减少打开步骤，5分钟也能看一个视频。<br>';
+  } else if (learnPct < 80) {
+    html += '🟡 <b>学习' + learnPct + '%，差几天。</b>可能是周末断了。<br>';
+    html += '<b>→ 办法：</b>周末也保持，但可以只看5分钟网球或高尔夫视频，不求三项全打。<br>';
+  } else {
+    html += '🟢 <b>学习' + learnPct + '%，习惯成型。</b>';
+    if (learnPct === 100) html += '可以尝试加大英语视频难度，或换一部新剧跟读。';
+    html += '<br>';
+  }
+
+  // --- 运动 ---
+  const items = [
+    { n: '网球', c: sport.tennis },
+    { n: '高尔夫', c: sport.golf },
+    { n: '力量训练', c: sport.strength },
+  ];
+  const weakest = items.reduce((a, b) => a.c < b.c ? a : b);
+
+  if (sportTotal === 0) {
+    html += '🔴 <b>运动零打卡。</b>久坐不运动，颈椎和腰椎会先报警。<br>';
+    html += '<b>→ 办法：</b>这周先只做一次力量训练——20分钟深蹲+俯卧撑，在家就能做。<br>';
+  } else if (sportTotal < 6) {
+    html += '🟠 <b>运动' + sportTotal + '/6次。</b>最薄弱：' + weakest.n + '（' + weakest.c + '/2）。<br>';
+    if (weakest.n === '力量训练') {
+      html += '<b>→ 办法：</b>力量是网球和高尔夫的基础，核心力量不够打球容易受伤。至少做1次平板支撑+深蹲。<br>';
+    } else if (weakest.n === '网球') {
+      html += '<b>→ 办法：</b>约不到人可以先对着墙练30分钟挥拍，也算一次。<br>';
+    } else {
+      html += '<b>→ 办法：</b>去练习场打一筐球就行，不需要下场。<br>';
+    }
+  } else {
+    html += '🟢 <b>运动达标' + sportTotal + '次';
+    if (sportTotal > 6) html += '，超额' + (sportTotal-6) + '🔥';
+    html += '。</b>';
+    if (sport.strength < Math.max(sport.tennis, sport.golf) * 0.5) {
+      html += '但力量训练偏少，球类运动多了不练力量容易受伤。<br>';
+      html += '<b>→ 办法：</b>下周把力量提到3次，打球前先做10分钟热身力量。<br>';
+    } else {
+      html += '三项均衡，继续保持。<br>';
+    }
+  }
+
+  // --- 一句话定论 ---
+  html += '<br>📌 <b>下周优先：</b>';
+  const pcts = [['工作',workPct],['学习',learnPct],['运动',sportPct]];
+  const worst = pcts.reduce((a,b) => a[1] < b[1] ? a : b);
+  if (worst[1] >= 85) {
+    html += '整体优秀，挑战"零遗漏全勤"。';
+  } else if (worst[1] >= 60) {
+    html += '重点抓<b>' + worst[0] + '</b>（当前' + worst[1] + '%），其余维持。';
+  } else {
+    html += '先保证每天<b>工作+学习</b>两项打卡，运动保底1次。';
+  }
+
+  return html;
+}
+
+function generateMonthlyReport() {
+  const start = getMonthStart(0);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+  const mk = getMonthKey();
+
+  const daily = collectDailyData(start, end);
+  const sport = collectSportData(start, end);
+  const reviews = collectReviews(start, end);
+  const billing = loadData('billing-' + mk, []);
+  const payroll = loadData('payroll-' + mk, []);
+
+  let html = '<div class="report-period-label">📅 月报 ' + start.getFullYear() + '年' + (start.getMonth()+1) + '月</div>';
+
+  html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">月度完成情况</div></div></div>';
+  const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+  html += '<div class="report-stat"><span class="report-stat-label">工作日完成率</span><span class="report-stat-value ' + (workPct>=80?'good':workPct>=50?'warn':'bad') + '">' + workPct + '% (' + daily.workDone + '/' + daily.workTotal + '天)</span></div>';
+  const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+  html += '<div class="report-stat"><span class="report-stat-label">学习完成率</span><span class="report-stat-value ' + (learnPct>=80?'good':learnPct>=50?'warn':'bad') + '">' + learnPct + '% (' + daily.learnDone + '/' + daily.learnTotal + '天)</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">🎾 网球总次数</span><span class="report-stat-value">' + sport.tennis + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">⛳ 高尔夫总次数</span><span class="report-stat-value">' + sport.golf + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">💪 力量训练总次数</span><span class="report-stat-value">' + sport.strength + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">📄 客户账单</span><span class="report-stat-value ' + (billing.length>0?'good':'bad') + '">' + (billing.length>0 ? '已推送 ✅' : '未推送 ⚠️') + '</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">💰 工资单</span><span class="report-stat-value ' + (payroll.length>=7?'good':payroll.length>0?'warn':'bad') + '">' + (payroll.length>=7 ? '已完成 ✅' : payroll.length>0 ? '进行中 ' + payroll.length + '/7' : '未开始') + '</span></div>';
+  html += '</div>';
+
+  // Reviews
+  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">本月复盘汇总 (' + reviews.length + '篇)</div></div></div>';
+  if (reviews.length > 0) {
+    reviews.forEach(r => {
+      html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
+    });
+  } else {
+    html += '<div class="report-stat-label" style="padding:8px 0">本月暂无复盘记录</div>';
+  }
+  html += '</div>';
+
+  // Analysis
+  html += '<div class="report-analysis">' + generateMonthlyAnalysis(workPct, learnPct, sport, reviews.length, billing, payroll) + '</div>';
+  html += '<button class="share-btn" onclick="shareReport(\'' + mk + '\')">📤 分享月报</button>';
+
+  return html;
+}
+
+function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing, payroll) {
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+  const sportPct = Math.round(sportTotal / 24 * 100);
+  let html = '⚡ <b>月度诊断</b><br><br>';
+
+  // --- 工作 vs 学习 ---
+  const gap = Math.abs(workPct - learnPct);
+  if (workPct >= 80 && learnPct >= 80) {
+    html += '🟢 <b>工作' + workPct + '%·学习' + learnPct + '%，双线稳定。</b>';
+    if (gap > 15) html += '但两者差距' + gap + '%，注意别偏科。';
+    html += '<br>';
+  } else if (workPct < 50 || learnPct < 50) {
+    const worst = workPct < learnPct ? '工作' : '学习';
+    const worstPct = Math.min(workPct, learnPct);
+    html += '🔴 <b>' + worst + '仅' + worstPct + '%，严重偏低。</b>一个月过半天数没打卡，习惯根本没建立。<br>';
+    html += '<b>→ 办法：</b>下月不求全勤，先定底线——每周至少3天完成，连续4周后再提目标。<br>';
+  } else {
+    const worst = workPct < learnPct ? '工作' : '学习';
+    const worstPct = Math.min(workPct, learnPct);
+    html += '🟡 <b>' + worst + '完成率' + worstPct + '%，有提升空间。</b>另一个' + Math.max(workPct, learnPct) + '%还行，说明不是时间问题而是优先级问题。<br>';
+    html += '<b>→ 办法：</b>把弱的那个排到每天第一个做，强的可以放到下午。<br>';
+  }
+
+  // --- 运动平衡 ---
+  if (sportTotal < 12) {
+    html += '�� <b>运动' + sportTotal + '次，不到目标一半。</b>长期不运动，精力跟不上工作强度。<br>';
+    html += '<b>→ 办法：</b>下月先保证每周1次力量训练，4次就好，最容易安排。<br>';
+  } else if (sportTotal < 24) {
+    const weakest = [
+      { n: '网球', c: sport.tennis },
+      { n: '高尔夫', c: sport.golf },
+      { n: '力量', c: sport.strength },
+    ].reduce((a, b) => a.c < b.c ? a : b);
+    html += '🟡 <b>运动' + sportTotal + '次，' + weakest.n + '偏少（' + weakest.c + '次）。</b><br>';
+    html += '<b>→ 办法：</b>下月给' + weakest.n + '固定一个时间段，比如每周三晚上。<br>';
+  } else {
+    html += '🟢 <b>运动' + sportTotal + '次，达标';
+    if (sportTotal > 24) html += '且超额' + (sportTotal-24) + '🔥';
+    html += '。</b>';
+    if (sport.strength < (sport.tennis + sport.golf) * 0.4) {
+      html += '但力量训练占比偏低，球类多了不练力量，膝盖和肩膀会先出问题。<br>';
+      html += '<b>→ 办法：</b>下月力量次数提到网球+高尔夫总和的一半以上。<br>';
+    } else {
+      html += '三项均衡，继续保持。<br>';
+    }
+  }
+
+  // --- 账单 & 工资单 ---
+  if (billing !== undefined && billing.length === 0) {
+    html += '🔴 <b>客户账单未推送。</b>影响客户对账和回款，是月底硬任务。<br>';
+    html += '<b>→ 办法：</b>设每月1号日历提醒，提前4天准备，5号当天只做推送动作。<br>';
+  }
+  if (payroll !== undefined) {
+    if (payroll.length === 0) {
+      html += '🟠 <b>工资单未启动。</b>7步月底集中做会非常赶。<br>';
+      html += '<b>→ 办法：</b>20号提醒后就开始做前3步（考核数据、税点、理赔），25号做后4步。<br>';
+    } else if (payroll.length < 7) {
+      html += '🟡 <b>工资单进行中' + payroll.length + '/7。</b>还差' + (7-payroll.length) + '步，别拖到最后一天。<br>';
+      html += '<b>→ 办法：</b>今天先做一步，每步5-10分钟，分散完成不累。<br>';
+    }
+  }
+
+  // --- 复盘 ---
+  if (reviewCount === 0) {
+    html += '🟠 <b>本月零复盘。</b>不复盘等于白干一个月，问题会反复出现。<br>';
+    html += '<b>→ 办法：</b>每周五下班前花10分钟写3句话：做了什么、什么没做好、下周改什么。<br>';
+  } else if (reviewCount < 4) {
+    html += '🟡 <b>复盘' + reviewCount + '篇，不到每周一篇。</b>有些周跳过了。<br>';
+    html += '<b>→ 办法：</b>手机日历设每周五16:50提醒"写复盘"，10分钟够了。<br>';
+  } else {
+    html += '🟢 <b>复盘' + reviewCount + '篇，习惯稳定。</b>';
+    if (reviewCount >= 4) html += '下月可以提升复盘深度，不只记流水账，多写"为什么"和"怎么改"。';
+    html += '<br>';
+  }
+
+  // --- 定论 ---
+  html += '<br>📌 <b>下月优先：</b>';
+  if (billing !== undefined && billing.length === 0) {
+    html += '客户账单是硬指标，先补上。';
+  } else if (payroll !== undefined && payroll.length < 7) {
+    html += '工资单还差' + (7-payroll.length) + '步，今天做一步。';
+  } else if (sportTotal < 12) {
+    html += '运动严重不足，先保证每周1次力量训练。';
+  } else if (reviewCount < 4) {
+    html += '补复盘习惯，每周五10分钟写3句话。';
+  } else if (Math.min(workPct, learnPct) < 80) {
+    html += '重点拉<b>' + (workPct < learnPct ? '工作' : '学习') + '</b>完成率，排到每天第一个做。';
+  } else {
+    html += '整体稳定，挑战运动超额或学习加量。';
+  }
+
+  return html;
+}
+
+function generateYearlyReport() {
+  const start = getYearStart(0);
+  const end = new Date(start.getFullYear(), 11, 31);
+  const year = start.getFullYear();
+  const now = new Date();
+  const actualEnd = end > now ? now : end;
+
+  const daily = collectDailyData(start, actualEnd);
+  const sport = collectSportData(start, actualEnd);
+  const reviews = collectReviews(start, actualEnd);
+
+  let html = '<div class="report-period-label">📅 年报 ' + year + '年</div>';
+
+  html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">年度统计</div></div></div>';
+  const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+  html += '<div class="report-stat"><span class="report-stat-label">工作日全部完成</span><span class="report-stat-value ' + (workPct>=80?'good':workPct>=50?'warn':'bad') + '">' + daily.workDone + '/' + daily.workTotal + '天 (' + workPct + '%)</span></div>';
+  const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+  html += '<div class="report-stat"><span class="report-stat-label">学习全部完成</span><span class="report-stat-value ' + (learnPct>=80?'good':learnPct>=50?'warn':'bad') + '">' + daily.learnDone + '/' + daily.learnTotal + '天 (' + learnPct + '%)</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">🎾 网球总次数</span><span class="report-stat-value">' + sport.tennis + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">⛳ 高尔夫总次数</span><span class="report-stat-value">' + sport.golf + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">💪 力量训练总次数</span><span class="report-stat-value">' + sport.strength + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">📝 复盘总篇数</span><span class="report-stat-value">' + reviews.length + '篇</span></div>';
+  html += '</div>';
+
+  // Analysis
+  html += '<div class="report-analysis">' + generateYearlyAnalysis(workPct, learnPct, sport, reviews.length) + '</div>';
+
+  // All reviews
+  if (reviews.length > 0) {
+    html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">年度复盘记录</div></div></div>';
+    reviews.forEach(r => {
+      html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<button class="share-btn" onclick="shareReport(\'' + year + '\')">📤 分享年报</button>';
+
+  return html;
+}
+
+function generateYearlyAnalysis(workPct, learnPct, sport, reviewCount) {
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+  const avgPct = Math.round((workPct + learnPct) / 2);
+  let html = '⚡ <b>年度诊断</b><br><br>';
+
+  // --- 整体一致性 ---
+  if (avgPct >= 85) {
+    html += '🟢 <b>全年均完成率' + avgPct + '%，执行力出色。</b>这一年你把"每天打卡"变成了肌肉记忆，这比任何单次成就都值钱。<br>';
+  } else if (avgPct >= 60) {
+    html += '🟡 <b>全年均完成率' + avgPct + '%，及格但不稳。</b>有些月份认真、有些月份松懈，波动太大。问题不在能力，在持续性。<br>';
+    html += '<b>→ 办法：</b>明年不追求100%，追求"最差月份不低于70%"——降低峰值、抬高底线。<br>';
+  } else {
+    html += '🔴 <b>全年均完成率' + avgPct + '%，偏低。</b>一整年的数据说明这不是偶尔偷懒，是系统性的习惯问题。<br>';
+    html += '<b>→ 办法：</b>明年先把目标砍半——每天只保证工作1项+学习1项，连续30天后再加量。<br>';
+  }
+
+  // --- 偏科检查 ---
+  const gap = Math.abs(workPct - learnPct);
+  if (gap > 20) {
+    const strong = workPct > learnPct ? '工作' : '学习';
+    const weak = workPct > learnPct ? '学习' : '工作';
+    html += '⚠️ <b>' + strong + '远好于' + weak + '（差距' + gap + '%）。</b>精力花在一边，另一边荒了。<br>';
+    html += '<b>→ 办法：</b>明年在' + weak + '上投入固定时间，哪怕每天5分钟，先建习惯再提量。<br>';
+  }
+
+  // --- 运动分析 ---
+  if (sportTotal === 0) {
+    html += '🔴 <b>全年运动零记录。</b>这比任何工作未完成都严重——身体是所有事的基础。<br>';
+    html += '<b>→ 办法：</b>明年从最简单的开始：每周1次力量��练，20分钟，在家做。先动起来再说。<br>';
+  } else {
+    const avgPerWeek = (sportTotal / 52).toFixed(1);
+    html += '📊 <b>全年运动' + sportTotal + '次，周均' + avgPerWeek + '次。</b>';
+    if (sportTotal >= 200) html += '运动量充足。';
+    else if (sportTotal >= 100) html += '基本达标但可以更规律。';
+    else html += '偏少，52周里大部分周没打满。';
+    // 伤病风险
+    if (sport.strength < (sport.tennis + sport.golf) * 0.4 && (sport.tennis + sport.golf) > 20) {
+      html += '<br>⚠️ <b>力量训练仅' + sport.strength + '次，但球类' + (sport.tennis+sport.golf) + '次。</b>球类多、力量少，肩袖和膝关节受伤风险高。<br>';
+      html += '<b>→ 办法：</b>明年力量次数至少达到球类一半，打球前必做10分钟热身。<br>';
+    } else {
+      html += '<br>';
+    }
+  }
+
+  // --- 复盘 ---
+  if (reviewCount === 0) {
+    html += '🟠 <b>全年零复盘。</b>不复盘的循环就是"忙了一年但说不清忙了什么"。<br>';
+    html += '<b>→ 办法：</b>明年每周五花10分钟写3句话：做了什么、什么没做好、下周改什么。<br>';
+  } else if (reviewCount < 40) {
+    html += '🟡 <b>全年复盘' + reviewCount + '篇，不到每周一篇。</b>有些周跳过了，断断续续效果打折。<br>';
+    html += '<b>→ 办法：</b>把复盘绑定到必做的事——比如周五下班关电脑前，先写复盘再关机。<br>';
+  } else {
+    html += '🟢 <b>全年复盘' + reviewCount + '篇，习惯优秀。</b>这些记录就是你的年度成长轨迹。<br>';
+  }
+
+  // --- 战略定论 ---
+  html += '<br>📌 <b>明年一句话：</b>';
+  if (avgPct >= 85 && sportTotal >= 150 && reviewCount >= 40) {
+    html += '全面优秀，明年挑战"教别人"——把你的方法提炼成可复制的流程。';
+  } else if (avgPct >= 70) {
+    html += '基础不错，明年重点补<b>' + (sportTotal < 100 ? '运动规律性' : reviewCount < 40 ? '复盘习惯' : '薄弱项') + '</b>，把短板拉到及格线。';
+  } else {
+    html += '先别想完美，明年只做一件事：连续30天每天打卡工作+学习各1项，建立习惯再说。';
+  }
+
+  return html;
+}
+
+function renderReportTab() {
+  let html;
+  if (_reportPeriod === 'week') html = generateWeeklyReport();
+  else if (_reportPeriod === 'month') html = generateMonthlyReport();
+  else html = generateYearlyReport();
+  document.getElementById('reportContent').innerHTML = html;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// --- Share report ---
+function shareReport(periodKey) {
+  let text;
+  if (_reportPeriod === 'week') {
+    text = '📊 工作台周报 ' + periodKey + '\n\n';
+    const start = getWeekStart(0);
+    const end = new Date(start); end.setDate(end.getDate() + 6);
+    const daily = collectDailyData(start, end);
+    const sport = loadData('sport-' + periodKey, { tennis: 0, golf: 0, strength: 0 });
+    const weekReviews = collectReviews(start, end);
+    text += '工作完成率: ' + Math.round(daily.workDone/Math.max(1,daily.workTotal)*100) + '%\n';
+    text += '学习完成率: ' + Math.round(daily.learnDone/Math.max(1,daily.learnTotal)*100) + '%\n';
+    text += '运动: 网球' + sport.tennis + ' 高尔夫' + sport.golf + ' 力量' + sport.strength + '\n';
+    if (weekReviews.length > 0) {
+      text += '\n📝 日复盘(' + weekReviews.length + '篇):\n';
+      weekReviews.forEach(r => { text += r.date + ': ' + r.text.substring(0, 50) + '\n'; });
+    }
+  } else if (_reportPeriod === 'month') {
+    text = '📊 工作台月报 ' + periodKey + '\n\n';
+    const start = getMonthStart(0);
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    text += '工作完成率: ' + Math.round(daily.workDone/Math.max(1,daily.workTotal)*100) + '%\n';
+    text += '学习完成率: ' + Math.round(daily.learnDone/Math.max(1,daily.learnTotal)*100) + '%\n';
+    text += '运动总次数: 网球' + sport.tennis + ' 高尔夫' + sport.golf + ' 力量' + sport.strength + '\n';
+  } else {
+    text = '📊 工作台年报 ' + periodKey + '\n\n';
+    const start = getYearStart(0);
+    const end = new Date();
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    const reviews = collectReviews(start, end);
+    text += '工作完成率: ' + Math.round(daily.workDone/Math.max(1,daily.workTotal)*100) + '%\n';
+    text += '学习完成率: ' + Math.round(daily.learnDone/Math.max(1,daily.learnTotal)*100) + '%\n';
+    text += '运动总次数: 网球' + sport.tennis + ' 高尔夫' + sport.golf + ' 力量' + sport.strength + '\n';
+    text += '复盘总篇数: ' + reviews.length + '\n';
+  }
+
+  if (navigator.share) {
+    navigator.share({ title: '工作台报告', text: text }).catch(() => {
+      copyToClipboard(text);
+    });
+  } else {
+    copyToClipboard(text);
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 报告已复制到剪贴板'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 报告已复制到剪贴板');
+  }
+}
+
+// ====================
+//  DATA MIGRATION (export / import)
+// ====================
+function exportAllData() {
+  // Read from localStorage first
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e) { data[k] = localStorage.getItem(k); }
+  }
+  // Also read from IndexedDB (in case localStorage was wiped but IDB still has data)
+  openDB().then(db => new Promise(resolve => {
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const keysReq = tx.objectStore(DB_STORE).getAllKeys();
+    const valsReq = tx.objectStore(DB_STORE).getAll();
+    keysReq.onsuccess = () => {};
+    valsReq.onsuccess = () => {
+      const keys = keysReq.result, vals = valsReq.result;
+      keys.forEach((k, i) => {
+        if (!(k in data)) data[k] = vals[i]; // IDB data as fallback for missing keys
+      });
+      resolve();
+    };
+    valsReq.onerror = () => resolve();
+  })).then(() => {
+    const blob = new Blob([JSON.stringify({ ...data, _exportedAt: new Date().toISOString(), _dataVersion: DATA_VERSION }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'workbench-backup-' + getDateKey() + '.json';
+    a.click();
+    showToast('💾 已导出 ' + Object.keys(data).length + ' 条数据');
+  }).catch(() => {
+    // IDB failed, just export localStorage data
+    const blob = new Blob([JSON.stringify({ ...data, _exportedAt: new Date().toISOString(), _dataVersion: DATA_VERSION }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'workbench-backup-' + getDateKey() + '.json';
+    a.click();
+    showToast('💾 已导出 ' + Object.keys(data).length + ' 条数据');
+  });
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      let n = 0;
+      for (const [k, v] of Object.entries(data)) {
+        localStorage.setItem(k, JSON.stringify(v));
+        dbSet(k, v).catch(() => {});
+        n++;
+      }
+      // Trigger migration to normalize imported data
+      localStorage.removeItem('_dataVersion');
+      migrateData();
+      showToast('📥 已导入 ' + n + ' 条数据');
+      renderWorkTab();
+      renderLearnTab();
+      renderSportTab();
+      renderReportTab();
+    } catch(e) { showToast('❌ 文件格式错误'); }
+  };
+  reader.readAsText(file);
+}
+
+// ====================
+//  CLOUD SYNC (Supabase)
+// ====================
+const CLOUD_CFG_KEY = 'cloudConfig';
+
+// Embedded Supabase credentials — safe to bake in (publishable key is designed for client-side use).
+// After first device sets up, fill these in so new devices only need the sync code.
+const EMBEDDED_SUPA_URL = 'https://kbawjwoutvihqybrgkgq.supabase.co';
+const EMBEDDED_SUPA_KEY = 'sb_publishable_DgJzYOru9Bx_Rp7YvRio1Q_r71sqyhY';
+let _cloudSyncTimer = null;
+let _cloudBusy = false;
+
+function getCloudConfig() {
+  try { return JSON.parse(localStorage.getItem(CLOUD_CFG_KEY)); }
+  catch(e) { return null; }
+}
+
+function saveCloudConfig(cfg) {
+  try { localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cfg)); } catch(e) {}
+}
+
+function renderCloudSyncUI() {
+  const el = document.getElementById('cloudSyncContent');
+  if (!el) return;
+  const cfg = getCloudConfig();
+  if (!cfg || !cfg.url || !cfg.syncCode) {
+    el.innerHTML = '<button class="dm-btn" onclick="openCloudModal()">☁️ 开启云同步</button>'
+      + '<span style="font-size:12px;color:var(--text-secondary);margin-left:8px">多设备数据自动同步</span>';
+    return;
+  }
+  const lastSync = loadData('_lastCloudSync', 0);
+  let syncStr;
+  if (!lastSync) syncStr = '<span style="color:var(--orange)">● 待同步</span>';
+  else {
+    const diff = Date.now() - lastSync;
+    if (diff < 60000) syncStr = '<span style="color:var(--green)">● 刚刚同步</span>';
+    else if (diff < 3600000) syncStr = '<span style="color:var(--green)">● ' + Math.floor(diff/60000) + '分钟前同步</span>';
+    else syncStr = '<span style="color:var(--text-secondary)">● ' + new Date(lastSync).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) + '同步</span>';
+  }
+  el.innerHTML = '<div class="sync-status-row">'
+    + '<span class="sync-status-text">' + syncStr + '</span>'
+    + '<button class="dm-btn" onclick="cloudSyncNow()">立即同步</button>'
+    + '<button class="dm-btn" onclick="disconnectCloud()">断开</button>'
+    + '</div>'
+    + '<div class="sync-code-display">同步码: <b>' + cfg.syncCode + '</b> — 在新设备输入此码即可配对</div>';
+}
+
+function openCloudModal() {
+  const cfg = getCloudConfig();
+  const hasEmbedded = EMBEDDED_SUPA_URL && EMBEDDED_SUPA_KEY;
+
+  // If credentials are embedded, hide URL/key fields — only show sync code
+  const urlField = document.getElementById('supabaseUrl').parentElement;
+  const keyField = document.getElementById('supabaseKey').parentElement;
+  if (hasEmbedded) {
+    urlField.style.display = 'none';
+    keyField.style.display = 'none';
+    document.querySelector('#cloudModal .modal-title').textContent = '☁️ 输入同步码';
+    document.querySelector('#cloudModal .modal-desc').innerHTML = '输入6位同步码，数据将自动从云端同步到本设备。';
+  } else {
+    urlField.style.display = '';
+    keyField.style.display = '';
+    document.querySelector('#cloudModal .modal-title').textContent = '☁️ 开启云同步';
+  }
+
+  if (cfg) {
+    if (!hasEmbedded) {
+      document.getElementById('supabaseUrl').value = cfg.url || '';
+      document.getElementById('supabaseKey').value = cfg.anonKey || '';
+    }
+    document.getElementById('syncCode').value = cfg.syncCode || '';
+  }
+  document.getElementById('cloudModal').classList.add('show');
+}
+function closeCloudModal() {
+  document.getElementById('cloudModal').classList.remove('show');
+}
+
+function generateSyncCode() {
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  document.getElementById('syncCode').value = code;
+}
+
+async function testAndSaveCloud() {
+  // Use embedded credentials if available, otherwise read from inputs
+  let url, anonKey;
+  if (EMBEDDED_SUPA_URL && EMBEDDED_SUPA_KEY) {
+    url = EMBEDDED_SUPA_URL;
+    anonKey = EMBEDDED_SUPA_KEY;
+  } else {
+    url = document.getElementById('supabaseUrl').value.trim()
+      .replace(/\/rest\/v1\/?$/, '')
+      .replace(/\/$/, '');
+    anonKey = document.getElementById('supabaseKey').value.trim();
+  }
+  const syncCode = document.getElementById('syncCode').value.trim();
+
+  if (!url || !anonKey || !syncCode) {
+    showToast('请填写所有字段');
+    return;
+  }
+  if (!/^\d{6}$/.test(syncCode)) {
+    showToast('同步码必须是6位数字');
+    return;
+  }
+
+  const btn = document.getElementById('cloudTestBtn');
+  btn.disabled = true;
+  btn.textContent = '连接中...';
+
+  try {
+    // Test: try to select from the table
+    const resp = await fetch(url + '/rest/v1/workbench_data?select=sync_code&limit=1', {
+      headers: {
+        'apikey': anonKey,
+        'Authorization': 'Bearer ' + anonKey
+      }
+    });
+    if (!resp.ok) {
+      const txt = await resp.text();
+      let hint = '';
+      if (resp.status === 404) hint = ' — 表不存在，请先在 Supabase SQL Editor 运行建表语句';
+      else if (resp.status === 401 || resp.status === 403) hint = ' — 密钥无效，检查 API Key 是否复制完整';
+      else if (resp.status === 0 || txt.includes('NetworkError') || txt.includes('Failed to fetch')) hint = ' — 网络错误，检查 URL 是否正确（不要带 /rest/v1/）';
+      showToast('连接失败 ' + resp.status + hint);
+      btn.disabled = false;
+      btn.textContent = '测试并连接';
+      return;
+    }
+
+    // Connection OK — save config
+    saveCloudConfig({ url, anonKey, syncCode });
+    closeCloudModal();
+
+    // New device pairing: pull cloud data first, then push any local changes
+    showToast('☁️ 连接成功，正在同步数据...');
+    const pulled = await cloudPull();
+    if (pulled) {
+      renderWorkTab();
+      renderLearnTab();
+      renderSportTab();
+    }
+    await cloudPush();
+    renderCloudSyncUI();
+    showToast('☁️ 云同步已开启');
+  } catch(e) {
+    showToast('网络错误，请检查URL是否正确');
+  }
+  btn.disabled = false;
+  btn.textContent = '测试并连接';
+}
+
+// Collect all local data (excluding cloud config and sync metadata)
+function collectLocalData() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k === CLOUD_CFG_KEY || k === '_lastCloudSync' || k === '_lastLocalChange' || k === '_dataVersion' || k === '_exportedAt') continue;
+    try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e) { data[k] = localStorage.getItem(k); }
+  }
+  return data;
+}
+
+// Push local data to cloud
+// KEY-LEVEL MERGE: 先拉云端 data，本地 key 覆盖合并后再整行推回。
+// 避免多端/多网址共用同步码时，空 localStorage 端 push 把整行 data 覆盖成缺 ccBill 的版本（曾导致信用卡账单丢失）。
+// mergeCloudData 抽成纯函数，供 runSelfCheck 在无网络下回归测试（见下方自检模块）。
+function mergeCloudData(local, remote) {
+  const merged = {};
+  // 1) 先放云端现有 data（本地没有的 key 保留云端）
+  for (const [k, v] of Object.entries(remote || {})) {
+    if (k === '_lastLocalChange' || k === '_lastCloudSync') continue;
+    merged[k] = v;
+  }
+  // 2) 本地 key 覆盖合并（本地有则覆盖，本地无则保留云端；双方独有 key 均保留）
+  for (const [k, v] of Object.entries(local || {})) {
+    if (k === '_lastLocalChange' || k === '_lastCloudSync') continue;
+    merged[k] = v;
+  }
+  return merged;
+}
+
+async function cloudPush() {
+  const cfg = getCloudConfig();
+  if (!cfg || _cloudBusy) return;
+  _cloudBusy = true;
+
+  try {
+    // 1) 先拉云端现有 data
+    let cloudData = {};
+    try {
+      const r0 = await fetch(cfg.url + '/rest/v1/workbench_data?sync_code=eq.' + cfg.syncCode + '&select=data&limit=1', {
+        headers: { 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + cfg.anonKey }
+      });
+      if (r0.ok) {
+        const rows0 = await r0.json();
+        if (rows0.length) cloudData = rows0[0].data || {};
+      }
+    } catch(e) {}
+
+    // 2) key 级合并（本地覆盖云端，双方独有 key 均保留），再整行推回
+    const merged = mergeCloudData(collectLocalData(), cloudData);
+    merged._lastLocalChange = Date.now();
+
+    // 3) 整行 push 合并后的 data
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data', {
+      method: 'POST',
+      headers: {
+        'apikey': cfg.anonKey,
+        'Authorization': 'Bearer ' + cfg.anonKey,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        sync_code: cfg.syncCode,
+        data: merged,
+        updated_at: new Date().toISOString()
+      })
+    });
+    if (resp.ok) {
+      try { localStorage.setItem('_lastCloudSync', JSON.stringify(Date.now())); } catch(e) {}
+    }
+  } catch(e) {
+    // Silent fail — will retry on next change or manual sync
+  }
+  _cloudBusy = false;
+}
+
+// Pull cloud data to local
+async function cloudPull() {
+  const cfg = getCloudConfig();
+  if (!cfg) return false;
+
+  try {
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data?sync_code=eq.' + cfg.syncCode + '&select=data,updated_at&limit=1', {
+      headers: {
+        'apikey': cfg.anonKey,
+        'Authorization': 'Bearer ' + cfg.anonKey
+      }
+    });
+    if (!resp.ok) return false;
+    const rows = await resp.json();
+    if (!rows || rows.length === 0) return false;
+
+    const cloudData = rows[0].data;
+    const cloudTime = new Date(rows[0].updated_at).getTime();
+    const lastSync = loadData('_lastCloudSync', 0);
+
+    // If cloud hasn't changed since last sync, skip
+    if (cloudTime <= lastSync) return false;
+
+    // Merge: overwrite local with cloud data
+    let changed = 0;
+    for (const [k, v] of Object.entries(cloudData)) {
+      if (k === '_lastLocalChange') continue;
+      const localRaw = localStorage.getItem(k);
+      const localVal = localRaw ? JSON.parse(localRaw) : null;
+      if (JSON.stringify(localVal) !== JSON.stringify(v)) {
+        try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
+        dbSet(k, v).catch(() => {});
+        changed++;
+      }
+    }
+    try { localStorage.setItem('_lastCloudSync', JSON.stringify(cloudTime)); } catch(e) {}
+    return changed > 0;
+  } catch(e) {
+    return false;
+  }
+}
+
+// Manual sync button
+async function cloudSyncNow() {
+  showToast('☁️ 同步中...');
+  // Push local changes first, then pull remote
+  await cloudPush();
+  const updated = await cloudPull();
+  if (updated) {
+    renderWorkTab();
+    renderLearnTab();
+    renderSportTab();
+    renderReportTab();
+    showToast('☁️ 已同步最新数据');
+  } else {
+    showToast('☁️ 已是最新');
+  }
+  renderCloudSyncUI();
+}
+
+// Debounced auto-sync after data changes
+function cloudSyncDebounced() {
+  const cfg = getCloudConfig();
+  if (!cfg) return;
+  try { localStorage.setItem('_lastLocalChange', JSON.stringify(Date.now())); } catch(e) {}
+  clearTimeout(_cloudSyncTimer);
+  _cloudSyncTimer = setTimeout(() => { cloudPush(); }, 3000);
+}
+
+// Initialize cloud sync on app load
+async function cloudSyncInit() {
+  const cfg = getCloudConfig();
+  if (!cfg) {
+    renderCloudSyncUI();
+    return;
+  }
+
+  const lastLocalChange = loadData('_lastLocalChange', 0);
+  const lastCloudSync = loadData('_lastCloudSync', 0);
+
+  // If local has unpushed changes, push first
+  if (lastLocalChange > lastCloudSync) {
+    await cloudPush();
+  }
+
+  // Pull from cloud
+  const updated = await cloudPull();
+  if (updated) {
+    renderWorkTab();
+    renderLearnTab();
+    renderSportTab();
+    showToast('☁️ 已从云端同步');
+  }
+  renderCloudSyncUI();
+
+  // Check if cloud has newer code version (auto self-update)
+  checkCodeUpdate();
+}
+
+// 纯函数：仅当云端代码 ts 更新时才需自更新（供 runSelfCheck 回归测试）
+function codeNeedsUpdate(cloudTS, embeddedTS) {
+  if (!cloudTS || !embeddedTS) return false;
+  const c = new Date(cloudTS).getTime();
+  const e = new Date(embeddedTS).getTime();
+  if (isNaN(c) || isNaN(e)) return false;
+  return c > e;
+}
+
+// Check if another device pushed newer code to cloud — auto self-update（自动刷新，无需手动操作）
+let _lastCodeCheck = 0;
+let _reviewDirty = false;       // 日复盘输入框是否有未保存内容
+let _pendingCodeReload = false; // 检测到新代码但用户有未保存输入，等保存后再重载
+let _pendingCode = null;        // 待应用的云端新代码
+
+function _markDirty() { _reviewDirty = true; }
+
+// ===== iOS 滚动锁定（根治日复盘保存后视口被键盘动画重滚到底部）=====
+// 进入输入框时把 body 锁成 fixed，iOS 收键盘时也无可滚动之物；
+// 保存时解锁并精确滚回「进入输入框之前」的原位置，不再跟 iOS 动画赛跑。
+function _lockReviewScroll() {
+  if (window.__rsY == null) window.__rsY = window.scrollY || window.pageYOffset || 0;
+  if (window.__reviewLocked) return;
+  const sy = window.scrollY || window.pageYOffset || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = (-sy) + 'px';
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  window.__reviewLocked = true;
+}
+function _unlockReviewScroll() {
+  if (!window.__reviewLocked) return;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.__reviewLocked = false;
+}
+
+// 当前是否处于"有未保存输入"状态（重载会丢失内存中未保存的文字，故需避让）
+function _hasUnsavedInput() {
+  const ri = document.getElementById('reviewInput');
+  if (ri && _reviewDirty && ri.value.trim()) return true;
+  return false;
+}
+
+function _doCodeReload(code) {
+  showToast('🔄 检测到代码更新，正在自动同步...');
+  setTimeout(() => {
+    document.open();
+    document.write(code);
+    document.close();
+  }, 800);
+}
+
+async function checkCodeUpdate(force) {
+  const now = Date.now();
+  if (!force && now - _lastCodeCheck < 30000) return; // 30 秒轮询，保证调整后尽快自动刷新
+  _lastCodeCheck = now;
+
+  const cfg = getCloudConfig();
+  if (!cfg) return;
+
+  try {
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data?sync_code=eq.CODE_SYNC&select=data&limit=1', {
+      headers: { 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + cfg.anonKey }
+    });
+    if (!resp.ok) return;
+    const rows = await resp.json();
+    if (!rows || rows.length === 0) return;
+
+    const cloud = rows[0].data;
+    if (!cloud || !cloud.code || !cloud.ts) return;
+
+    const embeddedTS = (document.querySelector('meta[name="code-sync-ts"]') || {}).content;
+    if (!embeddedTS) return;
+
+    if (codeNeedsUpdate(cloud.ts, embeddedTS)) {
+      if (_hasUnsavedInput()) {
+        // 用户正在打字且未保存：先不重载，标记待定，保存后立即重载，绝不丢失输入
+        _pendingCodeReload = true;
+        _pendingCode = cloud.code;
+        showToast('🔄 有代码更新，保存当前输入后将自动同步');
+        return;
+      }
+      _doCodeReload(cloud.code);
+    }
+  } catch(e) { /* silent fail, will retry next interval */ }
+}
+
+function disconnectCloud() {
+  if (!confirm('断开云同步？本地数据保留，但不再自动同步。')) return;
+  localStorage.removeItem(CLOUD_CFG_KEY);
+  localStorage.removeItem('_lastCloudSync');
+  localStorage.removeItem('_lastLocalChange');
+  renderCloudSyncUI();
+  showToast('已断开云同步');
+}
+
+// ====================
+//  应用内自检（方案1）
+//  加载即静默跑 5 项关键交互；仅当出现异常（红）才弹报告。
+//  手动入口：长按「同步码」文本或日期栏（或访问 URL 加 #diag）。
+//  设计原则：全部检查零副作用——saveData/cloudPush 临时 stub，不写真实数据、不联网。
+// ====================
+function _diagCheckDataLoad() {
+  try {
+    const today = getDateKey(), wk = getWeekKey(), mk = getMonthKey();
+    loadData('work-' + today, { daily: [], review: '' });
+    loadData('learn-' + today, { english: false, tennis: false, golf: false, reading: false });
+    loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+    loadData('dailyReview-' + today, '');
+    loadData('ccBill-gf-' + mk, null);
+    loadData('loanState', null);
+    const v = loadData('_dataVersion', 0);
+    if (v !== DATA_VERSION) return { pass: false, msg: '_dataVersion=' + v + ' ≠ ' + DATA_VERSION };
+    return { pass: true, msg: '各模块读取正常 · 版本 ' + v };
+  } catch (e) { return { pass: false, msg: '读取异常: ' + e.message }; }
+}
+
+function _diagCheckMerge() {
+  try {
+    // 本地独有 key（如 ccBill）必须保留，不能因整行覆盖而丢失
+    const local = { 'ccBill-gf-2026-08': 15100, 'work-2026-08-24': { daily: [], review: '' } };
+    const remote = { 'learn-2026-08-24': { english: true } };
+    const m1 = mergeCloudData(local, remote);
+    if (m1['ccBill-gf-2026-08'] !== 15100) return { pass: false, msg: '本地独有 key 被覆盖丢失' };
+    if (!('learn-2026-08-24' in m1)) return { pass: false, msg: '远程独有 key 被丢弃' };
+    // 冲突时本地优先
+    const m2 = mergeCloudData({ 'x': 'local' }, { 'x': 'remote' });
+    if (m2['x'] !== 'local') return { pass: false, msg: '冲突未以本地优先' };
+    return { pass: true, msg: 'key 级合并正确（双方独有 key 均保留）' };
+  } catch (e) { return { pass: false, msg: 'merge 异常: ' + e.message }; }
+}
+
+function _diagCheckDailyReviewLock() {
+  try {
+    const ri = document.getElementById('reviewInput');
+    if (!ri) return { pass: false, msg: '找不到复盘输入框' };
+    const origSave = window.saveData, origDeb = window.cloudSyncDebounced, origPush = window.cloudPush;
+    const savedKeys = [];
+    window.saveData = function (k) { savedKeys.push(k); };
+    window.cloudSyncDebounced = function () {};
+    window.cloudPush = function () {};
+    const prevVal = ri.value;
+    const rn = document.getElementById('reviewNote');
+    const prevNote = rn ? rn.textContent : '';
+    ri.value = '自检占位-' + Date.now();
+    saveDailyReview();
+    const visible = ri.style.display !== 'none' && ri.offsetParent !== null;
+    const btn = document.querySelector('#dailyReviewCard .note-save');
+    const btnVisible = !btn || btn.style.display !== 'none';
+    const valKept = ri.value && ri.value.indexOf('自检占位') === 0;
+    // 还原现场
+    ri.value = prevVal;
+    if (rn) rn.textContent = prevNote;
+    window.saveData = origSave; window.cloudSyncDebounced = origDeb; window.cloudPush = origPush;
+    if (!savedKeys.includes('dailyReview-' + getDateKey())) return { pass: false, msg: '未写入 dailyReview' };
+    if (!visible) return { pass: false, msg: '保存后输入框被隐藏' };
+    if (!btnVisible) return { pass: false, msg: '保存后保存按钮被隐藏' };
+    if (!valKept) return { pass: false, msg: '保存后输入内容丢失' };
+    return { pass: true, msg: '保存路径：输入框/按钮可见、内容保留、未重建整 Tab' };
+  } catch (e) { return { pass: false, msg: '自检异常: ' + e.message }; }
+}
+
+function _diagCheckCCBill() {
+  try {
+    const cardId = '__diag__', billKey = '2030-01';
+    let input = document.getElementById('ccInput-' + cardId);
+    if (!input) { input = document.createElement('input'); input.id = 'ccInput-' + cardId; document.body.appendChild(input); }
+    const origSave = window.saveData, origPush = window.cloudPush;
+    let savedKey = null, savedVal = null, pushed = false;
+    window.saveData = function (k, v) { savedKey = k; savedVal = v; };
+    window.cloudPush = function () { pushed = true; };
+    input.value = '12345.5';
+    saveCCBill(cardId, billKey);
+    if (input && input.parentNode) input.parentNode.removeChild(input);
+    window.saveData = origSave; window.cloudPush = origPush;
+    if (savedKey !== 'ccBill-' + cardId + '-' + billKey) return { pass: false, msg: '未写入 ccBill key' };
+    if (savedVal !== 12345.5) return { pass: false, msg: '金额未正确保存(' + savedVal + ')' };
+    if (!pushed) return { pass: false, msg: '保存后未触发立即上云' };
+    return { pass: true, msg: '登记即本地持久并触发立即上云' };
+  } catch (e) { return { pass: false, msg: '自检异常: ' + e.message }; }
+}
+
+function _diagCheckCodeUpdate() {
+  try {
+    const meta = document.querySelector('meta[name="code-sync-ts"]');
+    if (!meta || !meta.content) return { pass: false, msg: '缺少 code-sync-ts meta' };
+    if (isNaN(new Date(meta.content).getTime())) return { pass: false, msg: 'code-sync-ts 非法' };
+    if (codeNeedsUpdate('2020-01-01T00:00:00Z', meta.content)) return { pass: false, msg: '云端更旧时仍判定需更新' };
+    const future = new Date(Date.now() + 86400000).toISOString();
+    if (!codeNeedsUpdate(future, meta.content)) return { pass: false, msg: '云端更新时未判定需更新' };
+    return { pass: true, msg: '仅当云端 ts 更新才自更新（meta=' + meta.content.slice(0, 10) + '）' };
+  } catch (e) { return { pass: false, msg: '自检异常: ' + e.message }; }
+}
+
+function runSelfCheck(verbose) {
+  const checks = [
+    ['数据加载与迁移', _diagCheckDataLoad],
+    ['云同步 key 级合并（不整行覆盖）', _diagCheckMerge],
+    ['日复盘保存不锁死', _diagCheckDailyReviewLock],
+    ['信用卡账单保存即上云', _diagCheckCCBill],
+    ['代码自更新仅按需', _diagCheckCodeUpdate],
+  ];
+  const results = checks.map(([name, fn]) => {
+    let r; try { r = fn(); } catch (e) { r = { pass: false, msg: '异常:' + e.message }; }
+    return { name: name, pass: !!r.pass, msg: r.msg || '' };
+  });
+  const failed = results.filter(r => !r.pass).length;
+  if (verbose || failed > 0) showDiagReport(results, failed);
+  return { results: results, failed: failed };
+}
+
+function showDiagReport(results, failCount) {
+  const list = document.getElementById('diagList');
+  if (!list) return;
+  list.innerHTML = results.map(r => {
+    const cls = r.pass ? 'ok' : 'fail';
+    return '<div class="diag-row"><div class="diag-dot ' + cls + '"></div>'
+      + '<div><div class="diag-name">' + (r.pass ? '' : '⚠ ') + r.name + '</div>'
+      + '<div class="diag-msg">' + r.msg + '</div></div></div>';
+  }).join('');
+  const sum = document.getElementById('diagSummary');
+  if (sum) { sum.textContent = failCount ? ('· ' + failCount + ' 项异常') : '· 全部通过'; sum.style.color = failCount ? '#ef4444' : '#22c55e'; }
+  const m = document.getElementById('diagModal');
+  if (m) m.classList.add('show');
+}
+
+function closeDiagModal() { const m = document.getElementById('diagModal'); if (m) m.classList.remove('show'); }
+
+// ====================
+//  REPORT MODAL POPUP
+// ====================
+function checkReportPopup() {
+  const wk = getWeekKey();
+  const mk = getMonthKey();
+  const yk = String(new Date().getFullYear());
+  const seen = loadData('reportSeen', { week: '', month: '', year: '' });
+
+  // Priority: year > month > week — show the most significant new one
+  let period = null, key = null, label = '';
+  if (seen.year !== yk) {
+    period = 'year'; key = yk; label = yk + '年';
+  } else if (seen.month !== mk) {
+    period = 'month'; key = mk; label = mk;
+  } else if (seen.week !== wk) {
+    period = 'week'; key = wk; label = wk;
+  }
+  if (!period) {
+    document.getElementById('reportNavBadge').style.display = 'none';
+    return;
+  }
+
+  // Show badge on nav bar
+  document.getElementById('reportNavBadge').style.display = 'flex';
+
+  // Only show if there's actual data in this period
+  if (!hasReportData(period)) {
+    // Still mark as seen so it doesn't pop up on empty periods
+    seen[period] = key;
+    saveData('reportSeen', seen);
+    return;
+  }
+
+  showReportModal(period, key, label);
+}
+
+function hasReportData(period) {
+  if (period === 'week') {
+    const wk = getWeekKey();
+    const sport = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
+    const today = getDateKey();
+    const dailyReview = loadData('dailyReview-' + today, '');
+    const oldReview = loadData('review-' + wk, '');
+    const work = loadData('work-' + today, { daily: [], review: '' });
+    const learn = loadData('learn-' + today, { english: false, tennis: false, golf: false });
+    return sport.tennis + sport.golf + sport.strength > 0 || !!dailyReview || !!oldReview || (work.daily && work.daily.length > 0) || learn.english || learn.tennis || learn.golf;
+  }
+  if (period === 'month') {
+    const start = getMonthStart(0);
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    return daily.workDone > 0 || daily.learnDone > 0 || sport.tennis + sport.golf + sport.strength > 0;
+  }
+  if (period === 'year') {
+    const start = getYearStart(0);
+    const end = new Date();
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    return daily.workDone > 0 || daily.learnDone > 0 || sport.tennis + sport.golf + sport.strength > 0;
+  }
+  return false;
+}
+
+function showReportModal(period, key, label) {
+  const icons = { week: '📊', month: '📈', year: '🏆' };
+  const titles = { week: '周报已生成', month: '月报已生成', year: '年报已生成' };
+  document.getElementById('rmIcon').textContent = icons[period];
+  document.getElementById('rmTitle').textContent = titles[period];
+  document.getElementById('rmPeriod').textContent = label;
+
+  // Build summary
+  let html = '';
+  if (period === 'week') {
+    const start = getWeekStart(0);
+    const end = new Date(start); end.setDate(end.getDate() + 6);
+    const daily = collectDailyData(start, end);
+    const sport = loadData('sport-' + key, { tennis: 0, golf: 0, strength: 0 });
+    const weekReviews = collectReviews(start, end);
+    const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+    const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+    html += rmStatRow('工作完成率', workPct + '% (' + daily.workDone + '/' + daily.workTotal + '天)', workPct);
+    html += rmStatRow('学习完成率', learnPct + '% (' + daily.learnDone + '/' + daily.learnTotal + '天)', learnPct);
+    html += rmStatRow('🎾 网球', sport.tennis + '/2' + (sport.tennis > 2 ? ' 🔥' : ''), sport.tennis);
+    html += rmStatRow('⛳ 高尔夫', sport.golf + '/2' + (sport.golf > 2 ? ' 🔥' : ''), sport.golf);
+    html += rmStatRow('💪 力量训练', sport.strength + '/2' + (sport.strength > 2 ? ' 🔥' : ''), sport.strength);
+    if (weekReviews.length > 0) html += '<div class="rm-analysis">📝 ' + weekReviews.length + '篇日复盘 · ' + escapeHtml(weekReviews[0].text.substring(0, 80)) + (weekReviews[0].text.length > 80 ? '...' : '') + '</div>';
+    else html += '<div class="rm-analysis">⚠️ 本周尚未填写复盘记录</div>';
+    html += '<div class="rm-analysis">' + generateWeeklyAnalysis(workPct, learnPct, sport).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
+  } else if (period === 'month') {
+    const start = getMonthStart(0);
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    const reviews = collectReviews(start, end);
+    const billing = loadData('billing-' + key, []);
+    const payroll = loadData('payroll-' + key, []);
+    const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+    const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+    html += rmStatRow('工作完成率', workPct + '%', workPct);
+    html += rmStatRow('学习完成率', learnPct + '%', learnPct);
+    html += rmStatRow('运动总次数', (sport.tennis + sport.golf + sport.strength) + '次', sport.tennis + sport.golf + sport.strength >= 24 ? 100 : 50);
+    html += rmStatRow('复盘篇数', reviews.length + '篇', reviews.length >= 4 ? 100 : 50);
+    html += '<div class="rm-analysis">' + generateMonthlyAnalysis(workPct, learnPct, sport, reviews.length, billing, payroll).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
+  } else {
+    const start = getYearStart(0);
+    const end = new Date();
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    const reviews = collectReviews(start, end);
+    const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+    const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+    html += rmStatRow('工作完成率', workPct + '% (' + daily.workDone + '天)', workPct);
+    html += rmStatRow('学习完成率', learnPct + '% (' + daily.learnDone + '天)', learnPct);
+    html += rmStatRow('运动总次数', (sport.tennis + sport.golf + sport.strength) + '次', 80);
+    html += rmStatRow('复盘总篇数', reviews.length + '篇', reviews.length);
+    html += '<div class="rm-analysis">' + generateYearlyAnalysis(workPct, learnPct, sport, reviews.length).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
+  }
+  document.getElementById('rmBody').innerHTML = html;
+  document.getElementById('reportModalOverlay').classList.add('show');
+}
+
+function rmStatRow(label, value, pct) {
+  let cls = 'good';
+  if (pct < 50) cls = 'bad';
+  else if (pct < 80) cls = 'warn';
+  return '<div class="rm-stat-row"><span class="rm-stat-label">' + label + '</span><span class="rm-stat-val ' + cls + '">' + value + '</span></div>';
+}
+
+function dismissReportModal() {
+  document.getElementById('reportModalOverlay').classList.remove('show');
+  document.getElementById('reportNavBadge').style.display = 'none';
+  // Mark current period as seen
+  const seen = loadData('reportSeen', { week: '', month: '', year: '' });
+  const wk = getWeekKey(), mk = getMonthKey(), yk = String(new Date().getFullYear());
+  seen.week = wk; seen.month = mk; seen.year = yk;
+  saveData('reportSeen', seen);
+}
+
+function viewReportNow() {
+  document.getElementById('reportModalOverlay').classList.remove('show');
+  document.getElementById('reportNavBadge').style.display = 'none';
+  // Mark as seen
+  const seen = loadData('reportSeen', { week: '', month: '', year: '' });
+  const wk = getWeekKey(), mk = getMonthKey(), yk = String(new Date().getFullYear());
+  seen.week = wk; seen.month = mk; seen.year = yk;
+  saveData('reportSeen', seen);
+  // Determine which period was shown and switch to it
+  const periodLabel = document.getElementById('rmPeriod').textContent;
+  if (periodLabel.includes('年') && periodLabel.length <= 5) {
+    switchReportPeriod('year');
+  } else if (periodLabel.includes('-W')) {
+    switchReportPeriod('week');
+  } else {
+    switchReportPeriod('month');
+  }
+  switchTab('report');
+}
+
+// ====================
+//  DATA MIGRATION — preserves existing data across version bumps
+// ====================
+function migrateData() {
+  const currentVer = parseInt(localStorage.getItem('_dataVersion') || '0', 10);
+  if (currentVer >= DATA_VERSION) return; // already up to date
+
+  // v1 → v2: ensure all data keys have complete field sets
+  // (mergeData in loadData already handles this on read, but we also
+  //  proactively normalize existing keys so reports/exports are consistent)
+  if (currentVer < 2) {
+    const now = new Date();
+    const today = fmtDateKey(now);
+    // Ensure today's work/learn data has all expected fields
+    const workKey = 'work-' + today;
+    const w = localStorage.getItem(workKey);
+    if (w) {
+      try {
+        const parsed = JSON.parse(w);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          if (!('daily' in parsed)) parsed.daily = [];
+          if (!('review' in parsed)) parsed.review = '';
+          localStorage.setItem(workKey, JSON.stringify(parsed));
+        }
+      } catch(e) {}
+    }
+    const learnKey = 'learn-' + today;
+    const l = localStorage.getItem(learnKey);
+    if (l) {
+      try {
+        const parsed = JSON.parse(l);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          if (!('english' in parsed)) parsed.english = false;
+          if (!('tennis' in parsed)) parsed.tennis = false;
+          if (!('golf' in parsed)) parsed.golf = false;
+          localStorage.setItem(learnKey, JSON.stringify(parsed));
+        }
+      } catch(e) {}
+    }
+  }
+
+  // Future migrations: add `if (currentVer < 3) { ... }` blocks here
+  if (currentVer < 3) {
+    // Initialize loan state from config if not present
+    if (!localStorage.getItem('loanState')) {
+      try { localStorage.setItem('loanState', JSON.stringify(LOAN_INIT)); } catch(e) {}
+    }
+  }
+
+  localStorage.setItem('_dataVersion', String(DATA_VERSION));
+}
+
+// ====================
+//  INIT
+// ====================
+function init() {
+  // Run data migration first — ensures old data is compatible with new code
+  migrateData();
+
+  // Request persistent storage — prevents iOS from evicting IndexedDB
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(granted => {
+      if (!granted) navigator.storage.persist();
+    });
+  }
+
+  updateDate();
+  renderWorkTab();
+  renderLearnTab();
+  renderSportTab();
+  renderCloudSyncUI();
+
+  // Silently restore from IndexedDB if localStorage was wiped
+  restoreFromDB().then(() => {
+    renderWorkTab();
+    renderLearnTab();
+    renderSportTab();
+    // Cloud sync: pull latest from cloud, push local changes
+    cloudSyncInit().then(() => {
+      // Fetch video series from cloud (new series content)
+      fetchVideoSeries().then(() => {
+        renderLearnTab();
+      });
+      // Check if a new report period has started — show popup once
+      setTimeout(checkReportPopup, 800);
+      // Check if any credit card bills need registration — popup once per day
+      setTimeout(checkCCBillReminder, 1200);
+      runSelfCheck(false); // 静默自检：仅异常时弹报告
+    });
+  });
+
+  // 隐藏调试入口：长按「同步码」文本或日期栏打开展示完整自检报告
+  if (!window.__diagBound) {
+    window.__diagBound = true;
+    let _lpTimer = null;
+    document.addEventListener('pointerdown', e => {
+      if (!e.target.closest('.sync-code-display, #dateDisplay')) return;
+      _lpTimer = setTimeout(() => runSelfCheck(true), 600);
+    });
+    const clearLp = () => { if (_lpTimer) { clearTimeout(_lpTimer); _lpTimer = null; } };
+    document.addEventListener('pointerup', clearLp);
+    document.addEventListener('pointercancel', clearLp);
+  }
+  // URL 加 #diag 直接打开展示报告
+  if (location.hash === '#diag') setTimeout(() => runSelfCheck(true), 400);
+
+  // 数据/视频系列同步：每 5 分钟（较重，避免频繁拉全量数据）
+  setInterval(() => {
+    cloudPull().then(updated => {
+      if (updated) {
+        renderWorkTab();
+        renderLearnTab();
+        renderSportTab();
+        renderCloudSyncUI();
+      }
+    });
+    fetchVideoSeries().then(() => renderLearnTab());
+  }, 300000);
+
+  // 代码自动刷新检测：每 30 秒（轻量查询 CODE_SYNC 单行，调整后无需手动刷新即可自动同步）
+  setInterval(() => {
+    checkCodeUpdate();
+  }, 30000);
+
+  setInterval(() => {
+    const d = new Date();
+    if (d.getHours() === 0 && d.getMinutes() === 0) {
+      updateDate();
+      renderWorkTab();
+      renderLearnTab();
+      checkReportPopup();
+    }
+  }, 60000);
+}
+
+init();
+</script>
+
+
+<div id="__popup"><div class="b">
+  <h3>🔒 内部内容需要口令</h3>
+  <p>这一部分是我方内部测算，不对外展示</p>
+  <input type="password" id="__pin" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="__pok">确认</button>
+  <div class="e" id="__pe"></div>
+  <div class="c" id="__pc">取消</div>
+</div></div>
+<script>
+(function(){
+  var SHA='ab3d93c1376613e8502d81920eee25b0826799e507c2a72cdc6a2702664cd95d', DJB=2154654327, KEY='whub_ok', DAYS=30;
+  function djb(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;}return h;}
+  function sha(s){
+    if(window.crypto&&crypto.subtle&&window.TextEncoder){
+      return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))
+        .then(function(d){
+          return Array.prototype.map.call(new Uint8Array(d),function(x){
+            return ('0'+x.toString(16)).slice(-2);
+          }).join('');
+        });
+    }
+    return Promise.reject('no-subtle');
+  }
+  function verify(p){
+    return sha(p).then(function(h){
+      if(h===SHA) return true;
+      return djb(p)===DJB;
+    }).catch(function(){ return djb(p)===DJB; });
+  }
+  function ok(){
+    try{ var v=localStorage.getItem(KEY); if(!v) return false;
+      return parseInt(v,10)>Date.now(); }catch(e){ return false; }
+  }
+  function grant(){ try{ localStorage.setItem(KEY,String(Date.now()+DAYS*86400000)); }catch(e){} }
+
+  window.__LK={ok:ok,grant:grant,verify:verify};
+
+  var pop=document.getElementById('__popup');
+  var inp=document.getElementById('__pin');
+  var err=document.getElementById('__pe');
+  var cb=null;
+
+  function close(){ if(pop) pop.style.display='none'; if(inp) inp.value=''; if(err) err.textContent=''; cb=null; }
+  function ask(onOk){
+    cb=onOk; if(!pop) return;
+    pop.style.display='flex';
+    setTimeout(function(){ if(inp) inp.focus(); },60);
+  }
+  function submit(){
+    var v=(inp&&inp.value||'').trim();
+    if(!v){ if(err) err.textContent='请输入口令'; return; }
+    verify(v).then(function(r){
+      if(r){ grant(); var f=cb; close(); if(f) f(); }
+      else { if(err) err.textContent='口令不对，再试一次'; if(inp){inp.value='';inp.focus();} }
+    });
+  }
+  var okb=document.getElementById('__pok');
+  if(okb) okb.onclick=submit;
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter'){ submit(); } };
+  var cb2=document.getElementById('__pc');
+  if(cb2) cb2.onclick=close;
+  if(pop) pop.onclick=function(e){ if(e.target===pop) close(); };
+
+  window.__LK.ask=ask;
+})();
+</script>
+
+<script>
+(function(){
+  var lock=document.getElementById('__lock');
+  var inp=document.getElementById('__lin');
+  var err=document.getElementById('__lerr');
+  function show(){
+    if(lock&&lock.parentNode) lock.parentNode.removeChild(lock);
+    document.documentElement.style.overflow='';
+  }
+  if(window.__LK&&window.__LK.ok()){ show(); }
+  else { document.documentElement.style.overflow='hidden'; }
+  function go(){
+    var v=(inp&&inp.value||'').trim();
+    if(!v){ if(err) err.textContent='请输入口令'; return; }
+    window.__LK.verify(v).then(function(r){
+      if(r){ window.__LK.grant(); show(); }
+      else { if(err) err.textContent='口令不对，再试一次'; if(inp){inp.value='';inp.focus();} }
+    });
+  }
+  var b=document.getElementById('__lbtn');
+  if(b) b.onclick=go;
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter') go(); };
+  setTimeout(function(){ if(inp) inp.focus(); },80);
+})();
+
+</body>
+</html>

@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="雨辰的工作台">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23ec4899' width='100' height='100' rx='22'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>雨</text></svg>">
+<title>雨辰的工作台</title>
+<meta name="code-sync-ts" content="2026-08-18T15:23:39.519Z">
+<style>
+:root {
+  --bg: #fdf7f9;
+  --card: #ffffff;
+  --text: #2d1f27;
+  --text-secondary: #8a7480;
+  --accent: #ec4899;
+  --accent-light: #fdf0f6;
+  --indigo: #6366f1;
+  --indigo-light: #eef0ff;
+  --green: #16a34a;
+  --green-light: #dcfce7;
+  --orange: #ea580c;
+  --orange-light: #fff7ed;
+  --purple: #a855f7;
+  --purple-light: #f6efff;
+  --blue: #2563eb;
+  --blue-light: #eff6ff;
+  --gold: #f59e0b;
+  --border: #f0e2e8;
+  --shadow: 0 1px 3px rgba(180,80,120,0.06), 0 1px 2px rgba(180,80,120,0.04);
+  --shadow-lg: 0 4px 14px rgba(180,80,120,0.10);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  padding-bottom: calc(80px + var(--safe-bottom));
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Header */
+.header {
+  background: var(--card);
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-left h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(120deg, #ec4899, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header-left .date {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ring-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.ring-label {
+  font-size: 9px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Content */
+.content {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Tab Content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.tab-content.animate-in {
+  animation: fadeUp 0.25s ease-out;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section */
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  margin: 8px 0 10px;
+  padding-left: 4px;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-icon.study { background: var(--accent-light); color: var(--accent); }
+.card-icon.note { background: var(--purple-light); color: var(--purple); }
+.card-icon.sport { background: var(--orange-light); color: var(--orange); }
+.card-icon.report { background: var(--indigo-light); color: var(--indigo); }
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Checklist */
+.checklist {
+  list-style: none;
+}
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 4px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li:active { opacity: 0.7; }
+.checkbox {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 2px solid #e8d5dd;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+  font-size: 14px;
+  color: white;
+}
+.checkbox.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  animation: pop 0.25s ease-out;
+}
+.checkbox.checked::after { content: '✓'; }
+@keyframes pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.checklist-text {
+  font-size: 15px;
+  transition: all 0.18s ease;
+}
+.checklist-text.done {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+
+/* Progress */
+.progress-wrap { margin-top: 6px; }
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.progress-label span:last-child { font-weight: 600; color: var(--text); }
+.progress-bar {
+  height: 8px;
+  background: #f3e6ec;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent);
+  transition: width 0.35s ease;
+}
+.progress-fill.green { background: var(--green); }
+.progress-fill.orange { background: var(--orange); }
+.progress-fill.indigo { background: var(--indigo); }
+.progress-fill.purple { background: var(--purple); }
+
+/* Note */
+.note-input {
+  width: 100%;
+  min-height: 110px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  background: #fffdfe;
+  color: var(--text);
+  outline: none;
+}
+.note-input:focus { border-color: var(--accent); }
+.note-save {
+  margin-top: 10px;
+  padding: 9px 22px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.note-save:active { opacity: 0.8; }
+.saved-note {
+  background: var(--accent-light);
+  border: 1px solid #f8d8e8;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.note-edit-link {
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Streak card */
+.streak-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.streak-flame {
+  font-size: 34px;
+  animation: flicker 1.6s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12) rotate(-3deg); }
+}
+.streak-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--orange);
+}
+.streak-desc { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Sport checkin cards */
+.checkin-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.checkin-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.checkin-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.checkin-icon.rope { background: var(--orange-light); }
+.checkin-icon.dance { background: var(--purple-light); }
+.checkin-icon.self { background: var(--indigo-light); }
+.checkin-info { flex: 1; }
+.checkin-name { font-size: 15px; font-weight: 600; }
+.checkin-target { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.checkin-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #f0e2e8;
+}
+.dot.done { background: var(--accent); animation: pop 0.25s ease-out; }
+.dot.surplus { background: var(--gold); animation: pop 0.25s ease-out; }
+.btn-checkin {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-checkin:active { transform: scale(0.98); }
+.btn-checkin.ready { background: var(--accent-light); color: var(--accent); }
+.btn-checkin.done-btn { background: var(--green-light); color: var(--green); }
+.btn-checkin.surplus-btn { background: #fef3c7; color: #b45309; }
+.undo-link {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Report tabs */
+.report-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.report-tab {
+  flex: 1;
+  padding: 9px 0;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.report-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* Report rows */
+.stat-row { margin-bottom: 14px; }
+.stat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.stat-name { font-weight: 600; }
+.stat-val { color: var(--text-secondary); font-weight: 600; font-size: 13px; }
+.stat-row.achieved .stat-val { color: var(--green); }
+.bounce-emoji {
+  display: inline-block;
+  animation: bounceIn 0.6s ease-out;
+}
+@keyframes bounceIn {
+  0% { transform: scale(0) rotate(-20deg); }
+  60% { transform: scale(1.3) rotate(8deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+.star-row {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 4px;
+  margin: 6px 0 2px;
+}
+.report-analysis {
+  background: linear-gradient(120deg, #fdf0f6, #f6efff);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--text);
+}
+.report-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 30px 0;
+}
+.week-range-label {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+/* Data migration & cloud sync */
+.data-migration, .cloud-sync-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.dm-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.dm-btn {
+  padding: 9px 16px;
+  background: var(--indigo-light);
+  color: var(--indigo);
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-bottom: 6px;
+}
+.dm-btn:active { opacity: 0.8; }
+.sync-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sync-status-text { font-size: 13px; flex: 1; }
+.sync-code-display { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
+.sync-code-display b { color: var(--indigo); font-size: 14px; }
+.cloud-help {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-top: 10px;
+  display: none;
+}
+.cloud-help.show { display: block; }
+.modal-link { color: var(--indigo); font-weight: 600; cursor: pointer; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(40,20,30,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 24px;
+}
+.modal-overlay.show { display: flex; }
+.modal-card {
+  background: white;
+  border-radius: 20px;
+  padding: 22px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: var(--shadow-lg);
+}
+.modal-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px; }
+.modal-field { margin-bottom: 12px; }
+.modal-field label { font-size: 12px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 5px; }
+.modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+.modal-input:focus { border-color: var(--accent); }
+.modal-hint { font-size: 11.5px; color: var(--text-secondary); margin-top: 5px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.modal-btn {
+  flex: 1;
+  padding: 11px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-btn.cancel { background: #f3e6ec; color: var(--text-secondary); }
+.modal-btn.confirm { background: var(--accent); color: white; }
+.sync-code-input-row { display: flex; gap: 8px; }
+.sync-code-input-row .modal-input { flex: 1; }
+.sync-code-btn {
+  padding: 0 16px;
+  background: var(--accent-light);
+  color: var(--accent);
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sync-code-btn:active { opacity: 0.7; }
+
+/* Celebration overlay */
+.celebrate-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2000;
+  overflow: hidden;
+  display: none;
+}
+.celebrate-overlay.show { display: block; }
+.celebrate-emoji {
+  position: absolute;
+  top: -8%;
+  font-size: 26px;
+  animation: confettiFall linear forwards;
+}
+
+/* ===== 每日/周/月 首开小报告 ===== */
+#dailyReportOverlay { z-index: 2100; background: rgba(20,12,32,0.55); backdrop-filter: blur(2px); }
+.dr-card {
+  width: min(92vw, 440px);
+  max-height: 84vh;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf7ff 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 22px 60px rgba(60,20,80,0.35);
+}
+.dr-scroll { overflow-y: auto; padding: 18px 18px 6px; -webkit-overflow-scrolling: touch; }
+.dr-actions { padding: 12px 18px 18px; flex-shrink: 0; }
+.dr-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 13px;
+  background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+.dr-btn:active { transform: scale(0.98); }
+.dr-sec { margin-bottom: 16px; }
+.dr-sec:last-child { margin-bottom: 4px; }
+.dr-sec-head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 9px;
+}
+.dr-sec-ico {
+  width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  background: var(--purple-light); color: var(--purple);
+}
+.dr-sec-title { font-size: 16px; font-weight: 800; color: var(--text); }
+.dr-sec-sub { font-size: 11.5px; color: var(--text-secondary); margin-top: 1px; }
+.dr-block-label {
+  font-size: 11.5px; font-weight: 700; color: var(--purple);
+  letter-spacing: .5px; margin: 11px 0 6px;
+}
+.dr-metric {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; font-size: 13.5px;
+  border-bottom: 1px dashed rgba(0,0,0,0.05);
+}
+.dr-metric:last-child { border-bottom: none; }
+.dr-dot {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff;
+}
+.dr-dot.ok { background: #2ecc71; }
+.dr-dot.no { background: #ff6b8a; }
+.dr-mlabel { flex: 1; color: var(--text); }
+.dr-mval { font-weight: 700; color: var(--text-secondary); }
+.dr-mval.good { color: #2ecc71; }
+.dr-mval.bad { color: #ff5c8a; }
+.dr-prob {
+  background: #fff4f6; border-left: 3px solid #ff6b8a;
+  border-radius: 0 9px 9px 0; padding: 8px 10px; margin-bottom: 8px;
+}
+.dr-prob-p { font-size: 13px; font-weight: 700; color: #d6336c; }
+.dr-prob-m { font-size: 12.5px; color: #5a4a52; line-height: 1.55; margin-top: 3px; }
+.dr-prob-m b { color: var(--purple); }
+.dr-motivate {
+  background: var(--purple-light); border-radius: 12px;
+  padding: 11px 12px; font-size: 13.5px; line-height: 1.6; color: var(--purple); font-weight: 600;
+}
+.dr-empty { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; padding: 4px 2px; }
+@keyframes confettiFall {
+  0% { transform: translateY(-40px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(340deg); opacity: 0.7; }
+}
+.celebrate-banner {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.96);
+  border-radius: 20px;
+  padding: 20px 26px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  animation: bannerPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 82%;
+}
+@keyframes bannerPop {
+  0% { transform: translateX(-50%) scale(0.4); opacity: 0; }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+.celebrate-banner .cb-icon { font-size: 42px; }
+.celebrate-banner .cb-text {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 6px;
+  background: linear-gradient(120deg, #ec4899, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.celebrate-banner .cb-sub { font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(100px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(45,31,39,0.92);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 22px;
+  font-size: 13.5px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 1500;
+  white-space: nowrap;
+  max-width: 92vw;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Mini encouragement popup（每勾选一项弹出的小动画） */
+.mini-pop {
+  position: fixed;
+  top: 34%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+  background: rgba(255,255,255,0.98);
+  border-radius: 22px;
+  padding: 18px 30px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1600;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.mini-pop.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.mini-pop .mp-icon { font-size: 36px; animation: mpBounce 0.65s ease; }
+.mini-pop .mp-text { font-size: 15px; font-weight: 600; color: var(--text-primary); text-align: center; }
+.mini-pop .mp-sub { font-size: 12px; color: var(--text-secondary); text-align: center; }
+@keyframes mpBounce {
+  0% { transform: scale(0) rotate(-25deg); }
+  60% { transform: scale(1.35) rotate(10deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* 流行舞学习卡片 */
+.dance-countdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,122,165,0.08);
+  border: 1px solid rgba(255,122,165,0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-top: 10px;
+}
+.dance-countdown.due {
+  background: rgba(255,149,0,0.10);
+  border-color: rgba(255,149,0,0.4);
+}
+.dc-icon { font-size: 24px; }
+.dc-main { font-size: 13.5px; font-weight: 600; }
+.dc-sub { font-size: 11.5px; color: var(--text-secondary); margin-top: 2px; }
+.dc-days { margin-left: auto; text-align: center; flex-shrink: 0; }
+.dc-days-num { font-size: 24px; font-weight: 700; color: #ff5c8a; line-height: 1; }
+.dance-countdown.due .dc-days-num { color: #ff9500; }
+.dc-days-label { font-size: 10.5px; color: var(--text-secondary); margin-top: 2px; }
+.dc-dots { display: flex; gap: 5px; margin-top: 5px; justify-content: flex-end; }
+.dc-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.12); }
+.dc-dot.fill { background: #ff7aa5; }
+/* 舞蹈学习：网格 + 工具栏 */
+.dance-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.dance-size { font-size: 11.5px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+.ds-btn { font-size: 11.5px; padding: 3px 9px; border: 1px solid rgba(0,0,0,0.14); border-radius: 7px; background: #fff; color: #555; cursor: pointer; }
+.ds-btn.active { background: #ff5c8a; color: #fff; border-color: #ff5c8a; }
+.dance-tools { display: flex; gap: 8px; }
+.dv-tool { font-size: 12px; font-weight: 600; padding: 7px 12px; border: none; border-radius: 9px; background: #ff5c8a; color: #fff; cursor: pointer; }
+.dv-tool:active { opacity: 0.85; }
+.dv-tool.ghost { background: rgba(91,124,255,0.15); color: #5b7cff; }
+.dv-tool:disabled { opacity: 0.6; }
+.dance-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+.dance-grid .dv-card {
+  border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; overflow: hidden;
+  background: #fff; display: flex; flex-direction: column;
+}
+.dv-cover {
+  position: relative; width: 100%; aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #ffd6e7, #c9e7ff);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.dv-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dv-cover .dv-emoji { font-size: 30px; opacity: 0.5; }
+.dv-cover .dv-play {
+  position: absolute; right: 7px; bottom: 7px; width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(0,0,0,0.55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;
+}
+.dv-body { padding: 7px 9px 9px; display: flex; flex-direction: column; gap: 5px; }
+.dv-title { font-size: 13px; font-weight: 700; line-height: 1.25; }
+.dv-ok { font-size: 10.5px; color: #2ecc71; font-weight: 700; margin-left: 3px; }
+.dv-live { font-size: 10.5px; margin-left: 3px; }
+.dv-artist { font-size: 11px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dv-actions { display: flex; gap: 6px; margin-top: 2px; }
+.dv-btn { flex: 1; font-size: 11.5px; font-weight: 600; padding: 6px 4px; border: none; border-radius: 8px; background: rgba(91,124,255,0.13); color: #5b7cff; cursor: pointer; }
+.dv-btn:active { background: rgba(91,124,255,0.25); }
+.dv-btn.done { background: rgba(46,204,113,0.15); color: #2ecc71; }
+.dance-foot { font-size: 11px; color: var(--text-secondary); margin-top: 9px; display: flex; justify-content: space-between; gap: 8px; }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255,255,255,0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 10px calc(8px + var(--safe-bottom));
+  z-index: 100;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+.nav-icon { font-size: 22px; line-height: 1; }
+.nav-label { font-size: 11px; font-weight: 600; }
+.nav-item.active { color: var(--accent); }
+.nav-item.active .nav-icon { transform: scale(1.15); transition: transform 0.2s; }
+</style>
+<script>/*__lsShim*/
+(function(){
+  var P='yc_', K='whub_ok';
+  function real(k){return k===K?k:P+k;}
+  try{
+    var d=Object.getOwnPropertyDescriptor(window,'localStorage');
+    if(!d||!d.configurable) return;
+    var orig=window.localStorage;
+    var proxy={
+      getItem:function(k){return orig.getItem(real(k));},
+      setItem:function(k,v){orig.setItem(real(k),v);},
+      removeItem:function(k){orig.removeItem(real(k));},
+      key:function(i){
+        var n=0;
+        for(var j=0;j<orig.length;j++){var k=orig.key(j);
+          if(k&&k.indexOf(P)===0){if(n===i)return k.substring(P.length);n++;}}
+        return null;
+      },
+      clear:function(){
+        var del=[];
+        for(var j=0;j<orig.length;j++){var k=orig.key(j);
+          if(k&&k.indexOf(P)===0)del.push(k);}
+        for(var j2=0;j2<del.length;j2++)orig.removeItem(del[j2]);
+      }
+    };
+    Object.defineProperty(proxy,'length',{get:function(){
+      var n=0;
+      for(var j=0;j<orig.length;j++){var k=orig.key(j);
+        if(k&&k.indexOf(P)===0)n++;}
+      return n;
+    }});
+    Object.defineProperty(window,'localStorage',{value:proxy,configurable:true});
+  }catch(e){}
+})();
+</script>
+
+</head><meta name="robots" content="noindex,nofollow,noarchive,max-image-preview:none">
+
+<style id="__lkcss">
+#__lock{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;
+  justify-content:center;background:#f5f6f8;padding:20px;font-family:-apple-system,
+  BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+#__lock .b{background:#fff;border:1px solid #e3e6ea;border-radius:14px;
+  padding:28px 26px;max-width:340px;width:100%;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.08)}
+#__lock .i{font-size:30px;margin-bottom:8px}
+#__lock h3{font-size:16px;color:#1a1d21;margin-bottom:6px}
+#__lock p{font-size:13px;color:#6b7280;margin-bottom:16px;line-height:1.6}
+#__lock input{width:100%;padding:11px 13px;font-size:16px;border:1px solid #d5d9de;
+  border-radius:8px;text-align:center;letter-spacing:2px;outline:none;box-sizing:border-box}
+#__lock input:focus{border-color:#4a5bd6}
+#__lock button{margin-top:12px;width:100%;padding:11px;background:#4a5bd6;color:#fff;
+  border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+#__lock button:active{background:#3a4bc0}
+#__lock .e{color:#a32d2d;font-size:12px;margin-top:10px;min-height:16px}
+#__lock .h{font-size:11px;color:#9aa1ab;margin-top:14px}
+#__popup{position:fixed;inset:0;z-index:99998;display:none;align-items:center;
+  justify-content:center;background:rgba(20,22,26,.45);padding:20px}
+#__popup .b{background:#fff;border-radius:14px;padding:24px 22px;max-width:320px;width:100%;
+  text-align:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+#__popup h3{font-size:15px;margin-bottom:6px;color:#1a1d21}
+#__popup p{font-size:12px;color:#6b7280;margin-bottom:14px}
+#__popup input{width:100%;padding:10px 12px;font-size:16px;border:1px solid #d5d9de;
+  border-radius:8px;text-align:center;letter-spacing:2px;outline:none;box-sizing:border-box}
+#__popup button{margin-top:11px;width:100%;padding:10px;background:#4a5bd6;color:#fff;
+  border:0;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+#__popup .c{margin-top:9px;font-size:13px;color:#6b7280;cursor:pointer}
+#__popup .e{color:#a32d2d;font-size:12px;margin-top:8px;min-height:15px}
+</style>
+
+<body>
+
+<div id="__lock"><div class="b">
+  <div class="i">🔒</div>
+  <h3>需要口令才能查看</h3>
+  <p>本页面为私人工作台<br>请输入访问口令</p>
+  <input type="password" id="__lin" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="__lbtn">进入</button>
+  <div class="e" id="__lerr"></div>
+  <div class="h">输一次后，这台设备会记住 30 天</div>
+</div></div>
+
+
+<div class="header">
+  <div class="header-left">
+    <h1>雨辰的工作台</h1>
+    <div class="date" id="dateDisplay"></div>
+  </div>
+  <div class="header-right" id="headerRings"></div>
+</div>
+
+<div class="content">
+
+  <!-- ===== 学习 Tab ===== -->
+  <div class="tab-content active" id="tab-study">
+    <div class="section-title">📚 每日学习</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon study">✏️</div>
+        <div>
+          <div class="card-title">每日学习任务</div>
+          <div class="card-subtitle">今日事，今日毕</div>
+        </div>
+      </div>
+      <ul class="checklist" id="studyChecklist">
+        <li data-id="t1" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">✏️ 数学作业</span></li>
+        <li data-id="t2" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">📖 语文作业</span></li>
+        <li data-id="t3" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🔤 ��语作业</span></li>
+        <li data-id="t4" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🗣️ 英语打卡</span></li>
+        <li data-id="t13" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🦉 多邻国打卡25分钟</span></li>
+        <li data-id="t5" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🔭 物理作业</span></li>
+        <li data-id="t6" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🧪 化学作业</span></li>
+        <li data-id="t11" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🌿 生物作业</span></li>
+        <li data-id="t12" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">🌍 地理作业</span></li>
+        <li data-id="t7" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">📜 历史作业</span></li>
+        <li data-id="t8" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">⚖️ 道法作业</span></li>
+        <li data-id="t9" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">📚 阅读30分钟</span></li>
+        <li data-id="t10" onclick="toggleStudyCheck(this)"><div class="checkbox"></div><span class="checklist-text">✍️ 错题订正记录</span></li>
+      </ul>
+      <div class="progress-wrap" style="margin-top:10px;">
+        <div class="progress-label">
+          <span>今日完成</span>
+          <span id="studyProgress">0/13</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="studyProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="reviewCard">
+      <div class="card-header">
+        <div class="card-icon note">📝</div>
+        <div>
+          <div class="card-title">当日复盘及阅读笔记</div>
+          <div class="card-subtitle" id="reviewHint">写下今天的收获和想法</div>
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <div class="saved-note" id="reviewNote" style="display:none"></div>
+        <span class="note-edit-link" id="reviewEditLink" style="display:none" onclick="editReview()">✏️ 修改</span>
+        <textarea class="note-input" id="reviewInput" placeholder="今天学到了什么？阅读有什么感想？遇到了什么难题？..."></textarea>
+        <button class="note-save" onclick="saveReview()">保存记录</button>
+      </div>
+    </div>
+
+    <div class="card" id="knowCard">
+      <div class="card-header">
+        <div class="card-icon note">📱</div>
+        <div>
+          <div class="card-title">刷短视频时了解一个有益的知识</div>
+          <div class="card-subtitle" id="knowHint">把屏幕时���变成成长时间</div>
+        </div>
+      </div>
+      <ul class="checklist">
+        <li onclick="toggleKnow()"><div class="checkbox" id="knowCheckbox"></div><span class="checklist-text" id="knowText">🧠 今天从短视频里学到了一个有益的知识</span></li>
+      </ul>
+      <div id="knowNoteArea" style="display:none; margin-top: 8px;">
+        <div class="saved-note" id="knowNote" style="display:none"></div>
+        <span class="note-edit-link" id="knowEditLink" style="display:none" onclick="editKnowNote()">✏️ 修改</span>
+        <textarea class="note-input" id="knowInput" placeholder="这个知识讲的是什么？你有什么想法或启发？"></textarea>
+        <button class="note-save" onclick="saveKnowNote()">记下我的想法</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon report">🔥</div>
+        <div>
+          <div class="card-title">坚持的力量</div>
+          <div class="card-subtitle">每天进步一点点</div>
+        </div>
+      </div>
+      <div class="streak-row">
+        <span class="streak-flame">🔥</span>
+        <div>
+          <div><span class="streak-num" id="streakNum">0</span> <span style="font-size:14px;color:var(--text-secondary);">天</span></div>
+          <div class="streak-desc" id="streakDesc">连续完成全部任务的天数</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 运动 Tab ===== -->
+  <div class="tab-content" id="tab-sport">
+    <div class="section-title">🏃‍♀️ 本周运动</div>
+    <div class="week-range-label" id="weekRangeLabel"></div>
+
+    <div class="card" id="danceCard">
+      <div class="card-header">
+        <div class="card-icon dance">💃</div>
+        <div>
+          <div class="card-title">流行舞学习 · 每三天学会一支</div>
+          <div class="card-subtitle" id="danceHint">赵美延 · (G)I-DLE · aespa 为主，点歌名看教学</div>
+        </div>
+      </div>
+      <div class="dance-countdown" id="danceCountdown"></div>
+      <div class="dance-toolbar">
+        <div class="dance-size">显示
+          <button class="ds-btn" data-n="6" onclick="setDanceGridSize(6)">6</button>
+          <button class="ds-btn" data-n="8" onclick="setDanceGridSize(8)">8</button>
+          <button class="ds-btn" data-n="10" onclick="setDanceGridSize(10)">10</button>
+          首</div>
+        <div class="dance-tools">
+          <button class="dv-tool" onclick="swapDanceBatch()">🔄 换一批</button>
+          <button class="dv-tool ghost" id="danceRefreshBtn" onclick="refreshDanceNow()">🌐 联网更新</button>
+        </div>
+      </div>
+      <div class="dance-grid" id="danceVideoList"></div>
+      <div class="dance-foot" id="danceFoot"></div>
+      <button class="note-save" style="width:100%; margin-top:10px;" onclick="markDanceDone()">✅ 今天学会了一支新舞</button>
+    </div>
+
+    <div class="checkin-card">
+      <div class="checkin-row">
+        <div class="checkin-icon rope">🤸‍♀️</div>
+        <div class="checkin-info">
+          <div class="checkin-name">跳绳</div>
+          <div class="checkin-target" id="ropeTarget"></div>
+        </div>
+        <div class="checkin-dots" id="ropeDots"></div>
+      </div>
+      <button class="btn-checkin ready" id="ropeCheckinBtn" onclick="checkin('rope')">🤸‍♀️ 打卡签到</button>
+      <div class="undo-link" id="ropeUndo" style="display:none" onclick="undoCheckin('rope')">↩️ 撤销上次打卡</div>
+    </div>
+
+    <div class="checkin-card">
+      <div class="checkin-row">
+        <div class="checkin-icon dance">💃</div>
+        <div class="checkin-info">
+          <div class="checkin-name">舞蹈课</div>
+          <div class="checkin-target" id="danceTarget"></div>
+        </div>
+        <div class="checkin-dots" id="danceDots"></div>
+      </div>
+      <button class="btn-checkin ready" id="danceCheckinBtn" onclick="checkin('dance')">💃 打卡签到</button>
+      <div class="undo-link" id="danceUndo" style="display:none" onclick="undoCheckin('dance')">↩️ 撤销上次打卡</div>
+    </div>
+
+    <div class="checkin-card">
+      <div class="checkin-row">
+        <div class="checkin-icon self">🪞</div>
+        <div class="checkin-info">
+          <div class="checkin-name">自学舞蹈</div>
+          <div class="checkin-target" id="selfTarget"></div>
+        </div>
+        <div class="checkin-dots" id="selfDots"></div>
+      </div>
+      <button class="btn-checkin ready" id="selfCheckinBtn" onclick="checkin('self')">🪞 打卡签到</button>
+      <div class="undo-link" id="selfUndo" style="display:none" onclick="undoCheckin('self')">↩️ 撤销上次打卡</div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <div class="card-header">
+        <div class="card-icon sport">📊</div>
+        <div>
+          <div class="card-title">本周运动总进度</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>完成情况</span>
+          <span id="sportProgress">0/4</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill orange" id="sportProgressBar" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 报告 Tab ===== -->
+  <div class="tab-content" id="tab-report">
+    <div class="report-tabs">
+      <button class="report-tab active" onclick="switchReportPeriod('week')" id="rp-week">周报</button>
+      <button class="report-tab" onclick="switchReportPeriod('month')" id="rp-month">月报</button>
+      <button class="report-tab" onclick="switchReportPeriod('year')" id="rp-year">年报</button>
+    </div>
+    <div id="reportContent"></div>
+
+    <div class="data-migration">
+      <div class="dm-title">📱 数据迁移（换设备时使用）</div>
+      <button class="dm-btn" onclick="exportAllData()">📤 导出全部数据</button>
+      <button class="dm-btn" onclick="document.getElementById('importInput').click()">📥 导入数据</button>
+      <input type="file" id="importInput" accept=".json" style="display:none" onchange="if(this.files[0])importData(this.files[0])">
+    </div>
+
+    <div class="cloud-sync-section">
+      <div class="dm-title">☁️ 云端同步</div>
+      <div id="cloudSyncContent"></div>
+      <div class="cloud-help" id="cloudHelp">
+        <b>设置步骤（约5分钟）：</b><br>
+        1. 打开 supabase.com 注册免费账号<br>
+        2. 新建项目（随便取个名字，设个数据库密码）<br>
+        3. 左侧菜单点「SQL Editor」，粘贴以下SQL并运行：<br>
+        <textarea readonly style="width:100%;font-size:11px;font-family:monospace;margin:6px 0;padding:8px;border-radius:6px;background:#1e1e1e;color:#e0e0e0;border:1px solid #444;min-height:90px;" onclick="this.select()">CREATE TABLE workbench_data (
+  sync_code TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE workbench_data ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "allow_all" ON workbench_data
+  FOR ALL USING (true) WITH CHECK (true);</textarea>
+        4. 左下角点「Project Settings」→「API」<br>
+        5. 复制「Project URL」和「anon public」密钥<br>
+        6. 回到这里填入，点「测试并连接」
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Cloud Setup Modal -->
+<div class="modal-overlay" id="cloudModal">
+  <div class="modal-card">
+    <div class="modal-title">☁️ 开启云同步</div>
+    <div class="modal-desc">连接 Supabase 免费云数据库后，所有设备数据自动同步。<span class="modal-link" onclick="document.getElementById('cloudHelp').classList.toggle('show')">查看设置步骤</span></div>
+    <div class="modal-field">
+      <label>Supabase Project URL</label>
+      <input class="modal-input" id="supabaseUrl" type="text" placeholder="https://xxxxx.supabase.co" autocomplete="off">
+      <div style="font-size:11px;color:var(--text-secondary);margin-top:4px">只需域名，不要带 /rest/v1/</div>
+    </div>
+    <div class="modal-field">
+      <label>API Key（新版用 sb_publishable_ 开头）</label>
+      <input class="modal-input" id="supabaseKey" type="text" placeholder="eyJhbGciOi... 或 sb_publishable_..." autocomplete="off">
+    </div>
+    <div class="modal-field">
+      <label>同步码（6位数字）</label>
+      <div class="sync-code-input-row">
+        <input class="modal-input" id="syncCode" type="text" placeholder="雨辰的专属同步码" maxlength="6" inputmode="numeric" autocomplete="off">
+        <button class="sync-code-btn" onclick="generateSyncCode()">填入</button>
+      </div>
+      <div class="modal-hint">雨辰的专属同步码是 <b>816816</b>（已自动填好）。换设备（如新 iPad）时输入<b>相同的同步码 816816</b> 即可把数据同步过来。它与爸爸工作台的同步码不同，数据各自分开保存，不会混淆。</div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeCloudModal()">取消</button>
+      <button class="modal-btn confirm" id="cloudTestBtn" onclick="testAndSaveCloud()">测试并连接</button>
+    </div>
+  </div>
+</div>
+
+<!-- Celebration overlay -->
+<div class="celebrate-overlay" id="celebrateOverlay">
+  <div class="celebrate-banner" id="celebrateBanner">
+    <div class="cb-icon" id="cbIcon">🎉</div>
+    <div class="cb-text" id="cbText"></div>
+    <div class="cb-sub" id="cbSub">继续保持，你正在变成更棒的自己！</div>
+  </div>
+</div>
+
+<!-- 每日/周/月 首开小报告 -->
+<div class="modal-overlay" id="dailyReportOverlay">
+  <div class="dr-card">
+    <div class="dr-scroll" id="dailyReportBody"></div>
+    <div class="dr-actions">
+      <button class="dr-btn" onclick="closeDailyReport()">收下这份报告 👌</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Mini encouragement popup -->
+<div class="mini-pop" id="miniPop">
+  <div class="mp-icon" id="mpIcon">✨</div>
+  <div class="mp-text" id="mpText"></div>
+  <div class="mp-sub" id="mpSub"></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('study')" id="nav-study">
+    <span class="nav-icon">📚</span>
+    <span class="nav-label">学习</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('sport')" id="nav-sport">
+    <span class="nav-icon">🏃‍♀️</span>
+    <span class="nav-label">运动</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('report')" id="nav-report">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">报告</span>
+  </button>
+</nav>
+
+<script>
+// ====================
+//  CONFIG — 校历日期可按学校实际通知调整
+// ====================
+const TASK_IDS = ['t1','t2','t3','t4','t13','t5','t6','t11','t12','t7','t8','t9','t10'];
+const TASK_TOTAL = 13;
+const SPORT_ITEMS = [
+  { key: 'rope',  name: '🤸‍♀️ 跳绳',    perWeek: 2 },
+  { key: 'dance', name: '💃 舞蹈课',   perWeek: 1 },
+  { key: 'self',  name: '🪞 自学舞蹈', perWeek: 1 }
+];
+const SPORT_TARGET_TOTAL = 4; // 2+1+1
+
+// 流行舞学习（卡片1）：每三天学会一支。每支舞直接链接到 B 站对应教学视频（bvid 固定），
+// 点歌名即跳转播放，无需二次点击；bvid 来自实时搜索结果，某视频若被下架可更新 bvid 兜底关键词 kw。
+// 舞单以雨辰喜欢的赵美延（Mi-yeon）个人曲、她的组合 (G)I-DLE、以及 aespa 为主，再穿插其他当红女团/流行舞。
+// 每首歌右侧有「🔁 换一个」（换成列表里另一支）和「🎯 已学会」（标注学会并刷新三天周期）。
+const DANCE_CYCLE_DAYS = 3;
+const DANCE_VIDEOS = [
+  // —— 赵美延（Mi-yeon）个人曲 ——
+  { title: 'Drive',       artist: '赵美延 Mi-yeon', tag: '美延 Solo', bvid: 'BV1bL4y1c74H', kw: '赵美延 Drive 舞蹈教学 镜面' },
+  // —— 赵美延的组合 (G)I-DLE ——
+  { title: 'Queencard',   artist: '(G)I-DLE',       tag: '(G)I-DLE', bvid: 'BV1Lh4y147y6', kw: '(G)I-DLE Queencard 舞蹈教学 镜面' },
+  { title: 'Nxde',        artist: '(G)I-DLE',       tag: '(G)I-DLE', bvid: 'BV1kjfZYWEGv', kw: '(G)I-DLE Nxde 舞蹈教学 镜面' },
+  { title: 'Tomboy',      artist: '(G)I-DLE',       tag: '(G)I-DLE', bvid: 'BV1Ys4y1H7vy', kw: '(G)I-DLE Tomboy 舞蹈教学 镜面' },
+  // —— aespa ——
+  { title: 'Lemonade',    artist: 'aespa',          tag: 'aespa',    bvid: 'BV1CoVo6qEJw', kw: 'aespa Lemonade 舞蹈教学 镜面' },
+  { title: 'Supernova',   artist: 'aespa',          tag: 'aespa',    bvid: 'BV18f42197mn', kw: 'aespa Supernova 舞蹈教学 镜面' },
+  { title: 'Whiplash',    artist: 'aespa',          tag: 'aespa',    bvid: 'BV1ZH1NYAEkh', kw: 'aespa Whiplash 舞蹈教学 镜面' },
+  { title: 'Drama',       artist: 'aespa',          tag: 'aespa',    bvid: 'BV1Gu4y1P73e', kw: 'aespa Drama 舞蹈教学 镜面' },
+  { title: 'Next Level',  artist: 'aespa',          tag: 'aespa',    bvid: 'BV1aY4y147f3', kw: 'aespa Next Level 舞蹈教学 镜面' },
+  // —— 其他当红女团 / 流行舞（穿插）——
+  { title: 'APT.',        artist: 'ROSÉ & Bruno Mars', tag: '流行爆款', bvid: 'BV11XSoYqEfm', kw: 'APT ROSÉ 舞蹈教学 镜面 慢速' },
+  { title: 'HANDS UP',    artist: 'MEOVV',             tag: 'Kpop女团', bvid: 'BV12EVkz7Er7', kw: 'MEOVV HANDS UP 舞蹈教学 镜面' }
+];
+function danceVideoUrl(v) {
+  // 优先直接跳转对应教学视频；若 bvid 缺失则回退到搜索页
+  if (v.bvid) return 'https://www.bilibili.com/video/' + v.bvid;
+  return 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(v.kw);
+}
+
+// ===== 每日联网舞单（B站热门舞蹈 + 抖音流行，服务端边缘函数统一抓取后写回 Supabase）=====
+// 把下面的 DANCE_CACHE_URL 改成你部署的 Supabase 边缘函数地址（部署脚本见 dance-refresh/index.ts）。
+// 留空 '' 时，舞单取自云端 DANCE_CACHE 行（已预填 40 首）；没联网就回退内置曲库，照样不重复。
+const DANCE_CACHE_URL = ''; // 例：'https://kbawjwoutvihqybrgkgq.supabase.co/functions/v1/dance-refresh'
+const DANCE_CACHE_CODE = 'DANCE_CACHE'; // Supabase 里存放每日舞单的行 key
+const DANCE_POOL_SIZE = 40;   // 每天抓取并缓存的舞单总量（上限）
+const DANCE_GRID_SIZE = 8;    // 默认同时显示的舞曲数（5-10，可在界面切换）
+const DANCE_GRID_OPTIONS = [6, 8, 10]; // 可切换的显示数量
+let _dancePoolUpdated = '';   // 舞单最后更新时间（界面提示用）
+
+// 当前舞单池（每日联网抓取后填充；未联网时回退到内置曲库）
+let _dancePool = null;
+function getDancePool() {
+  if (_dancePool && _dancePool.length) return _dancePool;
+  // 兜底：把内置曲库当作池子（仍支持每个按钮缓存 5 个不重复备选）
+  return DANCE_VIDEOS.map(v => ({ bvid: v.bvid, title: v.title, artist: v.artist, tag: v.tag, kw: v.kw, src: 'builtin' }));
+}
+
+// 长假开始日期（按深圳校历，可在每年校历公布后微调）
+const HOLIDAYS = [
+  { label: '寒假', date: new Date(2027, 0, 25) },
+  { label: '暑假', date: new Date(2027, 6, 11) },
+  { label: '寒假', date: new Date(2028, 0, 24) },
+  { label: '暑假', date: new Date(2028, 6, 10) },
+  { label: '寒假', date: new Date(2029, 0, 22) },
+  { label: '暑假', date: new Date(2029, 6, 9)  }
+];
+
+// ===== HELPERS =====
+function getDateKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function fmtDateKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function getWeekKey() {
+  const d = new Date();
+  const day = d.getDay(); // 0=Sun
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+  const monday = new Date(d.setDate(diff));
+  return monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
+}
+function getWeekStart(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset * 7);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(d.getFullYear(), d.getMonth(), diff);
+}
+function getMonthKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===== IndexedDB Storage (reliable on iOS) =====
+const DB_NAME = 'yuchen_workbench_db';
+const DB_STORE = 'kv';
+let _db = null;
+function openDB() {
+  return new Promise((resolve, reject) => {
+    if (_db) return resolve(_db);
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(DB_STORE); };
+    req.onsuccess = () => { _db = req.result; resolve(_db); };
+    req.onerror = () => reject(req.error);
+  });
+}
+function dbGet(key) {
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const req = tx.objectStore(DB_STORE).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  }));
+}
+function dbSet(key, val) {
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).put(val, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+// ─── Data loading (localStorage primary, IndexedDB silent backup) ───
+function mergeData(stored, fallback) {
+  if (stored === null || stored === undefined) return fallback;
+  if (typeof fallback !== 'object' || fallback === null) return stored;
+  if (Array.isArray(fallback)) return stored;
+  if (typeof stored !== 'object' || stored === null) return fallback;
+  const result = { ...fallback };
+  for (const k in stored) {
+    if (k in fallback && typeof fallback[k] === 'object' && !Array.isArray(fallback[k]) && fallback[k] !== null) {
+      result[k] = mergeData(stored[k], fallback[k]);
+    } else {
+      result[k] = stored[k];
+    }
+  }
+  return result;
+}
+function loadData(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === null) return fallback;
+    const parsed = JSON.parse(v);
+    if (typeof fallback === 'object' && fallback !== null && !Array.isArray(fallback) && typeof parsed === 'object' && parsed !== null) {
+      return mergeData(parsed, fallback);
+    }
+    return parsed;
+  } catch(e) { return fallback; }
+}
+function saveData(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+  dbSet(key, val).catch(() => {});
+  cloudSyncDebounced();
+}
+// On cold start: if localStorage was wiped but IndexedDB has data, restore it
+function restoreFromDB() {
+  return openDB().then(db => new Promise(resolve => {
+    const tx = db.transaction(DB_STORE, 'readonly');
+    const keysReq = tx.objectStore(DB_STORE).getAllKeys();
+    const valsReq = tx.objectStore(DB_STORE).getAll();
+    let restored = 0;
+    keysReq.onsuccess = () => {};
+    valsReq.onsuccess = () => {
+      const keys = keysReq.result, vals = valsReq.result;
+      keys.forEach((k, i) => {
+        if (!localStorage.getItem(k)) {
+          try { localStorage.setItem(k, JSON.stringify(vals[i])); restored++; } catch(e) {}
+        }
+      });
+      if (restored > 0) showToast('🔄 已从备份恢复 ' + restored + ' 条数据');
+      resolve();
+    };
+    valsReq.onerror = () => resolve();
+  })).catch(() => {});
+}
+
+// ===== DATE DISPLAY & COUNTDOWN RINGS =====
+function updateDate() {
+  const d = new Date();
+  const weekdays = ['日','一','二','三','四','五','六'];
+  const str = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 星期'+weekdays[d.getDay()];
+  document.getElementById('dateDisplay').textContent = str;
+  renderRings();
+}
+
+function renderRings() {
+  const now = new Date();
+
+  // 开学：最近的下一个 9月1日
+  let schoolTarget = new Date(now.getFullYear(), 8, 1);
+  if (now >= schoolTarget) schoolTarget = new Date(now.getFullYear() + 1, 8, 1);
+
+  // 下个长假：列表中第一个还没到的假期
+  const vac = HOLIDAYS.find(h => h.date > now) || HOLIDAYS[HOLIDAYS.length - 1];
+
+  const items = [
+    { label: '开学', target: schoolTarget, color: '#6366f1', spanDays: 365 },
+    { label: vac.label, target: vac.date, color: '#ec4899', spanDays: 183 }
+  ];
+
+  let html = '';
+  items.forEach(item => {
+    const start = new Date(item.target.getTime() - item.spanDays * 86400000);
+    const total = item.target - start;
+    const elapsed = now - start;
+    const remaining = Math.max(0, Math.ceil((item.target - now) / 86400000));
+    const pct = Math.min(100, Math.max(0, elapsed / total));
+    const r = 19;
+    const circ = 2 * Math.PI * r;
+    const offset = circ * (1 - pct);
+
+    html += `<div class="ring-group">
+      <svg width="44" height="44" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="#f0e2e8" stroke-width="3"/>
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="${item.color}" stroke-width="3"
+          stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
+          stroke-linecap="round" transform="rotate(-90 22 22)"/>
+        <text x="22" y="19" text-anchor="middle" font-size="10" font-weight="700" fill="#2d1f27">${remaining}</text>
+        <text x="22" y="31" text-anchor="middle" font-size="7" fill="#8a7480">天</text>
+      </svg>
+      <span class="ring-label">距${item.label}</span>
+    </div>`;
+  });
+  document.getElementById('headerRings').innerHTML = html;
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ===== CELEBRATION =====
+const PRAISE_DONE = ['全部完成，太棒了！','今日任务清零，效率满分！','雨辰���真棒，说到做到！','又是自律的一天！','任务全完成，给你点赞！'];
+const PRAISE_MORE = ['超额完成，你超过自己啦！','太厉害了，超额达成！','这波操作满分，继续闪耀！'];
+const PRAISE_ACHIEVE = ['目标达成，为自己鼓个掌！','达标啦，坚持的样子最美！','已完成目标，继续保持！'];
+const PRAISE_SUB = ['自律的你正在悄悄变强 ✨','好习惯就是这样一天天养成的','小坚持，大变化，继续加油','你比昨天又进步了一点'];
+const PRAISE_CHECK = ['又完成一项，状态在线！','勾掉一项的感觉太棒了！','一项接一项，稳稳推进！','漂亮！继续保持这股劲！','每勾一项，就离目标近一步！','这就是自律的样子！','手起笔落，干净利落！','小小一步，大大的进步！'];
+
+// 每勾选一项时的小弹跳鼓励动画（比 celebrate 轻量，不打断操作）
+let _miniPopTimer = null;
+function miniPop(msg, sub, icon) {
+  const el = document.getElementById('miniPop');
+  document.getElementById('mpIcon').textContent = icon || '✨';
+  document.getElementById('mpText').textContent = msg;
+  document.getElementById('mpSub').textContent = sub || PRAISE_SUB[Math.floor(Math.random() * PRAISE_SUB.length)];
+  el.classList.add('show');
+  // 重新触发图标弹跳动画
+  const ic = document.getElementById('mpIcon');
+  ic.style.animation = 'none';
+  void ic.offsetWidth;
+  ic.style.animation = '';
+  clearTimeout(_miniPopTimer);
+  _miniPopTimer = setTimeout(() => el.classList.remove('show'), 1900);
+}
+
+function celebrate(msg, sub, icon) {
+  const overlay = document.getElementById('celebrateOverlay');
+  document.getElementById('cbText').textContent = msg;
+  document.getElementById('cbSub').textContent = sub || PRAISE_SUB[Math.floor(Math.random() * PRAISE_SUB.length)];
+  document.getElementById('cbIcon').textContent = icon || '🎉';
+  overlay.classList.add('show');
+
+  // emoji confetti
+  const emojis = ['🎉','✨','⭐','🌟','💖','🎊','🏅','🌈'];
+  for (let i = 0; i < 26; i++) {
+    const el = document.createElement('div');
+    el.className = 'celebrate-emoji';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (18 + Math.random() * 18) + 'px';
+    el.style.animationDuration = (1.8 + Math.random() * 1.6) + 's';
+    el.style.animationDelay = (Math.random() * 0.7) + 's';
+    overlay.appendChild(el);
+  }
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    overlay.querySelectorAll('.celebrate-emoji').forEach(e => e.remove());
+  }, 3200);
+}
+
+// ===== TAB SWITCH =====
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active', 'animate-in'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const content = document.getElementById('tab-' + tab);
+  content.classList.add('active', 'animate-in');
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'study') renderStudyTab();
+  if (tab === 'sport') renderSportTab();
+  if (tab === 'report') { renderReportTab(); renderCloudSyncUI(); }
+}
+
+// ====================
+//  STUDY TAB
+// ====================
+function renderStudyTab() {
+  const today = getDateKey();
+  const data = loadData('study-' + today, { tasks: [], review: '' });
+
+  document.querySelectorAll('#studyChecklist li').forEach(li => {
+    const id = li.dataset.id;
+    const cb = li.querySelector('.checkbox');
+    const txt = li.querySelector('.checklist-text');
+    if (data.tasks.includes(id)) {
+      cb.classList.add('checked');
+      txt.classList.add('done');
+    } else {
+      cb.classList.remove('checked');
+      txt.classList.remove('done');
+    }
+  });
+
+  const done = data.tasks.length;
+  const el = document.getElementById('studyProgress');
+  el.textContent = done + '/' + TASK_TOTAL + (done === TASK_TOTAL ? ' 🎉' : '');
+  document.getElementById('studyProgressBar').style.width = (done / TASK_TOTAL * 100) + '%';
+
+  // 复盘及阅读笔记
+  const review = loadData('review-' + today, '');
+  const rn = document.getElementById('reviewNote');
+  const ri = document.getElementById('reviewInput');
+  const editLink = document.getElementById('reviewEditLink');
+  if (review) {
+    rn.textContent = review;
+    rn.style.display = 'block';
+    editLink.style.display = 'inline-block';
+    ri.style.display = 'none';
+    document.querySelector('#reviewCard .note-save').style.display = 'none';
+    document.getElementById('reviewHint').textContent = '今日已记录 ' + review.length + ' 字';
+  } else {
+    rn.style.display = 'none';
+    editLink.style.display = 'none';
+    ri.style.display = 'block';
+    ri.value = '';
+    document.querySelector('#reviewCard .note-save').style.display = 'inline-block';
+    document.getElementById('reviewHint').textContent = '写下今天的收获和想法';
+  }
+
+  // 卡片3：刷短视频时了解一个有益的知识
+  const know = loadData('know-' + today, { done: false, note: '' });
+  document.getElementById('knowCheckbox').classList.toggle('checked', !!know.done);
+  document.getElementById('knowText').classList.toggle('done', !!know.done);
+  const kArea = document.getElementById('knowNoteArea');
+  const kn = document.getElementById('knowNote');
+  const ki = document.getElementById('knowInput');
+  const kEdit = document.getElementById('knowEditLink');
+  const kSave = document.querySelector('#knowCard .note-save');
+  if (know.done) {
+    kArea.style.display = 'block';
+    if (know.note) {
+      kn.textContent = know.note;
+      kn.style.display = 'block';
+      kEdit.style.display = 'inline-block';
+      ki.style.display = 'none';
+      kSave.style.display = 'none';
+      document.getElementById('knowHint').textContent = '今日想法已记录 ' + know.note.length + ' 字';
+    } else {
+      kn.style.display = 'none';
+      kEdit.style.display = 'none';
+      ki.style.display = 'block';
+      ki.value = '';
+      kSave.style.display = 'inline-block';
+      document.getElementById('knowHint').textContent = '写下此刻的想法，知识才真正属于你';
+    }
+  } else {
+    kArea.style.display = 'none';
+    document.getElementById('knowHint').textContent = '把屏幕时间变成成长时间';
+  }
+
+  renderStreak();
+}
+
+function toggleStudyCheck(li) {
+  const today = getDateKey();
+  const data = loadData('study-' + today, { tasks: [], review: '' });
+  const id = li.dataset.id;
+  const idx = data.tasks.indexOf(id);
+  if (idx >= 0) {
+    data.tasks.splice(idx, 1);
+    saveData('study-' + today, data);
+    renderStudyTab();
+  } else {
+    data.tasks.push(id);
+    saveData('study-' + today, data);
+    renderStudyTab();
+    const done = data.tasks.length;
+    if (done === TASK_TOTAL) {
+      // 全部完成 → 庆祝
+      const key = 'celebrated-' + today;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, '1');
+        celebrate(PRAISE_DONE[Math.floor(Math.random() * PRAISE_DONE.length)]);
+      } else {
+        showToast('🎉 十项任务全部完成！');
+      }
+    } else if (done === TASK_TOTAL - 1) {
+      miniPop('只剩最后一项啦，胜利就在眼前！', '💪 马上就要全部完成', '💪');
+    } else {
+      // 每勾一项 → 小弹跳鼓励动画
+      miniPop(PRAISE_CHECK[Math.floor(Math.random() * PRAISE_CHECK.length)], '已完成 ' + done + '/' + TASK_TOTAL, '✅');
+    }
+  }
+}
+
+// 卡片3：短视频有益知识
+function toggleKnow() {
+  const today = getDateKey();
+  const know = loadData('know-' + today, { done: false, note: '' });
+  know.done = !know.done;
+  saveData('know-' + today, know);
+  renderStudyTab();
+  if (know.done) {
+    miniPop('在放松时也能学到知识，太会学习啦！', '📖 趁热记下此刻的想法吧', '🧠');
+  }
+}
+function saveKnowNote() {
+  const text = document.getElementById('knowInput').value.trim();
+  if (!text) { showToast('先写一点想法再保存哦'); return; }
+  const today = getDateKey();
+  const know = loadData('know-' + today, { done: true, note: '' });
+  know.note = text;
+  saveData('know-' + today, know);
+  renderStudyTab();
+  miniPop('想法已记录，这就是你的知识库！', '写下 ' + text.length + ' 字，学以致用 ✨', '💡');
+}
+function editKnowNote() {
+  const today = getDateKey();
+  const know = loadData('know-' + today, { done: true, note: '' });
+  document.getElementById('knowNote').style.display = 'none';
+  document.getElementById('knowEditLink').style.display = 'none';
+  const ki = document.getElementById('knowInput');
+  ki.style.display = 'block';
+  ki.value = know.note || '';
+  document.querySelector('#knowCard .note-save').style.display = 'inline-block';
+}
+
+function saveReview() {
+  const text = document.getElementById('reviewInput').value.trim();
+  if (!text) { showToast('先写点内容再保存哦'); return; }
+  const today = getDateKey();
+  saveData('review-' + today, text);
+  renderStudyTab();
+  miniPop('记录已保存，今天的思考很宝贵！', '写下 ' + text.length + ' 字 ✨', '📝');
+  if (text.length >= 50 && !sessionStorage.getItem('reviewCele-' + today)) {
+    sessionStorage.setItem('reviewCele-' + today, '1');
+    setTimeout(() => celebrate('认真的复盘是最快的成长方式！', '写了 ' + text.length + ' 字，继续保持 ✨', '📝'), 400);
+  }
+}
+
+function editReview() {
+  const today = getDateKey();
+  const review = loadData('review-' + today, '');
+  document.getElementById('reviewNote').style.display = 'none';
+  document.getElementById('reviewEditLink').style.display = 'none';
+  const ri = document.getElementById('reviewInput');
+  ri.style.display = 'block';
+  ri.value = review;
+  document.querySelector('#reviewCard .note-save').style.display = 'inline-block';
+}
+
+// 连续全勤天数（截至今天）
+function calcStreak() {
+  let streak = 0;
+  const d = new Date();
+  for (;;) {
+    const key = 'study-' + fmtDateKey(d);
+    const data = loadData(key, { tasks: [] });
+    if (data.tasks && data.tasks.length >= TASK_TOTAL) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function renderStreak() {
+  const s = calcStreak();
+  document.getElementById('streakNum').textContent = s;
+  const desc = document.getElementById('streakDesc');
+  if (s === 0) desc.textContent = '今天完成全部任务，开始你的连胜吧！';
+  else if (s < 3) desc.textContent = '连续 ' + s + ' 天全勤，好的开始！';
+  else if (s < 7) desc.textContent = '连续 ' + s + ' 天全勤，习惯正在形成 🔥';
+  else if (s < 21) desc.textContent = '连续 ' + s + ' 天全勤，自律初见成效 🌟';
+  else desc.textContent = '连续 ' + s + ' 天全勤，自律已经养成 👑';
+}
+
+// ====================
+//  SPORT TAB
+// ====================
+function sportFallback() {
+  const f = {};
+  SPORT_ITEMS.forEach(i => f[i.key] = 0);
+  return f;
+}
+
+// ===== 流行舞学习卡片（卡片1）=====
+function getDanceLearn() {
+  return loadData('danceLearn', { lastDone: '', count: 0, history: [], learnedSongs: [], shown: [], seen: [], gridSize: DANCE_GRID_SIZE });
+}
+// 当前网格显示数量（必须是可选项之一，否则回退默认）
+function getDanceGridSize(d) {
+  d = d || getDanceLearn();
+  const n = d.gridSize || DANCE_GRID_SIZE;
+  return DANCE_GRID_OPTIONS.indexOf(n) >= 0 ? n : DANCE_GRID_SIZE;
+}
+// Fisher–Yates 洗牌（返回新数组）
+function shuffleArr(arr) {
+  const a = (arr || []).slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+// 已从池中抽取/展示过的 bvid 集合（持久化，跨多次切换不重复）
+function seenBvidSet(d) {
+  d = d || getDanceLearn();
+  return new Set(d.seen || []);
+}
+function addSeen(d, bvid) {
+  if (!bvid) return;
+  d.seen = d.seen || [];
+  if (!d.seen.includes(bvid)) d.seen.push(bvid);
+  if (d.seen.length > 500) d.seen = d.seen.slice(-500);
+}
+// 从舞单池抽取 n 首「不重复」舞曲：优先没看过的，看过的按最旧优先回收；绝不重复当前屏幕上 shown 的内容。
+//   shownBvids：当前网格正在显示的 bvid（新抽的不能和它们撞）
+//   seenArr   ：历史看过的 bvid（按时间顺序，用于最旧优先回收）
+// 返回最多 n 首、彼此互不相同、且与当前屏不重复；池子较小时会用全池兜底补齐，保证屏上始终 n 张不重样。
+function drawFresh(n, shownBvids, seenArr, pool) {
+  const shown = new Set(shownBvids || []);
+  const all = (pool || []).filter(v => v && v.bvid);
+  const avail = all.filter(v => !shown.has(v.bvid)); // 当前屏之外的候选
+  if (!avail.length) return [];
+  const seenPos = new Map((seenArr || []).map((b, i) => [b, i]));
+  const unseen = shuffleArr(avail.filter(v => !seenPos.has(v.bvid)));
+  const seen = avail.filter(v => seenPos.has(v.bvid)).sort((a, b) => seenPos.get(a.bvid) - seenPos.get(b.bvid));
+  let result = unseen.concat(seen).slice(0, n);
+  // 兜底：池子较小、候选不足 n 时，从全池补齐，保证屏上始终 n 张互不重复（极端离线场景）
+  if (result.length < n) {
+    const have = new Set(result.map(v => v.bvid));
+    for (const v of shuffleArr(all)) {
+      if (result.length >= n) break;
+      if (!have.has(v.bvid)) { result.push(v); have.add(v.bvid); }
+    }
+  }
+  return result.slice(0, n);
+}
+// 初始化/补齐当前网格（保持不重复）。force=true 时不管是否为空都重新抽满（用于切换显示数量）。
+function ensureDanceGrid(d, force) {
+  d = d || getDanceLearn();
+  const pool = getDancePool();
+  const n = Math.min(getDanceGridSize(d), Math.max(1, pool.length));
+  if (!d.shown) d.shown = [];
+  const needRefill = force || d.shown.length !== n || d.shown.some(v => !v || !v.bvid);
+  if (needRefill) {
+    const fresh = drawFresh(n, [], d.seen, pool);
+    d.shown = fresh;
+    for (const v of fresh) addSeen(d, v.bvid);
+    saveData('danceLearn', d);
+  }
+  return d;
+}
+// 从 Supabase 读取每日舞单（DANCE_CACHE 行），返回 {videos, updated_at} 或 null
+async function loadDancePoolFromCloud() {
+  try {
+    const url = EMBEDDED_SUPA_URL || (getCloudConfig() || {}).url;
+    const key = EMBEDDED_SUPA_KEY || (getCloudConfig() || {}).anonKey;
+    if (!url || !key) return null;
+    const resp = await fetch(url + '/rest/v1/workbench_data?sync_code=eq.' + DANCE_CACHE_CODE + '&select=data,updated_at&limit=1', {
+      headers: { 'apikey': key, 'Authorization': 'Bearer ' + key }
+    });
+    if (!resp.ok) return null;
+    const rows = await resp.json();
+    if (!rows || !rows.length) return null;
+    const data = rows[0].data;
+    if (!data || !Array.isArray(data.videos) || !data.videos.length) return null;
+    return { videos: data.videos, updated_at: rows[0].updated_at };
+  } catch (e) { return null; }
+}
+// 每日静默联网更新：优先用云端舞单；缺失/为空则静默触发边缘函数刷新（每天最多一次）；都没有就回退内置曲���。
+// force=true 时忽略每天一次的节流，强制重新触发边缘函数刷新（用于手动「联网更新」按钮）。
+async function refreshDancePool(force) {
+  const today = getDateKey();
+  // 1) 云端读取每日舞单（轻量，每次加载都读，命中即返回）
+  let cloud = await loadDancePoolFromCloud();
+  // 2) 缺失或为空（或手动强制）→ 静默触发边缘函数刷新
+  const throttled = (sessionStorage.getItem('_danceLastRefreshDay') || '') === today;
+  if ((!cloud || !cloud.videos.length) && DANCE_CACHE_URL && (force || !throttled)) {
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 12000);
+      await fetch(DANCE_CACHE_URL, { signal: ctrl.signal, method: 'POST' });
+      clearTimeout(t);
+    } catch (e) { /* 静默失败，下次再说 */ }
+    try { sessionStorage.setItem('_danceLastRefreshDay', today); } catch (e) {}
+    cloud = await loadDancePoolFromCloud();
+  }
+  if (cloud && cloud.videos.length) {
+    _dancePool = cloud.videos.slice(0, DANCE_POOL_SIZE);
+    _dancePoolUpdated = (cloud.updated_at || '').replace('T', ' ').slice(0, 16) || '';
+    return _dancePool;
+  }
+  // 3) 兜底：内置曲库
+  _dancePool = DANCE_VIDEOS.map(v => ({ bvid: v.bvid, title: v.title, artist: v.artist, tag: v.tag, kw: v.kw, src: 'builtin' }));
+  _dancePoolUpdated = '';
+  return _dancePool;
+}
+function renderDanceCard() {
+  const d = getDanceLearn();
+  const box = document.getElementById('danceCountdown');
+  box.classList.remove('due');
+  ensureDanceGrid(d, false); // 屏幕为空/数量不符时自动补齐（保持不重复）
+
+  if (!d.lastDone) {
+    box.innerHTML = '<span class="dc-icon">🆕</span><div><div class="dc-main">从下面挑一支喜欢的开始学吧！</div>'
+      + '<div class="dc-sub">每 ' + DANCE_CYCLE_DAYS + ' 天学会一支新舞</div></div>'
+      + '<div class="dc-days"><div class="dc-days-num">' + DANCE_CYCLE_DAYS + '</div><div class="dc-days-label">天/周期</div></div>';
+  } else {
+    const elapsed = Math.floor((new Date(getDateKey()) - new Date(d.lastDone)) / 86400000);
+    const left = DANCE_CYCLE_DAYS - elapsed;
+    let dots = '';
+    for (let i = 0; i < DANCE_CYCLE_DAYS; i++) dots += '<div class="dc-dot' + (i < Math.min(elapsed, DANCE_CYCLE_DAYS) ? ' fill' : '') + '"></div>';
+    if (left <= 0) {
+      box.classList.add('due');
+      box.innerHTML = '<span class="dc-icon">⏰</span><div><div class="dc-main">今天该学会一支新舞啦！</div>'
+        + '<div class="dc-sub">已经 ' + elapsed + ' 天啦，挑一支跳起来～</div><div class="dc-dots">' + dots + '</div></div>'
+        + '<div class="dc-days"><div class="dc-days-num">' + (elapsed > 99 ? '99+' : elapsed) + '</div><div class="dc-days-label">天啦</div></div>';
+    } else {
+      box.innerHTML = '<span class="dc-icon">⏳</span><div><div class="dc-main">距下次学会一支新舞</div>'
+        + '<div class="dc-sub">上支舞：' + d.lastDone.slice(5).replace('-', '月') + '日学会的</div><div class="dc-dots">' + dots + '</div></div>'
+        + '<div class="dc-days"><div class="dc-days-num">' + left + '</div><div class="dc-days-label">天剩余</div></div>';
+    }
+  }
+
+  const learnedSet = new Set(d.learnedSongs || []);
+  const pool = getDancePool();
+  const poolLive = pool.some(v => v.src && v.src !== 'builtin');
+  const n = getDanceGridSize(d);
+
+  const cards = (d.shown || []).map((v, i) => {
+    if (!v || !v.bvid) return '';
+    const learned = learnedSet.has(v.bvid);
+    const cover = v.cover
+      ? '<img src="' + escapeHtml(v.cover) + '" loading="lazy" onerror="var e=this.parentNode.querySelector(\'.dv-emoji\');if(e)e.style.display=\'flex\';this.remove();">'
+      : '';
+    const emoji = v.cover ? '' : '<span class="dv-emoji">💃</span>';
+    return '<div class="dv-card">'
+      + '<div class="dv-cover" onclick="openDanceVideo(' + i + ')">' + cover + emoji + '<div class="dv-play">▶</div></div>'
+      + '<div class="dv-body">'
+      +   '<div class="dv-title">' + escapeHtml(v.title) + (learned ? ' <span class="dv-ok">��已学会</span>' : '') + (poolLive && v.src !== 'builtin' ? ' <span class="dv-live">🌐</span>' : '') + '</div>'
+      +   '<div class="dv-artist">' + escapeHtml((v.artist || 'B站UP主') + ' · ' + (v.tag || '热门舞蹈')) + '</div>'
+      +   '<div class="dv-actions">'
+      +     '<button class="dv-btn swap" onclick="swapDanceOne(' + i + ')">🔁 换这个</button>'
+      +     '<button class="dv-btn ' + (learned ? 'done' : '') + '" onclick="markSongLearned(' + i + ')">' + (learned ? '✅ 已学会' : '🎯 已学会') + '</button>'
+      +   '</div>'
+      + '</div></div>';
+  }).join('');
+  document.getElementById('danceVideoList').innerHTML = cards;
+
+  // 高亮当前显示数量按钮
+  try {
+    document.querySelectorAll('.ds-btn').forEach(b => {
+      b.classList.toggle('active', Number(b.getAttribute('data-n')) === n);
+    });
+  } catch (e) {}
+
+  const shownCount = (d.shown || []).filter(v => v && v.bvid).length;
+  const seenInPool = (d.seen || []).filter(b => pool.some(v => v.bvid === b)).length;
+  const remain = Math.max(0, pool.length - seenInPool);
+  const foot = document.getElementById('danceFoot');
+  if (foot) {
+    foot.innerHTML = '<span>已看 ' + (d.seen ? d.seen.length : 0) + ' 首 · 还能换 ' + remain + ' 首</span>'
+      + '<span>' + (poolLive ? '🌐 联网舞单' + (_dancePoolUpdated ? ' · ' + _dancePoolUpdated : '') : '📦 本地曲库') + '</span>';
+  }
+
+  document.getElementById('danceHint').textContent = d.count
+    ? '已累计学会 ' + d.count + ' 支舞 💪' + (poolLive ? ' · 来自每日联网新舞单' : ' · 本地曲库')
+    : (poolLive ? '点封面看教学 · 换一批/换这个都不重复🌐' : '点封面看教学 · 换一批不重复');
+}
+function openDanceVideo(i) {
+  const d = getDanceLearn();
+  const v = (d.shown || [])[i];
+  if (!v) return;
+  window.open(danceVideoUrl(v), '_blank');
+}
+// 「换一批」：整屏换成 n 首全新的、彼此不重复、且与旧屏不重复的舞曲（全程本地、零网络）
+function swapDanceBatch() {
+  const d = getDanceLearn();
+  const n = getDanceGridSize(d);
+  const pool = getDancePool();
+  const curShown = (d.shown || []).map(v => v && v.bvid).filter(Boolean);
+  const fresh = drawFresh(n, curShown, d.seen, pool);
+  if (!fresh.length) { miniPop('暂时没有更多了', '点「联网更新」拉新舞单', '🔁'); return; }
+  d.shown = fresh;
+  for (const v of fresh) addSeen(d, v.bvid);
+  saveData('danceLearn', d);
+  renderSportTab();
+  const srcTag = pool.some(v => v.src && v.src !== 'builtin') ? '每日新舞单🌐' : '本地曲库';
+  miniPop('换了一批新舞 💃', n + ' 首互不重复 · 取自' + srcTag, '🔁');
+}
+// 「换这个」：只替换单张卡片，新歌不与屏幕上其它卡片重复（本地、零网络）
+function swapDanceOne(idx) {
+  const d = getDanceLearn();
+  const pool = getDancePool();
+  const cur = (d.shown || []).map(v => v && v.bvid).filter(Boolean);
+  const others = cur.filter((_, i) => i !== idx); // 新歌不能和屏幕上其它卡片撞
+  const fresh = drawFresh(1, others, d.seen, pool);
+  if (!fresh.length) { miniPop('这批看遍啦', '点「换一批」整批换新', '🔁'); return; }
+  d.shown[idx] = fresh[0];
+  addSeen(d, fresh[0].bvid);
+  saveData('danceLearn', d);
+  renderSportTab();
+}
+// 切换同时显示的舞曲数量（6/8/10）
+function setDanceGridSize(nn) {
+  const d = getDanceLearn();
+  d.gridSize = nn;
+  saveData('danceLearn', d);
+  ensureDanceGrid(d, true); // 重新抽满到新数量
+  renderSportTab();
+}
+// 「联网更新」：重新从云端（或边缘函数）拉取最新舞单，再用新池补齐网格
+async function refreshDanceNow() {
+  const btn = document.getElementById('danceRefreshBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '🌐 更新中…'; }
+  try {
+    await refreshDancePool(true);
+    const d = getDanceLearn();
+    ensureDanceGrid(d, false);
+    renderSportTab();
+    const pool = getDancePool();
+    const live = pool.some(v => v.src && v.src !== 'builtin');
+    miniPop('舞单已更新 🌐', live ? '已拉取最新热门舞蹈' : '当前为本地曲库', '����');
+  } catch (e) {
+    miniPop('更新失败', '网络异常，稍后再试', '🌐');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🌐 联网更新'; }
+  }
+}
+// 「已学会」：标注这支舞学会，刷新三天周期；同一首不会重复计数
+function markSongLearned(idx) {
+  const d = getDanceLearn();
+  const v = (d.shown || [])[idx];
+  if (!v) return;
+  const bvid = v.bvid;
+  const today = getDateKey();
+  d.learnedSongs = d.learnedSongs || [];
+  if (d.learnedSongs.includes(bvid)) {
+    showToast('这支已经标注学会啦 ✅');
+    return;
+  }
+  d.learnedSongs.push(bvid);
+  if (d.lastDone !== today) {
+    d.count = (d.count || 0) + 1;
+    (d.history = d.history || []).push(today);
+    d.lastDone = today;
+  }
+  saveData('danceLearn', d);
+  renderSportTab();
+  const name = v.title || '这支舞';
+  if (d.count >= 3 && d.count % 3 === 0) {
+    celebrate('《' + name + '》学会，累计 ' + d.count + ' 支！', '三天一支的坚持，身体和自信都在成长 🌟', '💃');
+  } else {
+    miniPop('《' + name + '》已标注学会！', '已累计学会 ' + d.count + ' 支 · 下一支 ' + DANCE_CYCLE_DAYS + ' 天后见', '💃');
+  }
+}
+function markDanceDone() {
+  const today = getDateKey();
+  const d = getDanceLearn();
+  if (d.lastDone === today) { showToast('今天已经学会一支啦，休息一下～'); return; }
+  d.count = (d.count || 0) + 1;
+  (d.history = d.history || []).push(today);
+  d.lastDone = today;
+  saveData('danceLearn', d);
+  renderSportTab();
+  if (d.count >= 3 && d.count % 3 === 0) {
+    celebrate('已经学会 ' + d.count + ' 支舞了！', '三天一支的坚持，身体和自信都在成长 🌟', '💃');
+  } else {
+    miniPop('又学会一支新舞，太厉害了！', '已累计 ' + d.count + ' 支 · 下一支 ' + DANCE_CYCLE_DAYS + ' 天后见', '💃');
+  }
+}
+
+function checkin(type) {
+  const wk = getWeekKey();
+  const data = loadData('sport-' + wk, sportFallback());
+  const item = SPORT_ITEMS.find(i => i.key === type);
+  data[type]++;
+  saveData('sport-' + wk, data);
+  renderSportTab();
+  if (data[type] > item.perWeek) {
+    celebrate(PRAISE_MORE[Math.floor(Math.random() * PRAISE_MORE.length)], item.name + ' 已 ' + data[type] + ' 次，超额 +' + (data[type] - item.perWeek), '🔥');
+  } else if (data[type] === item.perWeek) {
+    celebrate(PRAISE_ACHIEVE[Math.floor(Math.random() * PRAISE_ACHIEVE.length)], item.name + ' 本周目标达成！', '🎯');
+  } else {
+    miniPop(PRAISE_CHECK[Math.floor(Math.random() * PRAISE_CHECK.length)], item.name + ' 打卡 ' + data[type] + '/' + item.perWeek, '✅');
+  }
+}
+
+function undoCheckin(type) {
+  const wk = getWeekKey();
+  const data = loadData('sport-' + wk, sportFallback());
+  const item = SPORT_ITEMS.find(i => i.key === type);
+  if (data[type] > 0) {
+    data[type]--;
+    saveData('sport-' + wk, data);
+    renderSportTab();
+    showToast('↩️ ' + item.name + ' 已撤销 (剩余 ' + data[type] + ')');
+  }
+}
+
+function renderSportTab() {
+  const wk = getWeekKey();
+  const data = loadData('sport-' + wk, sportFallback());
+
+  // 本周日期范围
+  const monday = getWeekStart(0);
+  const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6);
+  document.getElementById('weekRangeLabel').textContent =
+    '本周：' + (monday.getMonth()+1) + '月' + monday.getDate() + '日 – ' + (sunday.getMonth()+1) + '月' + sunday.getDate() + '日';
+
+  renderDanceCard();
+
+  const dom = {
+    rope:  ['ropeDots',  'ropeCheckinBtn',  'ropeTarget',  'ropeUndo'],
+    dance: ['danceDots', 'danceCheckinBtn', 'danceTarget', 'danceUndo'],
+    self:  ['selfDots',  'selfCheckinBtn',  'selfTarget',  'selfUndo']
+  };
+  const icons = { rope: '🤸‍♀️', dance: '💃', self: '🪞' };
+
+  SPORT_ITEMS.forEach(item => {
+    const n = data[item.key] || 0;
+    const [dotsId, btnId, targetId, undoId] = dom[item.key];
+
+    let dotsHTML = '';
+    for (let i = 0; i < item.perWeek; i++) dotsHTML += '<div class="dot' + (i < n ? ' done' : '') + '"></div>';
+    for (let i = 0; i < Math.max(0, n - item.perWeek); i++) dotsHTML += '<div class="dot surplus"></div>';
+    document.getElementById(dotsId).innerHTML = dotsHTML;
+
+    const t = document.getElementById(targetId);
+    t.textContent = n > item.perWeek
+      ? '目标：每周 ' + item.perWeek + ' 次 · 已完成 ' + n + ' 次 🔥'
+      : '目标：每周 ' + item.perWeek + ' 次 · 已完成 ' + n + ' 次';
+
+    const btn = document.getElementById(btnId);
+    if (n > item.perWeek) {
+      btn.textContent = '🔥 超额 ' + n + ' 次 · 再来一次';
+      btn.className = 'btn-checkin surplus-btn';
+    } else if (n === item.perWeek && n > 0) {
+      btn.textContent = '🎉 本周已达标 · 再来一次';
+      btn.className = 'btn-checkin done-btn';
+    } else {
+      btn.textContent = icons[item.key] + ' 打卡签到 (' + n + '/' + item.perWeek + ')';
+      btn.className = 'btn-checkin ready';
+    }
+    document.getElementById(undoId).style.display = n > 0 ? 'block' : 'none';
+  });
+
+  const actualTotal = SPORT_ITEMS.reduce((s, i) => s + (data[i.key] || 0), 0);
+  const el = document.getElementById('sportProgress');
+  el.textContent = actualTotal > SPORT_TARGET_TOTAL ? actualTotal + '/' + SPORT_TARGET_TOTAL + ' 🔥' : actualTotal + '/' + SPORT_TARGET_TOTAL;
+  document.getElementById('sportProgressBar').style.width = Math.min(100, actualTotal / SPORT_TARGET_TOTAL * 100) + '%';
+}
+
+// ====================
+//  REPORT TAB
+// ====================
+let _reportPeriod = 'week';
+
+function switchReportPeriod(p) {
+  _reportPeriod = p;
+  document.querySelectorAll('.report-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('rp-' + p).classList.add('active');
+  renderReportTab();
+}
+
+function getMonthStart(offset) {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth() + offset, 1);
+}
+function getYearStart(offset) {
+  const d = new Date();
+  return new Date(d.getFullYear() + offset, 0, 1);
+}
+function getDatesRange(start, end) {
+  const dates = [];
+  const d = new Date(start);
+  while (d <= end) { dates.push(new Date(d)); d.setDate(d.getDate() + 1); }
+  return dates;
+}
+
+// 收集学习数据：返回各指标
+function collectStudyData(start, end) {
+  const today = new Date(); today.setHours(23,59,59,999);
+  const endC = end > today ? today : end;
+  const dates = getDatesRange(start, endC);
+  let daysElapsed = dates.length;
+  let taskSum = 0, perfectDays = 0, readDays = 0, wrongDays = 0, reviewDays = 0;
+  dates.forEach(d => {
+    const dk = fmtDateKey(d);
+    const s = loadData('study-' + dk, { tasks: [] });
+    const n = s.tasks ? s.tasks.length : 0;
+    taskSum += n;
+    if (n >= TASK_TOTAL) perfectDays++;
+    if (s.tasks && s.tasks.includes('t9')) readDays++;
+    if (s.tasks && s.tasks.includes('t10')) wrongDays++;
+    if (loadData('review-' + dk, '')) reviewDays++;
+  });
+  return {
+    daysElapsed,
+    avgPct: daysElapsed ? taskSum / (daysElapsed * TASK_TOTAL) * 100 : 0,
+    perfectDays, readDays, wrongDays, reviewDays
+  };
+}
+
+// 收集运动数据：范围内各项目总次数
+function collectSportData(start, end) {
+  const today = new Date(); today.setHours(23,59,59,999);
+  const endC = end > today ? today : end;
+  const totals = sportFallback();
+  const weekStart = new Date(start);
+  while (weekStart <= endC) {
+    const d = new Date(weekStart);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d.getFullYear(), d.getMonth(), diff);
+    const wk = monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
+    const s = loadData('sport-' + wk, sportFallback());
+    SPORT_ITEMS.forEach(i => totals[i.key] += s[i.key] || 0);
+    weekStart.setDate(weekStart.getDate() + 7);
+  }
+  return totals;
+}
+
+// 已过去的完整周数（用于计算目标）
+function countElapsedWeeks(start, end) {
+  const today = new Date(); today.setHours(23,59,59,999);
+  const endC = end > today ? today : end;
+  const weeks = Math.floor((endC - start) / (7 * 86400000)) ;
+  return Math.max(1, weeks);
+}
+
+function statRow(name, val, pct, achieved) {
+  const cls = achieved ? 'stat-row achieved' : 'stat-row';
+  const valHTML = achieved ? val + ' <span class="bounce-emoji">' + (pct > 100 ? '🔥' : '🎉') + '</span>' : val;
+  const barColor = pct >= 100 ? 'green' : 'purple';
+  return '<div class="' + cls + '">'
+    + '<div class="stat-head"><span class="stat-name">' + name + '</span><span class="stat-val">' + valHTML + '</span></div>'
+    + '<div class="progress-bar"><div class="progress-fill ' + barColor + '" style="width:' + Math.min(100, pct) + '%"></div></div>'
+    + '</div>';
+}
+
+function renderReportTab() {
+  const el = document.getElementById('reportContent');
+  const now = new Date();
+  let start, end, title;
+
+  if (_reportPeriod === 'week') {
+    start = getWeekStart(0);
+    end = new Date(start); end.setDate(end.getDate() + 6);
+    title = (start.getMonth()+1) + '月' + start.getDate() + '日 – ' + (end.getMonth()+1) + '月' + end.getDate() + '日 周报';
+  } else if (_reportPeriod === 'month') {
+    start = getMonthStart(0);
+    end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    title = start.getFullYear() + '年' + (start.getMonth()+1) + '月 月报';
+  } else {
+    start = getYearStart(0);
+    end = new Date(start.getFullYear(), 11, 31);
+    title = start.getFullYear() + '年 年报';
+  }
+
+  const study = collectStudyData(start, end);
+  const sport = collectSportData(start, end);
+  const weeks = countElapsedWeeks(start, end);
+
+  if (study.daysElapsed === 0) {
+    el.innerHTML = '<div class="card report-empty">本周还没有数据，先去完成今天的任务吧 💪</div>';
+    return;
+  }
+
+  const sportTargets = {};
+  SPORT_ITEMS.forEach(i => sportTargets[i.key] = i.perWeek * (_reportPeriod === 'week' ? 1 : weeks));
+
+  let achievedCount = 0, surplusCount = 0;
+  const rows = [];
+
+  // 学习指标
+  const taskPct = study.avgPct;
+  if (taskPct >= 100) achievedCount++;
+  rows.push(statRow('📚 每日任务完成率', Math.round(taskPct) + '%', taskPct, taskPct >= 100));
+
+  const perfectPct = study.perfectDays / study.daysElapsed * 100;
+  if (perfectPct >= 100) achievedCount++;
+  rows.push(statRow('🏅 全勤天数（13项全完成）', study.perfectDays + '/' + study.daysElapsed + ' 天', perfectPct, perfectPct >= 100));
+
+  // 阅读天数达标线：天数的 80%
+  const readPct = study.readDays / study.daysElapsed * 100;
+  const readAchieved = study.readDays >= Math.ceil(study.daysElapsed * 0.8);
+  if (readAchieved) achievedCount++;
+  rows.push(statRow('📖 阅读30分钟', study.readDays + '/' + study.daysElapsed + ' 天', readPct, readAchieved));
+
+  const wrongAchieved = study.wrongDays >= Math.ceil(study.daysElapsed * 0.8);
+  if (wrongAchieved) achievedCount++;
+  rows.push(statRow('✍️ 错题订正', study.wrongDays + '/' + study.daysElapsed + ' 天', study.wrongDays / study.daysElapsed * 100, wrongAchieved));
+
+  const reviewAchieved = study.reviewDays >= Math.ceil(study.daysElapsed * 0.8);
+  if (reviewAchieved) achievedCount++;
+  rows.push(statRow('📝 复盘及阅读笔记', study.reviewDays + '/' + study.daysElapsed + ' 天', study.reviewDays / study.daysElapsed * 100, reviewAchieved));
+
+  // 运动指标
+  SPORT_ITEMS.forEach(item => {
+    const n = sport[item.key];
+    const t = sportTargets[item.key];
+    const pct = n / t * 100;
+    if (pct >= 100) achievedCount++;
+    if (pct > 100) surplusCount++;
+    rows.push(statRow(item.name + '（目标' + t + '次）', n + '/' + t + ' 次', pct, pct >= 100));
+  });
+
+  // 星星
+  let stars = '';
+  const starCount = achievedCount;
+  for (let i = 0; i < Math.min(starCount, 8); i++) stars += '<span class="bounce-emoji" style="animation-delay:' + (i * 0.12) + 's">⭐</span>';
+  if (starCount > 8) stars += ' +' + (starCount - 8);
+
+  // 鼓励文案
+  let analysis;
+  if (surplusCount > 0) {
+    analysis = '🌟 超额完成 ' + surplusCount + ' 项！你已经不只是完成任务，而是在超越自己。这份坚持会让新学期的你闪闪发光！';
+  } else if (achievedCount >= 5) {
+    analysis = '🏆 ' + achievedCount + ' 项达标，太优秀了！学习和运动两不误，这就是自律的样子。继续保持！';
+  } else if (achievedCount >= 1) {
+    analysis = '🎉 ' + achievedCount + ' 项达标！每一项达成都是一次小小的胜利。看看哪一项还差一点点，明天就能补上！';
+  } else if (taskPct >= 60) {
+    analysis = '💪 完成率 ' + Math.round(taskPct) + '%，很不错的基础！离全部达标只差一步，加油冲一把！';
+  } else if (taskPct > 0) {
+    analysis = '🌱 已经开始行动了，这最难能可贵。每天多完成一项，一周后你会惊讶自己的变化！';
+  } else {
+    analysis = '💡 这段时间还没有记录哦。从今天开始打卡，一点一滴积累，报告会越来越精彩！';
+  }
+
+  el.innerHTML = '<div class="card">'
+    + '<div class="card-header"><div class="card-icon report">📊</div><div>'
+    + '<div class="card-title">' + title + '</div>'
+    + '<div class="card-subtitle">共 ' + study.daysElapsed + ' 天数据</div></div></div>'
+    + (stars ? '<div class="star-row">' + stars + '</div>' : '')
+    + rows.join('')
+    + '<div class="report-analysis">' + analysis + '</div>'
+    + '</div>';
+
+  // 达标庆祝动画（每次进入报告页只触发一次）
+  const celeKey = 'reportCele-' + _reportPeriod + '-' + fmtDateKey(now);
+  if (achievedCount > 0 && !sessionStorage.getItem(celeKey)) {
+    sessionStorage.setItem(celeKey, '1');
+    setTimeout(() => {
+      if (surplusCount > 0) celebrate(PRAISE_MORE[Math.floor(Math.random() * PRAISE_MORE.length)], '本期报告 ' + achievedCount + ' 项达标，其中 ' + surplusCount + ' 项超额完成！', '🏆');
+      else celebrate(PRAISE_ACHIEVE[Math.floor(Math.random() * PRAISE_ACHIEVE.length)], '本期报告 ' + achievedCount + ' 项达标，为你骄傲！', '🌟');
+    }, 500);
+  }
+}
+
+// ====================
+//  每日 / 周 / 月 首开小报告
+// ====================
+function closeDailyReport() {
+  const o = document.getElementById('dailyReportOverlay');
+  if (o) o.classList.remove('show');
+}
+
+// 单行指标（✓/✗ + 标签 + 值）
+function drMetric(label, ok, val) {
+  return '<div class="dr-metric"><span class="dr-dot ' + (ok ? 'ok' : 'no') + '">' + (ok ? '✓' : '✗') + '</span>'
+    + '<span class="dr-mlabel">' + label + '</span>'
+    + '<span class="dr-mval ' + (ok ? 'good' : 'bad') + '">' + val + '</span></div>';
+}
+
+// 组装一个报告小节（完成情况 + 问题&小方法 + 激励）
+function drSection(ico, title, sub, metricsHtml, problems, motivate) {
+  let html = '<div class="dr-sec">'
+    + '<div class="dr-sec-head"><div class="dr-sec-ico">' + ico + '</div><div>'
+    + '<div class="dr-sec-title">' + title + '</div>'
+    + (sub ? '<div class="dr-sec-sub">' + sub + '</div>' : '') + '</div></div>';
+  if (metricsHtml) html += '<div class="dr-block-label">✅ 完成情况</div>' + metricsHtml;
+  if (problems && problems.length) {
+    html += '<div class="dr-block-label">🔍 问题 &amp; 小方法</div>'
+      + problems.map(p => '<div class="dr-prob"><div class="dr-prob-p">⚠️ ' + p.p + '</div><div class="dr-prob-m">💡 ' + p.m + '</div></div>').join('');
+  } else if (metricsHtml) {
+    html += '<div class="dr-block-label">🔍 问题 &amp; 小方法</div><div class="dr-empty">这一期没有掉链子的地方，执行力拉满！继续保持节奏 👍</div>';
+  }
+  html += '<div class="dr-block-label">🌟 给你的话</div><div class="dr-motivate">' + motivate + '</div>';
+  html += '</div>';
+  return html;
+}
+
+// 昨日小报告
+function buildDayReport() {
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const yk = fmtDateKey(y);
+  const yLabel = (y.getMonth() + 1) + '月' + y.getDate() + '日（昨天）';
+  const s = loadData('study-' + yk, { tasks: [] });
+  const tasks = s.tasks || [];
+  const review = loadData('review-' + yk, '');
+  const know = loadData('know-' + yk, { done: false }) || { done: false };
+  const subjIds = TASK_IDS.filter(id => id !== 't9' && id !== 't10');
+  const subjDone = subjIds.filter(id => tasks.includes(id)).length;
+  const done = tasks.length;
+  const reading = tasks.includes('t9');
+  const wrong = tasks.includes('t10');
+  const revOk = !!review;
+  const knowOk = !!know.done;
+  const hasData = done > 0 || revOk || knowOk;
+
+  // 昨天完全没有记录：不展示 0/12 空指标，也不列"假问题"，只给鼓励
+  if (!hasData) {
+    return drSection('📅', '昨日小报告', yLabel, '', [],
+      '昨天没记录也没关系，<b>新的今天</b>才最重要。打开清单，从第一格勾起，节奏一点点找回来！');
+  }
+
+  const metrics =
+      drMetric(TASK_TOTAL + '项任务', done === TASK_TOTAL, done + '/' + TASK_TOTAL)
+    + drMetric('10科作业', subjDone === 10, subjDone + '/10')
+    + drMetric('阅读30分钟', reading, reading ? '完成' : '没做')
+    + drMetric('错题订正', wrong, wrong ? '完成' : '没做')
+    + drMetric('短视频有益知识', knowOk, knowOk ? '完成' : '没做')
+    + drMetric('当日复盘笔记', revOk, revOk ? ('已写 ' + review.length + ' 字') : '没写');
+
+  const problems = [];
+  if (subjDone < 10) problems.push({ p: '有 ' + (10 - subjDone) + ' 科作业没完成', m: '把作业拆成小块，先用<b>番茄钟25分钟</b>啃掉最难的一科，别等到最后一天赶工。' });
+  if (!reading) problems.push({ p: '阅读30分钟没安排上', m: '绑定固定场景——<b>睡前或早起固定30分钟</b>，手机定闹钟，书放床头触手可及。' });
+  if (!wrong) problems.push({ p: '错题没订正', m: '<b>当天错题当天清</b>：用错题本按科目贴标签，周末集中复盘，别让错题"滚雪球"。' });
+  if (!knowOk) problems.push({ p: '刷视频的时间没变成学习', m: '刷之前先想"今天学点啥"，看完<b>记一句关键词</b>，屏幕时间就成成长时间。' });
+  if (!revOk) problems.push({ p: '没写当日复盘', m: '<b>睡前3分钟</b>写3句话：今天学了啥 / 卡在哪 / 明天先干啥。' });
+
+  let motivate;
+  if (done >= 12) motivate = '全勤的一天，自律的人已经在发光了。今天继续稳稳的，把优秀变成习惯 💪';
+  else if (done >= 9) motivate = '昨天完成得不错，差一点点就满勤！今天把缺口补上，你就是<b>满勤王者</b> 👑';
+  else if (done >= 5) motivate = '昨天动起来了，基础很好。今天试着多勾一项，<b>积少成多</b>，一周后吓自己一跳。';
+  else motivate = '昨天迈出了一步，这最难能可贵。今天从<b>第一项作业</b>开始，逐步找回节奏，你做得到！';
+
+  return drSection('📅', '昨日小报告', yLabel, metrics, problems, motivate);
+}
+
+// 上周 / 上月 报告（period: 'week' | 'month'）
+function buildPeriodReport(period) {
+  let start, end, title, ico, subLabel;
+  if (period === 'week') {
+    start = getWeekStart(-1); end = new Date(start); end.setDate(end.getDate() + 6);
+    title = '上周周报'; ico = '📊'; subLabel = '周一至周日';
+  } else {
+    start = getMonthStart(-1); end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    title = '上月月报'; ico = '🗓️'; subLabel = start.getFullYear() + '年' + (start.getMonth() + 1) + '月';
+  }
+  const study = collectStudyData(start, end);
+  const sport = collectSportData(start, end);
+  const weeks = countElapsedWeeks(start, end);
+  if (study.daysElapsed === 0) {
+    return drSection(ico, title, subLabel, '', [], '这期还没记录，从今天开始，每周/每月报告会越来越好看 ✨');
+  }
+  const thr = Math.ceil(study.daysElapsed * 0.8);
+  let metrics =
+      drMetric('日均任务完成率', study.avgPct >= 100, Math.round(study.avgPct) + '%')
+    + drMetric('满勤天数(13项全完成)', study.perfectDays === study.daysElapsed, study.perfectDays + '/' + study.daysElapsed + ' 天')
+    + drMetric('阅读30分钟', study.readDays >= thr, study.readDays + '/' + study.daysElapsed + ' 天')
+    + drMetric('错题订正', study.wrongDays >= thr, study.wrongDays + '/' + study.daysElapsed + ' 天')
+    + drMetric('复盘笔记', study.reviewDays >= thr, study.reviewDays + '/' + study.daysElapsed + ' 天');
+  SPORT_ITEMS.forEach(item => {
+    const n = sport[item.key] || 0;
+    const t = item.perWeek * weeks;
+    metrics += drMetric(item.name + '（目标' + t + '次）', n >= t, n + '/' + t + ' 次');
+  });
+
+  const problems = [];
+  if (study.avgPct < 100) problems.push({ p: '日均任务完成率只有 ' + Math.round(study.avgPct) + '%，没拉满', m: '用清单<b>逐项打勾</b>，睡前5分钟清空当天未完成的，别让任务堆到周末。' });
+  if (study.perfectDays === 0) problems.push({ p: '这期没有一天13项全勤', m: '把<b>高优先级任务</b>固定到每天同一时段（如晚8点），降低"忘了做"的概率。' });
+  else if (study.perfectDays < study.daysElapsed) problems.push({ p: '满勤 ' + study.perfectDays + '/' + study.daysElapsed + ' 天，还差 ' + (study.daysElapsed - study.perfectDays) + ' 天', m: '找出最容易漏的那几项（阅读/复盘常掉队），<b>绑到固定场景</b>就不容易忘。' });
+  if (study.readDays < thr) problems.push({ p: '阅读只做了 ' + study.readDays + '/' + study.daysElapsed + ' 天', m: '把阅读<b>绑到固定场景</b>：午休或睡前，设每日闹钟，书放触手可及处。' });
+  if (study.wrongDays < thr) problems.push({ p: '错题订正 ' + study.wrongDays + '/' + study.daysElapsed + ' 天', m: '<b>当天错题当天清</b>，周末集中复盘，避免考前"错题海"。' });
+  if (study.reviewDays < thr) problems.push({ p: '复盘笔记 ' + study.reviewDays + '/' + study.daysElapsed + ' 天', m: '复盘不必长，<b>3句话</b>就行：学了啥/卡哪/明天先干啥，睡前随手记。' });
+  SPORT_ITEMS.forEach(item => {
+    const n = sport[item.key] || 0;
+    const t = item.perWeek * weeks;
+    if (n < t) problems.push({ p: item.name + '只 ' + n + '/' + t + ' 次，没达标', m: '把运动<b>排进课表</b>：跳绳放放学后、舞蹈放周末，和作业一样"到点就做"。' });
+  });
+
+  // 达标计数（与报告页口径一致）
+  let achieved = 0;
+  if (study.avgPct >= 100) achieved++;
+  if (study.perfectDays === study.daysElapsed) achieved++;
+  if (study.readDays >= thr) achieved++;
+  if (study.wrongDays >= thr) achieved++;
+  if (study.reviewDays >= thr) achieved++;
+  SPORT_ITEMS.forEach(item => { if ((sport[item.key] || 0) >= item.perWeek * weeks) achieved++; });
+
+  let motivate;
+  if (achieved >= 6) motivate = '这期 ' + achieved + ' 项全达标，学习和运动两不误，<b>自律的样子</b>太帅了！继续保持节奏 🏆';
+  else if (achieved >= 3) motivate = '这期 ' + achieved + ' 项达标，稳扎稳打。挑一项最弱的，下周重点补，你会上一个新台阶 💪';
+  else if (study.avgPct > 0) motivate = '这期起步了但还没稳住。别急，<b>先保住"每天勾清单"这一个习惯</b>，其他会跟着好起来 🌱';
+  else motivate = '这期还没记录，新的这期从今天开始。哪怕每天只完成几项，<b>积累的力量</b>会让你惊讶 ✨';
+
+  const dl = loadData('danceLearn', {});
+  if (dl && dl.lastDone) {
+    const ld = new Date(dl.lastDone);
+    if (ld >= start && ld <= end) motivate += ' 这期还学会了新舞 💃，身体和自信一起长！';
+  } else {
+    motivate += ' 抽空练一支新舞，保持手感，跳舞也是给大脑充电 💃';
+  }
+
+  return drSection(ico, title, subLabel, metrics, problems, motivate);
+}
+
+// 每天首次打开时弹窗：昨日报告必出；周一加周报；每月1号加月报。一天只弹一次。
+function maybeShowDailyReport() {
+  const today = getDateKey();
+  if (loadData('_lastReportShown', '') === today) return; // 今天已弹过
+  const now = new Date();
+  const isMonday = now.getDay() === 1;
+  const isFirstDay = now.getDate() === 1;
+  const parts = [buildDayReport()];
+  if (isMonday) parts.push(buildPeriodReport('week'));
+  if (isFirstDay) parts.push(buildPeriodReport('month'));
+  const body = parts.filter(Boolean).join('');
+  if (!body) return;
+  const overlay = document.getElementById('dailyReportOverlay');
+  document.getElementById('dailyReportBody').innerHTML = body;
+  overlay.classList.add('show');
+  saveData('_lastReportShown', today);
+}
+
+// ====================
+//  DATA MIGRATION
+// ====================
+function exportAllData() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k === CLOUD_CFG_KEY || k === '_lastCloudSync' || k === '_lastLocalChange' || k === '_exportedAt') continue;
+    try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e) { data[k] = localStorage.getItem(k); }
+  }
+  data._exportedAt = new Date().toISOString();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'yuchen-workbench-backup-' + getDateKey() + '.json';
+  a.click();
+  showToast('📤 已导出 ' + Object.keys(data).length + ' 条数据');
+}
+
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      let n = 0;
+      for (const k in data) {
+        if (k === '_exportedAt') continue;
+        const v = data[k];
+        localStorage.setItem(k, JSON.stringify(v));
+        dbSet(k, v).catch(() => {});
+        n++;
+      }
+      showToast('📥 已导入 ' + n + ' 条数据');
+      renderStudyTab(); renderSportTab(); renderReportTab();
+    } catch(e) { showToast('❌ 文件格式错误'); }
+  };
+  reader.readAsText(file);
+}
+
+// ====================
+//  CLOUD SYNC (Supabase)
+// ====================
+const CLOUD_CFG_KEY = 'cloudConfig';
+
+// 内置 Supabase 凭据（publishable key 本就设计为可内嵌到客户端）
+// 与爸爸妈妈的工作台共用同一个 Supabase 项目，但使用不同的同步码 → 数据完全分开
+const EMBEDDED_SUPA_URL = 'https://kbawjwoutvihqybrgkgq.supabase.co';
+const EMBEDDED_SUPA_KEY = 'sb_publishable_DgJzYOru9Bx_Rp7YvRio1Q_r71sqyhY';
+// 雨辰的专属同步码（固定值，与爸爸工作台的同步码不同 → 云端数据行完全隔离，永不混淆）
+const YC_SYNC_CODE = '816816';
+let _cloudSyncTimer = null;
+let _cloudBusy = false;
+
+function getCloudConfig() {
+  try { return JSON.parse(localStorage.getItem(CLOUD_CFG_KEY)); }
+  catch(e) { return null; }
+}
+function saveCloudConfig(cfg) {
+  try { localStorage.setItem(CLOUD_CFG_KEY, JSON.stringify(cfg)); } catch(e) {}
+}
+
+function renderCloudSyncUI() {
+  const el = document.getElementById('cloudSyncContent');
+  if (!el) return;
+  const cfg = getCloudConfig();
+  if (!cfg || !cfg.url || !cfg.syncCode) {
+    el.innerHTML = '<button class="dm-btn" onclick="openCloudModal()">☁️ 开启云同步</button>'
+      + '<span style="font-size:12px;color:var(--text-secondary);margin-left:8px">多设备数据自动同步</span>';
+    return;
+  }
+  const lastSync = loadData('_lastCloudSync', 0);
+  let syncStr;
+  if (!lastSync) syncStr = '<span style="color:var(--orange)">● 待同步</span>';
+  else {
+    const diff = Date.now() - lastSync;
+    if (diff < 60000) syncStr = '<span style="color:var(--green)">● 刚刚同步</span>';
+    else if (diff < 3600000) syncStr = '<span style="color:var(--green)">● ' + Math.floor(diff/60000) + '分钟前同步</span>';
+    else syncStr = '<span style="color:var(--text-secondary)">● ' + new Date(lastSync).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) + '同步</span>';
+  }
+  el.innerHTML = '<div class="sync-status-row">'
+    + '<span class="sync-status-text">' + syncStr + '</span>'
+    + '<button class="dm-btn" onclick="cloudSyncNow()">立即同步</button>'
+    + '<button class="dm-btn" onclick="disconnectCloud()">断开</button>'
+    + '</div>'
+    + '<div class="sync-code-display">同步码: <b>' + cfg.syncCode + '</b> — 在新设备输入此码即可配对</div>';
+}
+
+function openCloudModal() {
+  const cfg = getCloudConfig();
+  const hasEmbedded = EMBEDDED_SUPA_URL && EMBEDDED_SUPA_KEY;
+  const urlField = document.getElementById('supabaseUrl').parentElement;
+  const keyField = document.getElementById('supabaseKey').parentElement;
+  if (hasEmbedded) {
+    urlField.style.display = 'none';
+    keyField.style.display = 'none';
+    document.querySelector('#cloudModal .modal-title').textContent = '☁️ 输入同步码';
+    document.querySelector('#cloudModal .modal-desc').innerHTML = '雨辰的专属同步码 <b>816816</b> 已自动填好，点「测试并连接」即可。数据与爸爸的工作台完全分开。<span class="modal-link" onclick="document.getElementById(\'cloudHelp\').classList.toggle(\'show\')">查看设置步骤</span>';
+  } else {
+    urlField.style.display = '';
+    keyField.style.display = '';
+    document.querySelector('#cloudModal .modal-title').textContent = '☁️ 开启云同步';
+  }
+  if (cfg) {
+    document.getElementById('syncCode').value = cfg.syncCode || YC_SYNC_CODE;
+  } else {
+    // 首次使用直接预填专属同步码，无需手动生成，避免误用其他码导致数据混淆
+    document.getElementById('syncCode').value = YC_SYNC_CODE;
+  }
+  document.getElementById('cloudModal').classList.add('show');
+}
+function closeCloudModal() {
+  document.getElementById('cloudModal').classList.remove('show');
+}
+function generateSyncCode() {
+  // 固定使用雨辰的专属同步码，保证与爸爸工作台的数据永远隔离
+  document.getElementById('syncCode').value = YC_SYNC_CODE;
+  showToast('已填入雨辰的专属同步码 ' + YC_SYNC_CODE);
+}
+
+async function testAndSaveCloud() {
+  let url, anonKey;
+  if (EMBEDDED_SUPA_URL && EMBEDDED_SUPA_KEY) {
+    url = EMBEDDED_SUPA_URL;
+    anonKey = EMBEDDED_SUPA_KEY;
+  } else {
+    url = document.getElementById('supabaseUrl').value.trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
+    anonKey = document.getElementById('supabaseKey').value.trim();
+  }
+  const syncCode = document.getElementById('syncCode').value.trim();
+  if (!url || !anonKey || !syncCode) { showToast('请填写所有字段'); return; }
+  if (!/^\d{6}$/.test(syncCode)) { showToast('同步码必须是6位数字'); return; }
+  // 隔离防线：爸爸工作台的数据同步码是 193617，此设备（雨辰）禁止使用
+  if (syncCode === '193617') { showToast('这是爸爸工作台的同步码，雨辰不能用哦，请使用 ' + YC_SYNC_CODE); return; }
+
+  const btn = document.getElementById('cloudTestBtn');
+  btn.disabled = true;
+  btn.textContent = '连接中...';
+  try {
+    const resp = await fetch(url + '/rest/v1/workbench_data?select=sync_code&limit=1', {
+      headers: { 'apikey': anonKey, 'Authorization': 'Bearer ' + anonKey }
+    });
+    if (!resp.ok) {
+      const txt = await resp.text();
+      let hint = '';
+      if (resp.status === 404) hint = ' — 表不存在，请先在 Supabase SQL Editor 运行建表语句';
+      else if (resp.status === 401 || resp.status === 403) hint = ' — 密钥无效，检查 API Key 是否复制完整';
+      else if (resp.status === 0 || txt.includes('NetworkError') || txt.includes('Failed to fetch')) hint = ' — 网络错误，检查 URL 是否正确';
+      showToast('连接失败 ' + resp.status + hint);
+      btn.disabled = false;
+      btn.textContent = '测试并连接';
+      return;
+    }
+    saveCloudConfig({ url, anonKey, syncCode });
+    closeCloudModal();
+    showToast('☁️ 连接成功，正在同步数据...');
+    const pulled = await cloudPull();
+    if (pulled) { renderStudyTab(); renderSportTab(); renderReportTab(); }
+    await cloudPush();
+    renderCloudSyncUI();
+    showToast('☁️ 云同步已开启');
+  } catch(e) {
+    showToast('网络错误，请检查URL是否正确');
+  }
+  btn.disabled = false;
+  btn.textContent = '测试并连接';
+}
+
+function collectLocalData() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k === CLOUD_CFG_KEY || k === '_lastCloudSync' || k === '_lastLocalChange' || k === '_dataVersion' || k === '_exportedAt') continue;
+    try { data[k] = JSON.parse(localStorage.getItem(k)); } catch(e) { data[k] = localStorage.getItem(k); }
+  }
+  return data;
+}
+
+async function cloudPush() {
+  const cfg = getCloudConfig();
+  if (!cfg || _cloudBusy) return;
+  _cloudBusy = true;
+  const data = collectLocalData();
+  data._lastLocalChange = Date.now();
+  try {
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data', {
+      method: 'POST',
+      headers: {
+        'apikey': cfg.anonKey,
+        'Authorization': 'Bearer ' + cfg.anonKey,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ sync_code: cfg.syncCode, data: data, updated_at: new Date().toISOString() })
+    });
+    if (resp.ok) {
+      try { localStorage.setItem('_lastCloudSync', JSON.stringify(Date.now())); } catch(e) {}
+    }
+  } catch(e) { /* silent fail */ }
+  _cloudBusy = false;
+}
+
+async function cloudPull() {
+  const cfg = getCloudConfig();
+  if (!cfg) return false;
+  try {
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data?sync_code=eq.' + cfg.syncCode + '&select=data,updated_at&limit=1', {
+      headers: { 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + cfg.anonKey }
+    });
+    if (!resp.ok) return false;
+    const rows = await resp.json();
+    if (!rows || rows.length === 0) return false;
+    const cloudData = rows[0].data;
+    const cloudTime = new Date(rows[0].updated_at).getTime();
+    const lastSync = loadData('_lastCloudSync', 0);
+    if (cloudTime <= lastSync) return false;
+    let changed = 0;
+    for (const [k, v] of Object.entries(cloudData)) {
+      if (k === '_lastLocalChange') continue;
+      const localRaw = localStorage.getItem(k);
+      const localVal = localRaw ? JSON.parse(localRaw) : null;
+      if (JSON.stringify(localVal) !== JSON.stringify(v)) {
+        try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
+        dbSet(k, v).catch(() => {});
+        changed++;
+      }
+    }
+    try { localStorage.setItem('_lastCloudSync', JSON.stringify(cloudTime)); } catch(e) {}
+    return changed > 0;
+  } catch(e) { return false; }
+}
+
+async function cloudSyncNow() {
+  showToast('☁️ 同步中...');
+  await cloudPush();
+  const updated = await cloudPull();
+  if (updated) {
+    renderStudyTab(); renderSportTab(); renderReportTab();
+    showToast('☁️ 已同步最新数据');
+  } else {
+    showToast('☁️ 已是最新');
+  }
+  renderCloudSyncUI();
+}
+
+function cloudSyncDebounced() {
+  const cfg = getCloudConfig();
+  if (!cfg) return;
+  try { localStorage.setItem('_lastLocalChange', JSON.stringify(Date.now())); } catch(e) {}
+  clearTimeout(_cloudSyncTimer);
+  _cloudSyncTimer = setTimeout(() => { cloudPush(); }, 3000);
+}
+
+async function cloudSyncInit() {
+  const cfg = getCloudConfig();
+  if (!cfg) { renderCloudSyncUI(); return; }
+  const lastLocalChange = loadData('_lastLocalChange', 0);
+  const lastCloudSync = loadData('_lastCloudSync', 0);
+  if (lastLocalChange > lastCloudSync) await cloudPush();
+  const updated = await cloudPull();
+  if (updated) {
+    renderStudyTab(); renderSportTab();
+    showToast('☁️ 已从云端同步');
+  }
+  renderCloudSyncUI();
+  checkCodeUpdate();
+}
+
+// 检测另一端是否推送了新版代码（与爸爸妈妈的工作台使用不同通道 CODE_SYNC_YC，互不干扰）
+let _lastCodeCheck = 0;
+async function checkCodeUpdate() {
+  const now = Date.now();
+  if (now - _lastCodeCheck < 60000) return;
+  _lastCodeCheck = now;
+  const cfg = getCloudConfig();
+  if (!cfg) return;
+  try {
+    const resp = await fetch(cfg.url + '/rest/v1/workbench_data?sync_code=eq.CODE_SYNC_YC&select=data&limit=1', {
+      headers: { 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + cfg.anonKey }
+    });
+    if (!resp.ok) return;
+    const rows = await resp.json();
+    if (!rows || rows.length === 0) return;
+    const cloud = rows[0].data;
+    if (!cloud || !cloud.code || !cloud.ts) return;
+    const embeddedTS = (document.querySelector('meta[name="code-sync-ts"]') || {}).content;
+    if (!embeddedTS) return;
+    if (new Date(cloud.ts) > new Date(embeddedTS)) {
+      showToast('🔄 检测到另一端代码更新，正在自动同步...');
+      setTimeout(() => {
+        document.open();
+        document.write(cloud.code);
+        document.close();
+      }, 800);
+    }
+  } catch(e) { /* silent fail */ }
+}
+
+function disconnectCloud() {
+  if (!confirm('断开云同步？本地数据保留，但不再自动同步。')) return;
+  localStorage.removeItem(CLOUD_CFG_KEY);
+  localStorage.removeItem('_lastCloudSync');
+  localStorage.removeItem('_lastLocalChange');
+  renderCloudSyncUI();
+  showToast('已断开云同步');
+}
+
+// ====================
+//  INIT
+// ====================
+async function init() {
+  await restoreFromDB();
+  updateDate();
+  // 每日静默联网更新舞单（缺失/过期时静默触发边缘函数，每天最多一次；无网络则回退内置曲库）
+  try { await refreshDancePool(); } catch (e) { /* 静默失败，使用内置曲库 */ }
+  renderStudyTab();
+  renderSportTab();
+  renderCloudSyncUI();
+  maybeShowDailyReport();
+  cloudSyncInit();
+  // 每小时检查一次云端与日期更新
+  setInterval(updateDate, 3600000);
+  setInterval(checkCodeUpdate, 600000);
+}
+init();
+</script>
+
+<div id="__popup"><div class="b">
+  <h3>🔒 内部内容需要口令</h3>
+  <p>这一部分是我方内部测算，不对外展示</p>
+  <input type="password" id="__pin" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="__pok">确认</button>
+  <div class="e" id="__pe"></div>
+  <div class="c" id="__pc">取消</div>
+</div></div>
+<script>
+(function(){
+  var SHA='ab3d93c1376613e8502d81920eee25b0826799e507c2a72cdc6a2702664cd95d', DJB=2154654327, KEY='whub_ok', DAYS=30;
+  function djb(s){var h=5381;for(var i=0;i<s.length;i++){h=((h<<5)+h+s.charCodeAt(i))>>>0;}return h;}
+  function sha(s){
+    if(window.crypto&&crypto.subtle&&window.TextEncoder){
+      return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))
+        .then(function(d){
+          return Array.prototype.map.call(new Uint8Array(d),function(x){
+            return ('0'+x.toString(16)).slice(-2);
+          }).join('');
+        });
+    }
+    return Promise.reject('no-subtle');
+  }
+  function verify(p){
+    return sha(p).then(function(h){
+      if(h===SHA) return true;
+      return djb(p)===DJB;
+    }).catch(function(){ return djb(p)===DJB; });
+  }
+  function ok(){
+    try{ var v=localStorage.getItem(KEY); if(!v) return false;
+      return parseInt(v,10)>Date.now(); }catch(e){ return false; }
+  }
+  function grant(){ try{ localStorage.setItem(KEY,String(Date.now()+DAYS*86400000)); }catch(e){} }
+
+  window.__LK={ok:ok,grant:grant,verify:verify};
+
+  var pop=document.getElementById('__popup');
+  var inp=document.getElementById('__pin');
+  var err=document.getElementById('__pe');
+  var cb=null;
+
+  function close(){ if(pop) pop.style.display='none'; if(inp) inp.value=''; if(err) err.textContent=''; cb=null; }
+  function ask(onOk){
+    cb=onOk; if(!pop) return;
+    pop.style.display='flex';
+    setTimeout(function(){ if(inp) inp.focus(); },60);
+  }
+  function submit(){
+    var v=(inp&&inp.value||'').trim();
+    if(!v){ if(err) err.textContent='请输入口令'; return; }
+    verify(v).then(function(r){
+      if(r){ grant(); var f=cb; close(); if(f) f(); }
+      else { if(err) err.textContent='口令不对，再试一次'; if(inp){inp.value='';inp.focus();} }
+    });
+  }
+  var okb=document.getElementById('__pok');
+  if(okb) okb.onclick=submit;
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter'){ submit(); } };
+  var cb2=document.getElementById('__pc');
+  if(cb2) cb2.onclick=close;
+  if(pop) pop.onclick=function(e){ if(e.target===pop) close(); };
+
+  window.__LK.ask=ask;
+})();
+</script>
+
+<script>
+(function(){
+  var lock=document.getElementById('__lock');
+  var inp=document.getElementById('__lin');
+  var err=document.getElementById('__lerr');
+  function show(){
+    if(lock&&lock.parentNode) lock.parentNode.removeChild(lock);
+    document.documentElement.style.overflow='';
+  }
+  if(window.__LK&&window.__LK.ok()){ show(); }
+  else { document.documentElement.style.overflow='hidden'; }
+  function go(){
+    var v=(inp&&inp.value||'').trim();
+    if(!v){ if(err) err.textContent='请输入口令'; return; }
+    window.__LK.verify(v).then(function(r){
+      if(r){ window.__LK.grant(); show(); }
+      else { if(err) err.textContent='口令不对，再试一次'; if(inp){inp.value='';inp.focus();} }
+    });
+  }
+  var b=document.getElementById('__lbtn');
+  if(b) b.onclick=go;
+  if(inp) inp.onkeydown=function(e){ if(e.key==='Enter') go(); };
+  setTimeout(function(){ if(inp) inp.focus(); },80);
+})();
+
+</body>
+</html>
