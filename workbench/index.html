@@ -1319,27 +1319,6 @@ body {
       <div id="paymentContent" style="margin-top: 8px;"></div>
     </div>
 
-    <!-- 债务执行路线 -->
-    <div class="card" id="debtPlanCard">
-      <div class="card-header">
-        <div class="card-icon review">🎯</div>
-        <div>
-          <div class="card-title">债务执行路线</div>
-          <div class="card-subtitle">全局缺口 6.7万/月 · 按优先级推进 · 每周复盘</div>
-        </div>
-      </div>
-      <div class="debt-metrics">
-        <div class="dm-item"><div class="dm-val">10.6万</div><div class="dm-label">月供</div></div>
-        <div class="dm-item red"><div class="dm-val">6.7万</div><div class="dm-label">月缺口</div></div>
-        <div class="dm-item orange"><div class="dm-val">73.8%</div><div class="dm-label">使用率</div></div>
-      </div>
-      <div class="progress-wrap">
-        <div class="progress-label"><span>执行进度</span><span id="debtPlanPct">0/5</span></div>
-        <div class="progress-bar"><div class="progress-fill" id="debtPlanBar" style="width:0%"></div></div>
-      </div>
-      <ul class="checklist" id="debtPlanList" style="margin-top:2px;"></ul>
-    </div>
-
     <div class="card" id="monthlyPayroll">
       <div class="card-header">
         <div class="card-icon payroll">💰</div>
@@ -1588,6 +1567,24 @@ CREATE POLICY "allow_all" ON workbench_data
     </div>
   </div>
 
+  <!-- ===== 执行 Tab ===== -->
+  <div class="tab-content" id="tab-exec">
+    <div class="section-title">🎯 债务执行路线</div>
+    <div class="card">
+      <div class="debt-metrics">
+        <div class="dm-item"><div class="dm-val">10.6万</div><div class="dm-label">月供</div></div>
+        <div class="dm-item red"><div class="dm-val">6.7万</div><div class="dm-label">月缺口</div></div>
+        <div class="dm-item orange"><div class="dm-val">73.8%</div><div class="dm-label">使用率</div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>执行进度</span><span id="debtPlanPct">0/12</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="debtPlanBar" style="width:0%"></div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text-secondary);margin-top:8px;">按时间节点排序 · 勾选 = 已完成 · 每周复盘自动读进度</div>
+    </div>
+    <div id="debtPlanGroups"></div>
+  </div>
+
 </div>
 
 <!-- Cloud Setup Modal -->
@@ -1639,6 +1636,10 @@ CREATE POLICY "allow_all" ON workbench_data
   <button class="nav-item active" onclick="switchTab('work')" id="nav-work">
     <span class="nav-icon">💼</span>
     <span class="nav-label">工作</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('exec')" id="nav-exec">
+    <span class="nav-icon">🎯</span>
+    <span class="nav-label">执行</span>
   </button>
   <button class="nav-item" onclick="switchTab('learn')" id="nav-learn">
     <span class="nav-icon">📚</span>
@@ -1858,6 +1859,7 @@ function switchTab(tab) {
     }
   }
   if (tab === 'learn') renderLearnTab();
+  if (tab === 'exec') renderDebtPlan();
   if (tab === 'sport') renderSportTab();
   if (tab === 'report') {
     renderReportTab();
@@ -1909,9 +1911,6 @@ function renderWorkTab() {
 
   // Monthly payments
   renderMonthlyPayments();
-
-  // Debt plan
-  renderDebtPlan();
 
   // Monthly billing
   const mk = getMonthKey();
@@ -2073,38 +2072,60 @@ function toggleCheck(el) {
 
 // ===== 债务执行路线 =====
 const DEBT_PLAN = [
-  { id:'dp-p0',  p:'P0', badge:'badge-p1', name:'信用卡重组', amt:'+24,365/月', desc:'前置：使用率降到70%以下', time:'10-12月' },
-  { id:'dp-p1a', p:'P1', badge:'badge-p2', name:'总部金融展期', amt:'+5,962/月', desc:'追问+争取10/4再延一月', time:'本周' },
-  { id:'dp-p1b', p:'P1', badge:'badge-p2', name:'微众展期+71号贴息', amt:'+5,000/月', desc:'展期60期，新发放问贴息', time:'本周' },
-  { id:'dp-p1c', p:'P1', badge:'badge-p2', name:'社保补缴', amt:'止损滞纳金', desc:'微众提8.3万分60期', time:'9月底前' },
-  { id:'dp-p2',  p:'P2', badge:'badge-p3', name:'倒扣谈判', amt:'+8,560/月', desc:'第1-2层温和试，设止损线', time:'本周' },
+  { id:'dp-a1', g:'本周 · 9/10-13', p:'P1', badge:'badge-p2', name:'总部金融追问', amt:'+5,962/月', key:'争取10/4再延一月' },
+  { id:'dp-a2', g:'本周 · 9/10-13', p:'P1', badge:'badge-p2', name:'微众纯展期60期', amt:'+5,000/月', key:'先别借新还旧' },
+  { id:'dp-a3', g:'本周 · 9/10-13', p:'', badge:'', name:'还招信尾款', amt:'', key:'3,600 · 9/12-13' },
+  { id:'dp-b1', g:'9月中下旬 · 14-30日', p:'', badge:'', name:'还妈平安', amt:'', key:'14,000 · 9/20' },
+  { id:'dp-b2', g:'9月中下旬 · 14-30日', p:'', badge:'', name:'浦发套现拆中信', amt:'', key:'使用率关键 · 9/22-25' },
+  { id:'dp-b3', g:'9月中下旬 · 14-30日', p:'', badge:'', name:'广发最低还款', amt:'', key:'1,650 · 9/26' },
+  { id:'dp-b4', g:'9月中下旬 · 14-30日', p:'', badge:'', name:'社保补缴', amt:'', key:'83,430 · 9/30前 · 微众分60期' },
+  { id:'dp-c1', g:'10月', p:'', badge:'', name:'双贷还款', amt:'', key:'35,190 · 10/4' },
+  { id:'dp-c2', g:'10月', p:'', badge:'', name:'出货费净还浦发', amt:'', key:'10/5-8到账' },
+  { id:'dp-c3', g:'10月', p:'P0', badge:'badge-p1', name:'使用率降到70%以下', amt:'', key:'信用卡重组的前提' },
+  { id:'dp-d1', g:'10-12月 · 战略', p:'P0', badge:'badge-p1', name:'信用卡重组启动', amt:'+24,365/月', key:'招信8万先结清再分期' },
+  { id:'dp-d2', g:'10-12月 · 战略', p:'P2', badge:'badge-p3', name:'倒扣谈判', amt:'+8,560/月', key:'第1-2层温和试' },
 ];
 function getDebtPlan() {
   const d = loadData('debtPlan', { done: {} });
   if (!d.done || typeof d.done !== 'object') d.done = {};
   return d;
 }
+function renderDebtItem(it, on) {
+  let badge = it.p ? '<span class="checklist-badge ' + it.badge + '">' + it.p + '</span> ' : '';
+  let amt = it.amt ? '<span class="dp-amt"> ' + it.amt + '</span>' : '';
+  return '<li data-id="' + it.id + '" onclick="toggleDebtPlan(this)">'
+    + '<div class="checkbox' + (on ? ' checked' : '') + '"></div>'
+    + '<div class="checklist-text' + (on ? ' done' : '') + '">'
+    + badge + '<b>' + it.name + '</b>' + amt
+    + '<div class="dp-desc">' + it.key + '</div>'
+    + '</div></li>';
+}
 function renderDebtPlan() {
-  const list = document.getElementById('debtPlanList');
-  if (!list) return;
+  const container = document.getElementById('debtPlanGroups');
+  if (!container) return;
   const plan = getDebtPlan();
-  list.innerHTML = DEBT_PLAN.map(function(it) {
-    const on = !!plan.done[it.id];
-    return '<li data-id="' + it.id + '" onclick="toggleDebtPlan(this)">'
-      + '<div class="checkbox' + (on ? ' checked' : '') + '"></div>'
-      + '<div class="checklist-text' + (on ? ' done' : '') + '">'
-      + '<span class="checklist-badge ' + it.badge + '">' + it.p + '</span> '
-      + '<b>' + it.name + '</b>'
-      + '<span class="dp-amt"> ' + it.amt + '</span>'
-      + '<div class="dp-desc">' + it.desc + ' · ' + it.time + '</div>'
-      + '</div></li>';
+  const groups = [];
+  const map = {};
+  DEBT_PLAN.forEach(function(it) {
+    if (!map[it.g]) { map[it.g] = []; groups.push(it.g); }
+    map[it.g].push(it);
+  });
+  container.innerHTML = groups.map(function(g) {
+    return '<div class="section-title" style="margin-top:14px;">📅 ' + g + '</div>'
+      + '<div class="card"><ul class="checklist">'
+      + map[g].map(function(it) { return renderDebtItem(it, !!plan.done[it.id]); }).join('')
+      + '</ul></div>';
   }).join('');
+  updateDebtPlanProgress();
+}
+function updateDebtPlanProgress() {
+  const plan = getDebtPlan();
   const total = DEBT_PLAN.length;
   const cnt = DEBT_PLAN.filter(function(it){ return plan.done[it.id]; }).length;
   const pct = document.getElementById('debtPlanPct');
   const bar = document.getElementById('debtPlanBar');
   if (pct) pct.textContent = cnt + '/' + total;
-  if (bar) bar.style.width = (cnt / total * 100) + '%';
+  if (bar) bar.style.width = Math.round(cnt / total * 100) + '%';
 }
 function toggleDebtPlan(li) {
   const id = li.getAttribute('data-id');
@@ -4530,6 +4551,7 @@ function init() {
   renderWorkTab();
   renderLearnTab();
   renderSportTab();
+  renderDebtPlan();
   renderCloudSyncUI();
 
   // Silently restore from IndexedDB if localStorage was wiped
@@ -4537,6 +4559,7 @@ function init() {
     renderWorkTab();
     renderLearnTab();
     renderSportTab();
+    renderDebtPlan();
     // Cloud sync: pull latest from cloud, push local changes
     cloudSyncInit().then(() => {
       // Fetch video series from cloud (new series content)
