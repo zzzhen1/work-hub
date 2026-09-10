@@ -2072,6 +2072,7 @@ function toggleCheck(el) {
 
 // ===== 债务执行路线 =====
 const DEBT_PLAN = [
+  { id:'dp-a5', g:'本周 · 9/11-13', p:'P0', badge:'badge-p1', name:'招信分期置换', amt:'+9,778/月', key:'9/11 微众过桥结清15.27%→新分期6.95%·18期' },
   { id:'dp-a1', g:'本周 · 9/11-13', p:'P1', badge:'badge-p2', name:'总部金融追问', amt:'+5,962/月', key:'9/11 追问，争取10/4再延一月' },
   { id:'dp-a2', g:'本周 · 9/11-13', p:'P1', badge:'badge-p2', name:'微众纯展期60期', amt:'+5,000/月', key:'9/11 申请，先别借新还旧' },
   { id:'dp-a3', g:'本周 · 9/11-13', p:'P2', badge:'badge-p3', name:'倒扣谈判', amt:'+8,560/月', key:'9/11-13 第1-2层温和试' },
@@ -2083,7 +2084,6 @@ const DEBT_PLAN = [
   { id:'dp-c1', g:'10月', p:'', badge:'', name:'双贷还款', amt:'', key:'10/4 还款日当天35,190' },
   { id:'dp-c2', g:'10月', p:'', badge:'', name:'出货费净还浦发', amt:'', key:'10/5-8 到账即还' },
   { id:'dp-c3', g:'10月', p:'P0', badge:'badge-p1', name:'使用率降到70%以下', amt:'', key:'10月底前完成' },
-  { id:'dp-d1', g:'11月起 · 战略', p:'P0', badge:'badge-p1', name:'信用卡重组启动', amt:'+24,365/月', key:'招信8万先结清再分期' },
 ];
 function getDebtPlan() {
   const d = loadData('debtPlan', { done: {} });
