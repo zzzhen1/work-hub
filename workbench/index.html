@@ -217,6 +217,18 @@ body {
 .badge-p2 { background: #fff7ed; color: #ea580c; }
 .badge-p3 { background: #eff6ff; color: #2563eb; }
 
+/* 债务执行路线 */
+.debt-metrics { display: flex; gap: 8px; }
+.dm-item { flex: 1; background: var(--accent-light); border-radius: 10px; padding: 10px 4px; text-align: center; }
+.dm-item.red { background: var(--red-light); }
+.dm-item.orange { background: var(--orange-light); }
+.dm-val { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: -0.3px; }
+.dm-item.red .dm-val { color: var(--red); }
+.dm-item.orange .dm-val { color: var(--orange); }
+.dm-label { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+.dp-amt { font-size: 12px; color: var(--green); font-weight: 600; }
+.dp-desc { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
 /* Progress bar */
 .progress-wrap { margin-top: 12px; }
 .progress-label {
@@ -1307,6 +1319,27 @@ body {
       <div id="paymentContent" style="margin-top: 8px;"></div>
     </div>
 
+    <!-- 债务执行路线 -->
+    <div class="card" id="debtPlanCard">
+      <div class="card-header">
+        <div class="card-icon review">🎯</div>
+        <div>
+          <div class="card-title">债务执行路线</div>
+          <div class="card-subtitle">全局缺口 6.7万/月 · 按优先级推进 · 每周复盘</div>
+        </div>
+      </div>
+      <div class="debt-metrics">
+        <div class="dm-item"><div class="dm-val">10.6万</div><div class="dm-label">月供</div></div>
+        <div class="dm-item red"><div class="dm-val">6.7万</div><div class="dm-label">月缺口</div></div>
+        <div class="dm-item orange"><div class="dm-val">73.8%</div><div class="dm-label">使用率</div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>执行进度</span><span id="debtPlanPct">0/5</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="debtPlanBar" style="width:0%"></div></div>
+      </div>
+      <ul class="checklist" id="debtPlanList" style="margin-top:2px;"></ul>
+    </div>
+
     <div class="card" id="monthlyPayroll">
       <div class="card-header">
         <div class="card-icon payroll">💰</div>
@@ -1877,6 +1910,9 @@ function renderWorkTab() {
   // Monthly payments
   renderMonthlyPayments();
 
+  // Debt plan
+  renderDebtPlan();
+
   // Monthly billing
   const mk = getMonthKey();
   const bdata = loadData('billing-' + mk, []);
@@ -2033,6 +2069,52 @@ function toggleCheck(el) {
     renderWorkTab();
     if (pdata.length === 7) showToast('🎉 工资单全部完成！');
   }
+}
+
+// ===== 债务执行路线 =====
+const DEBT_PLAN = [
+  { id:'dp-p0',  p:'P0', badge:'badge-p1', name:'信用卡重组', amt:'+24,365/月', desc:'前置：使用率降到70%以下', time:'10-12月' },
+  { id:'dp-p1a', p:'P1', badge:'badge-p2', name:'总部金融展期', amt:'+5,962/月', desc:'追问+争取10/4再延一月', time:'本周' },
+  { id:'dp-p1b', p:'P1', badge:'badge-p2', name:'微众展期+71号贴息', amt:'+5,000/月', desc:'展期60期，新发放问贴息', time:'本周' },
+  { id:'dp-p1c', p:'P1', badge:'badge-p2', name:'社保补缴', amt:'止损滞纳金', desc:'微众提8.3万分60期', time:'9月底前' },
+  { id:'dp-p2',  p:'P2', badge:'badge-p3', name:'倒扣谈判', amt:'+8,560/月', desc:'第1-2层温和试，设止损线', time:'本周' },
+];
+function getDebtPlan() {
+  const d = loadData('debtPlan', { done: {} });
+  if (!d.done || typeof d.done !== 'object') d.done = {};
+  return d;
+}
+function renderDebtPlan() {
+  const list = document.getElementById('debtPlanList');
+  if (!list) return;
+  const plan = getDebtPlan();
+  list.innerHTML = DEBT_PLAN.map(function(it) {
+    const on = !!plan.done[it.id];
+    return '<li data-id="' + it.id + '" onclick="toggleDebtPlan(this)">'
+      + '<div class="checkbox' + (on ? ' checked' : '') + '"></div>'
+      + '<div class="checklist-text' + (on ? ' done' : '') + '">'
+      + '<span class="checklist-badge ' + it.badge + '">' + it.p + '</span> '
+      + '<b>' + it.name + '</b>'
+      + '<span class="dp-amt"> ' + it.amt + '</span>'
+      + '<div class="dp-desc">' + it.desc + ' · ' + it.time + '</div>'
+      + '</div></li>';
+  }).join('');
+  const total = DEBT_PLAN.length;
+  const cnt = DEBT_PLAN.filter(function(it){ return plan.done[it.id]; }).length;
+  const pct = document.getElementById('debtPlanPct');
+  const bar = document.getElementById('debtPlanBar');
+  if (pct) pct.textContent = cnt + '/' + total;
+  if (bar) bar.style.width = (cnt / total * 100) + '%';
+}
+function toggleDebtPlan(li) {
+  const id = li.getAttribute('data-id');
+  const plan = getDebtPlan();
+  if (plan.done[id]) delete plan.done[id];
+  else plan.done[id] = true;
+  saveData('debtPlan', plan);
+  renderDebtPlan();
+  const done = DEBT_PLAN.filter(function(it){ return plan.done[it.id]; }).length;
+  showToast('✅ 执行进度 ' + done + '/' + DEBT_PLAN.length);
 }
 
 function saveDailyReview() {
@@ -4609,6 +4691,5 @@ init();
   setTimeout(function(){ if(inp) inp.focus(); },80);
 })();
 </script>
-
 </body>
 </html>
