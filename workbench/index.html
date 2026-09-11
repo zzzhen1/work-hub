@@ -2072,10 +2072,10 @@ function toggleCheck(el) {
 
 // ===== 债务执行路线 =====
 const DEBT_PLAN = [
-  { id:'dp-a5', g:'本周 · 9/11-13', p:'P0', badge:'badge-p1', name:'招信分期置换', amt:'+9,778/月', key:'9/11 微众过桥结清15.27%→新分期6.95%·18期' },
+  { id:'dp-a5', g:'本周 · 9/11-13', p:'P0', badge:'badge-p1', name:'招信分期置换', amt:'+7,371/月', key:'结清15.27%→刷经营支出转6.94%账单分期·12期' },
   { id:'dp-a1', g:'本周 · 9/11-13', p:'P1', badge:'badge-p2', name:'总部金融追问', amt:'+5,962/月', key:'9/11 追问，争取10/4再延一月' },
   { id:'dp-a2', g:'本周 · 9/11-13', p:'P1', badge:'badge-p2', name:'微众纯展期60期', amt:'+5,000/月', key:'9/11 申请，先别借新还旧' },
-  { id:'dp-a3', g:'本周 · 9/11-13', p:'P2', badge:'badge-p3', name:'倒扣谈判', amt:'+8,560/月', key:'9/11-13 第1-2层温和试' },
+  { id:'dp-a3', g:'本周 · 9/11-13', p:'P2', badge:'badge-p3', name:'倒扣撤销', amt:'+8,560/月', key:'唯一硬谈判·反内卷撑腰·温和试' },
   { id:'dp-a4', g:'本周 · 9/11-13', p:'', badge:'', name:'还招信尾款', amt:'', key:'9/13 还款日当天还3,600' },
   { id:'dp-b1', g:'9月中下旬 · 16-26', p:'', badge:'', name:'社保补缴', amt:'', key:'9/16-18 提款即缴83,430' },
   { id:'dp-b2', g:'9月中下旬 · 16-26', p:'', badge:'', name:'还妈平安', amt:'', key:'9/20 扣款日当天还14,000' },
@@ -2084,6 +2084,7 @@ const DEBT_PLAN = [
   { id:'dp-c1', g:'10月', p:'', badge:'', name:'双贷还款', amt:'', key:'10/4 还款日当天35,190' },
   { id:'dp-c2', g:'10月', p:'', badge:'', name:'出货费净还浦发', amt:'', key:'10/5-8 到账即还' },
   { id:'dp-c3', g:'10月', p:'P0', badge:'badge-p1', name:'使用率降到70%以下', amt:'', key:'10月底前完成' },
+  { id:'dp-d1', g:'持续 · 经营', p:'P1', badge:'badge-p2', name:'量返方案推进', amt:'增发件量', key:'口岸门店v11·超基数每票返0.30·激励多走圆通' },
 ];
 function getDebtPlan() {
   const d = loadData('debtPlan', { done: {} });
