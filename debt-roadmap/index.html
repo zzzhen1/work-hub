@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>债务重组执行总路线图 · 终版</title>
+<title>债务重组执行总路线图</title>
 <style>
 :root{--p:#6a3fa0;--pl:#f3eefb;--pd:#4a2d75;--t1:#2b2438;--t2:#7a7391;--line:#e6e1f0;--bg:#faf8fd;--r:#d93636;--g:#0a8f4e;--o:#d97a00;--b:#1668c9}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--t1);line-height:1.75;padding:24px 16px;max-width:960px;margin:0 auto}
 h1{font-size:24px;color:var(--pd);text-align:center;margin-bottom:6px}
-.sub{text-align:center;color:var(--t2);font-size:13px;margin-bottom:28px}
+.sub{text-align:center;color:var(--t2);font-size:13px;margin-bottom:24px}
 h2{font-size:19px;color:var(--pd);margin:34px 0 14px;padding-left:12px;border-left:4px solid var(--p);background:linear-gradient(90deg,var(--pl),transparent);padding:8px 12px;border-radius:0 8px 8px 0}
 h3{font-size:15.5px;color:var(--p);margin:20px 0 8px}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0;box-shadow:0 1px 4px rgba(80,50,140,.05)}
@@ -35,7 +35,6 @@ li b{color:var(--pd)}
 .big{font-size:15px;background:var(--pl);border:1.5px dashed var(--p);border-radius:10px;padding:12px 16px;margin:14px 0;color:var(--pd)}
 .foot{text-align:center;color:var(--t2);font-size:12px;margin-top:36px}
 .num{font-variant-numeric:tabular-nums}
-/* 右侧余额快照卡 */
 .ph-bal{background:linear-gradient(165deg,#f7f2fd,#ffffff);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:0 1px 4px rgba(80,50,140,.06)}
 .bal-t{font-size:11.5px;color:var(--t2);font-weight:700;letter-spacing:2px;margin-bottom:4px}
 .bal-node{font-size:12.5px;color:var(--t2)}
@@ -51,6 +50,20 @@ li b{color:var(--pd)}
 .chart-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 10px 8px;margin:14px 0;box-shadow:0 1px 4px rgba(80,50,140,.05)}
 .chart-wrap svg{width:100%;height:auto;display:block}
 .chart-cap{font-size:11.5px;color:var(--t2);padding:6px 8px 4px;line-height:1.7}
+/* ★ 最新版阅读位置标识 */
+.start-flag{background:linear-gradient(135deg,#1a7f4b,#0a8f4e);color:#fff;border-radius:14px;padding:18px 22px;margin:24px 0 18px;box-shadow:0 4px 16px rgba(10,143,78,.28);text-align:center}
+.start-flag .t1{font-size:19px;font-weight:800;letter-spacing:1px}
+.start-flag .t2{font-size:13px;opacity:.92;margin-top:6px;line-height:1.7}
+.start-flag .badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:20px;padding:2px 12px;font-size:12px;font-weight:700;margin-bottom:8px}
+/* 备查折叠 */
+details{background:#fff;border:1px solid var(--line);border-radius:10px;margin:10px 0;padding:0}
+details>summary{cursor:pointer;padding:10px 16px;font-size:13.5px;font-weight:700;color:var(--t2);list-style:none;user-select:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"▸ ";color:var(--p)}
+details[open]>summary::before{content:"▾ "}
+details>div{padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.8}
+.rev-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px;line-height:1.7}
+.rev-row b{color:var(--r);flex-shrink:0;min-width:74px}
 </style>
 </head><meta name="robots" content="noindex,nofollow,noarchive,max-image-preview:none">
 
@@ -98,65 +111,64 @@ li b{color:var(--pd)}
 </div></div>
 <div id="__sec" style="display:none">
 <h1>债务重组 · 执行总路线图</h1>
-<div class="sub">2026-08-31 晚更新（增补：余额节点视图 + 门店承包/挽回修正）· 总债 496 万 · 净利润口径 · 唯一敌人：月缺口 2~6 万 + 日历错配</div>
+<div class="sub">2026-09-23 重排 · 总债 496 万 · 零逾期是全部地基</div>
 
+<!-- ============ 顶部速览：只放当前有效结论 ============ -->
 <div class="kpi">
 <div><div class="k">总债务</div><div class="v num">496 万</div></div>
-<div><div class="k">其中 2.6% 低息抵押</div><div class="v num">369 万（74%）</div></div>
-<div><div class="k">月刚性支出</div><div class="v num">66,048</div></div>
-<div><div class="k">分期墙期月缺口</div><div class="v num" style="color:var(--r)">−2 ~ −6 万</div></div>
-<div><div class="k">最大风险日</div><div class="v num">每月 4 日</div></div>
+<div><div class="k">月刚性月供</div><div class="v num">66,048</div></div>
+<div><div class="k">月供现实下限</div><div class="v num">64,591</div></div>
+<div><div class="k">最大风险日</div><div class="v num" style="color:var(--r)">每月 4 日</div></div>
+<div><div class="k">当前剩余现金</div><div class="v num" style="color:var(--g)">留 18,000</div></div>
 </div>
 
-<h2>一、记账规则：一条标准 + 两张速查表</h2>
+<div class="big">
+<b>★ 2027-03 前唯一目标：撑住零逾期 ＋ 把月供结构谈下来。</b><br>
+不是填平缺口 —— 缺口是月供结构问题，结构性填不平。增收/降本的作用是<b>垫厚底部、延长存活、为谈判争取空间</b>。
+</div>
 
-<div class="big"><b>唯一判断标准：钱有没有真实进出你的"五个钱袋子"（现金 / 银行卡 / 微信 / 支付宝 / 预充值池）。进了就记、出了就记，没碰过的坚决不记。</b></div>
+<div class="start-flag">
+<div class="badge">最新版 · 2026-09-23 15:55</div>
+<div class="t1">▼▼▼ 从这里开始阅读 ▼▼▼</div>
+<div class="t2">以下「一、当前有效结论」「二、本周必做」「三、路线」「四、绝对不做」为本版全部有效内容。<br>页面末「📎 备查」为已确立前提的底稿，第二遍无需再读。</div>
+</div>
 
-<h3>✅ 要记（就这 8 类）</h3>
-<table>
-<tr><th>场景</th><th>页签 → 分类</th><th>说明</th></tr>
-<tr><td><span class="tag tag-yes">收</span>月初结账单回款（约5万出货费）</td><td>收入 → 应收账款·出货费</td><td>你的主力进项，必须单列</td></tr>
-<tr><td><span class="tag tag-yes">收</span>客户预充面单的钱进来</td><td>收入 → 预充值面单收入</td><td>注意：这是客户的钱（负债），月报盯池余额</td></tr>
-<tr><td><span class="tag tag-yes">收</span>超重费、理赔款到账</td><td>收入 → 赔款收入 / 其他收入</td><td>到账才记</td></tr>
-<tr><td><span class="tag tag-yes">支</span>工资、系统充值、房租、油电保险、杂费赔偿</td><td>支出 → 各对应分类</td><td>钱从口袋出去就记</td></tr>
-<tr><td><span class="tag tag-yes">支</span>家庭生活费、学费、运动消费</td><td>支出 → 家庭生活 / 学费教育 / 运动</td><td><b>必须记</b>，家庭生活记一笔总额即可不细分</td></tr>
-<tr><td><span class="tag tag-yes">还</span>七笔固定还款（4/9/13/20/29日+浦发10日）</td><td>还款 → 微众/总部/房贷/平安/招商/中信/浦发</td><td><b>一笔都不能漏</b>，这是和方案对账的基准</td></tr>
-<tr><td><span class="tag tag-w">套</span>信用卡套现到账</td><td>套现/内部 → 套现·招商/中信/浦发卡</td><td><b>必须记</b>，不记月结余会虚高、判断全错</td></tr>
-<tr><td><span class="tag tag-w">套</span>套现手续费</td><td>套现/内部 → 套现手续费</td><td>单列，月底算清套现真实成本</td></tr>
-</table>
-
-<h3>❌ 不记（防繁琐的关键）</h3>
-<table>
-<tr><th>场景</th><th>为什么不记</th></tr>
-<tr><td><span class="tag tag-no">不</span>赊账出货（应收发出时）</td><td>账不是钱，等客户回款那天记"应收账款·出货费"</td></tr>
-<tr><td><span class="tag tag-no">不</span>五格之间的互转（预充值池↔银行卡）</td><td>自己左口袋换右口袋，总额没变</td></tr>
-<tr><td><span class="tag tag-no">不</span>直接刷卡付掉的钱（没经过五格）</td><td>到还款日记"还款"即可，备注写清含什么</td></tr>
-<tr><td><span class="tag tag-no">不</span>未到账的承诺收入、口头退款</td><td>只记落袋的真金白银</td></tr>
-<tr><td><span class="tag tag-no">不</span>小额零星（<50元的零花）</td><td>不追完美，追真实。盘点对账能兜住漏记</td></tr>
-</table>
-
-<div class="card"><b>最省力的节奏：</b>平时每天 1 分钟只记大额和还款；<b>真正不能漏的是每月 1 日 + 每月最后一天各一次"五格盘点"</b>（现金/银行/微信/支付宝/预充值池五个余额）。真实月结余 X 以盘点差为准（再减套现净额），流水漏记会被自动勾稽暴露，不怕漏。每月底「导出」页导出 CSV 发我。</div>
-
-<h2>二、今天就能开始的事（除记账外的 8 件）</h2>
+<h2>一、当前有效结论（十条速查）</h2>
 <div class="card">
-<ol>
-<li><b>停止一切新增信贷申请</b>（零成本，立刻生效）——每次申请都是硬查询，3~6 个月才淡出。这是所有后续动作的地基。</li>
-<li><b>发薪日挪到 10–15 日</b>（应收到账之后）或与员工协商分两次发——直接消灭"套现发工资"的最大需求，本周定下来。</li>
-<li><b>让代账会计核税</b>：拉 2025 全年 + 2026 上半年申报表，核对小规模纳税人增值税优惠（月 10 万内免）、小微所得税 5%、六税两费减半是否足额享受，多缴的可退抵——最可能被忽略的真金白银。</li>
-<li><b>预充值池立规矩</b>：池内常驻 ≥10 万，只用于每月 1–13 日还款窗口，不挪不碰（客户的钱）。</li>
-<li><b>给母亲书面知情</b>：96 万平安抵押的实际用款人是你的事实，让母亲完全知情并书面约定；顺手问清这笔的利率和剩余期数。</li>
-<li><b>上保险杠杆</b>：你是唯一现金流来源，几百块/年的定期寿险+意外险（保额 100 万+，受益人写孩子），把极端风险锁死在墙外。</li>
-<li><b>配偶隔离</b>：配偶不签任何担保、家庭生活费按月固定金额从经营里划出，彻底分账。</li>
-<li><b>约谈第一家流失的合作门店</b>（注：与自有两家承包门店是两回事——流失门店是第三方门店，在申通/中通/韵达等多头出货，目标是抢份额而非简单挽回）：顺序 = 了断历史（争议 7 折一次性结清、书面放弃追索）→ 现场量化他在我方渠道的月单量 → 丢损先行赔付 + 量返方案逐步做大全份额。细节用《口岸门店量返方案与先行赔付条款》，先攻 1–2 家中等流失户做样板。</li>
-<li><b>承包协议补 CCR 罚款传导 + 收益模式确认</b>（对象：自有两家转承包门店）：罚款传导、保证金、退出机制写死；确认承包收益模式（固定承包费 or 按单抽成，只抓一头），承包店经营数据留档——既是管理依据，也是给流失门店做样板招商的素材。</li>
-</ol>
+<table>
+<tr><th style="width:34%">事项</th><th>现行结论</th></tr>
+<tr><td><b>主战场</b></td><td><b>降息是保命线，增收是续命线</b>。月供可压空间只剩一条：<b>总部金融 11%→7%＝−1,457/月</b>。技巧层全部持续项合计仅 <b>448 元/月</b>（缺口 0.6%）→ <b>一次谈判 ≈ 技巧总和的 5.8 倍</b></td></tr>
+<tr><td><b>月供现实下限</b></td><td><b>64,591</b>（房贷 31,000 锁死）。「压到 6 万以下」须靠增收垫，不可能靠结构性调整达成</td></tr>
+<tr><td><b>派件 / 出港口径</b></td><td>派件（进港）<b>7,100 票/天</b>｜出港（发件）<b>1,517 票/天</b>（月 4.55 万票）<br>→ 派件亏损 <b>17,040/月</b>；<b>揽件权净价值 32,555/月</b> → 派件＝保揽件权的「保护费」，<b>减派件量＝净亏 3.26 万</b></td></tr>
+<tr><td><b>真实边际毛利</b></td><td><b>1.09~1.19 元/票</b>（不是 1.54）。面单费 0.30 <b>不扣</b>（客户预充值付款，再扣＝重复计算）</td></tr>
+<tr><td><b>总额度 / 使用率</b></td><td>卡总额度 <b>376,500</b>｜已用 <b>268,136</b>｜可用 <b>108,364</b>｜使用率 <b>71.2%</b><br><span style="color:var(--t2)">★ 实时数一律跑 <code>python credit_truth.py</code>，本页不复写</span></td></tr>
+<tr><td><b>4 日双贷</b></td><td><b>35,048</b>＝微众 16,290.77 ＋ 总部金融 18,757（全月最大单日流出）</td></tr>
+<tr><td><b>资金优先序</b></td><td>总部金融 11% ＞ 信用卡 12~18.25% ＞ 建现金缓冲 ＞ 微众 6.66% ＞ 房贷 2.6%（<b>绝不提前还</b>）</td></tr>
+<tr><td><b>收款周期</b></td><td>出货费<b>月初 5-8 号</b>集中回收，月中至月末无新增经营收入 → 排计划不得假设月中还有收入</td></tr>
+<tr><td><b>现金结论</b></td><td>自有 45,000 − 9/23 社保 27,000 ＝ <b>剩余 18,000，全部留作 10/4 双贷兜底，不动用</b></td></tr>
+<tr><td><b>套现风控</b></td><td>单笔 ≥30,000 <b>必须拆 2~3 笔跨 2~3 天</b>；金额一律避整数；单卡单月 ≤2 轮；还入→刷出间隔 ≥1 天</td></tr>
+</table>
 </div>
 
-<h2>三、总方案：五个阶段，一条线走到 2033</h2>
+<h2>二、本周必做（9/22-9/28）</h2>
+<div class="card">
+<table>
+<tr><th style="width:52%">动作</th><th>量级</th><th>状态</th></tr>
+<tr><td><b>★分批刷出</b>：浦发 9/22-24（39,000）＋ 招信 9/26-30（50,000）</td><td class="num">合计 138,000</td><td><span class="tag tag-w">进行中</span></td></tr>
+<tr><td><b>★社保缴 1 个月</b>（停滞纳金 ＋ 保医保），剩 54,000 留 10 月</td><td class="num">27,000</td><td><span class="tag tag-w">9/23</span></td></tr>
+<tr><td><b>★守住现金缓冲</b>：留 18,000 不动</td><td class="num">18,000</td><td><span class="tag tag-yes">已定</span></td></tr>
+<tr><td>还广发（26 日全额，禁最低）</td><td class="num">16,400 ⚠️待核</td><td><span class="tag tag-w">9/26</span></td></tr>
+<tr><td><b>★报价表：加收并入</b>（≤3kg 首重 3.7／>3kg 用 3.2）；换表前抽 10 张单据复算</td><td class="num">保全 500~1,700/月</td><td></td></tr>
+<tr><td>社保：区社保局窗口咨询（分期缴款／滞纳金减免／重点群体补贴）</td><td>零成本</td><td></td></tr>
+</table>
+<p style="font-size:12.5px;color:var(--t2);margin-top:10px">
+★ 完整清单见工作台「债务执行清单」（22 项，唯一数据源 <code>debt_plan_data.py</code>），本页不复制。</p>
+</div>
+
+<h2>三、总路线：四个阶段走到 2033</h2>
 
 <div class="chart-wrap">
 <svg viewBox="0 0 680 252" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="债务余额下降曲线">
-<!-- 网格 -->
 <g stroke="#e6e1f0" stroke-width="1">
 <line x1="36" y1="24" x2="660" y2="24"/><line x1="36" y1="62" x2="660" y2="62"/>
 <line x1="36" y1="100" x2="660" y2="100"/><line x1="36" y1="138" x2="660" y2="138"/>
@@ -166,25 +178,19 @@ li b{color:var(--pd)}
 <text x="32" y="28">500万</text><text x="32" y="66">400万</text><text x="32" y="104">300万</text>
 <text x="32" y="142">200万</text><text x="32" y="180">100万</text><text x="32" y="214">0</text>
 </g>
-<!-- 面积 -->
 <path d="M36,25.4 L68,40.4 L100,51.1 L204,81.9 L300,100.7 L644,140.8 L660,141.8 L660,214 L36,214 Z" fill="rgba(106,63,160,.13)"/>
-<!-- 主线 -->
 <path d="M36,25.4 L68,40.4 L100,51.1 L204,81.9 L300,100.7 L644,140.8 L660,141.8" fill="none" stroke="#6a3fa0" stroke-width="2.5" stroke-linejoin="round"/>
-<!-- 气球贷一击 -->
 <line x1="660" y1="141.8" x2="660" y2="206" stroke="#d93636" stroke-width="2" stroke-dasharray="5,4"/>
 <polygon points="660,212 655,203 665,203" fill="#d93636"/>
 <text x="652" y="168" font-size="10.5" fill="#d93636" text-anchor="end" font-weight="700">2033-02</text>
 <text x="652" y="181" font-size="10.5" fill="#d93636" text-anchor="end" font-weight="700">气球181.6万一击</text>
 <text x="652" y="194" font-size="10" fill="#d93636" text-anchor="end">清零→仅剩平安尾款</text>
-<!-- 基线 -->
 <line x1="36" y1="214" x2="660" y2="214" stroke="#c9c2da" stroke-width="1.5"/>
-<!-- 节点 -->
 <g fill="#6a3fa0" stroke="#fff" stroke-width="2">
 <circle cx="36" cy="25.4" r="4.5"/><circle cx="68" cy="40.4" r="4.5"/><circle cx="100" cy="51.1" r="4.5"/>
 <circle cx="204" cy="81.9" r="4.5"/><circle cx="300" cy="100.7" r="4.5"/><circle cx="644" cy="140.8" r="4.5"/>
 <circle cx="660" cy="141.8" r="4" fill="#d93636"/>
 </g>
-<!-- 节点标注 -->
 <g font-size="11" fill="#4a2d75" font-weight="700">
 <text x="42" y="16">现在 496万</text>
 <text x="68" y="30" text-anchor="middle">457万</text>
@@ -200,56 +206,26 @@ li b{color:var(--pd)}
 <text x="300" y="117" text-anchor="middle">29-05 总部清零</text>
 <text x="636" y="156" text-anchor="end">32-12 积累期末</text>
 </g>
-<!-- 年份 -->
 <g font-size="10" fill="#7a7391" text-anchor="middle">
 <text x="36" y="230">26-09</text><text x="68" y="230">27</text><text x="164" y="230">28</text>
 <text x="260" y="230">29</text><text x="356" y="230">30</text><text x="452" y="230">31</text>
 <text x="548" y="230">32</text><text x="644" y="230">33</text>
 </g>
 </svg>
-<div class="chart-cap">📊 债务余额下降曲线：走到每个节点还剩多少钱（含本金与待还分期，循环余额按 2028-05 前清零假设线性下降）。平安抵押按年化 6% 估算，待回传期数利率后更新。每个阶段"本阶段要还多少现金、下一程月供降到多少"见右侧余额快照卡。</div>
-</div>
-
-<div class="phase">
-<div class="ph-num">0</div>
-<div class="ph-body">
-<div class="ph-title">止血与准备</div>
-<div class="ph-time">本周 ~ 2026 年 9 月底</div>
-<ul>
-<li><b>停止新增信贷申请</b>（唯一例外：与总部金融的存量谈判，不新增查询）</li>
-<li><b>开始 90 天记账实测</b>：今天填期初五格盘点 → 连续 3 个月得出真实月结余 X（全案最关键的数字）</li>
-<li><b>招商卡分期展期谈判</b>：9 万、4 期（月 22,500）→ 协商展至 12–18 期（月 ≤7,500），<b>9 月 25 日账单日前完成</b>。筹码：零逾期记录 + 引用财金〔2026〕71 号信用卡分期财政贴息（年化贴 1 个点、年上限 5000 元）</li>
-<li><b>发薪日对齐 + 停止套现</b>：套现是银行风控模型可识别的，一旦降额封卡你的循环当天断</li>
-<li><b>启动合作门店份额争夺</b>：约谈第一家流失门店（了断历史 → 量化他的生意 → 先行赔付+量返，目标先做大全份额、独家后置）</li>
-</ul>
-</div>
-<div class="ph-bal">
-<div class="bal-t">💰 余额快照 · 起点</div>
-<div class="bal-node">今天 · 2026-08-31</div>
-<div class="bal-v">496<span>万</span></div>
-<div class="bar"><i style="width:100%"></i></div>
-<div class="bal-row"><span>本阶段还款现金</span><b>≈9.4万（9月）</b></div>
-<div class="bal-row"><span>下一程面临</span><b>过墙8个月 71万</b></div>
-<div class="bal-note">其中卡分期墙 18.1 万要在 8 个月内还完，是全程最陡的一段；月均还款 8.9 万 vs 净利润 4.33 万，缺口靠展期谈判和浮动池扛</div>
-</div>
+<div class="chart-cap">📊 债务余额下降曲线。平安抵押按年化 6% 估算、循环余额按 2028-05 前清零假设，待数据回传后更新。每阶段"要还多少现金、下一程月供降到多少"见右侧余额快照卡。</div>
 </div>
 
 <div class="phase">
 <div class="ph-num">1</div>
 <div class="ph-body">
 <div class="ph-title">过墙期 · 扛过分期到期墙</div>
-<div class="ph-time">2026-09 ~ 2027-04（8 个月）</div>
-<table>
-<tr><th>月份</th><th>月支出合计</th><th>净利润口径结余</th><th>重点</th></tr>
-<tr><td>2026-09</td><td class="num">94,089</td><td class="num" style="color:var(--r)">−5.1万</td><td>招商展期落地后减亏</td></tr>
-<tr><td>2026-10~12 峰值</td><td class="num">105,980</td><td class="num" style="color:var(--r)">−6.3万</td><td>最硬的三个月，靠 X 实测值决定是否再谈展期</td></tr>
-<tr><td>2027-01</td><td class="num">83,479</td><td class="num" style="color:var(--r)">−4.0万</td><td>中信最后一期</td></tr>
-<tr><td>2027-02~04</td><td class="num">71,589</td><td class="num" style="color:var(--o)">−2.8万</td><td>浦发 2027-04 清零</td></tr>
-</table>
+<div class="ph-time">2026-09 ~ 2027-04（8 个月）｜<b>当前所处阶段</b></div>
 <ul>
-<li><b>总部金融降息展期谈判</b>（生存级优先）：<b>11% → 5–6%</b>、<b>32 期展 48–60 期</b>，月供 18,757 → 约 12,000，月省约 7,000。筹码：加盟年限、日揽件量、零逾期、CCR 评级；锚点用圆通小贷 ABS 1.90% 的资金成本；同步援引《广东省快递条例》谈派费</li>
-<li>信用卡分期 <b>绝不允许任何一笔裸露进 18% 循环计息</b>——每笔到期前 3 个月启动续作</li>
-<li>还款日历背下来：<b>4 日 35,048（微众 16,290.77 + 总部金融 18,757，全月最大单日）</b>、9 日房贷 17,000、10 日浦发 5,399、13 日招商 22,500、20 日平安 14,000、29 日中信 11,890。上半月出 82,556（占 76%）</li>
+<li>月均还款 <b>约 8.9 万</b> vs 净利润 <b>4.33 万</b> → 缺口靠展期谈判 + 刷出周转 + 社保拆期扛</li>
+<li><b>总部金融降息谈判（生存级优先）</b>：11% → 7%，月供 18,757 → 17,300，月省 <b>1,457</b>。筹码：加盟年限、日揽件量、零逾期、CCR 评级</li>
+<li>还款日历（当前）：<b>4 日 35,048</b>｜9 日 招房贷 17,000｜20 日 妈平安 14,000｜26 日 广发｜13 日 招信｜10 日 浦发｜29 日 中信</li>
+<li>信用卡分期<b>绝不允许任何一笔裸露进 18% 循环计息</b>——每笔到期前 3 个月启动续作</li>
+<li>目标：<b>三颗雷全部拆完</b>——招行分期 26-12 清、中信 27-01 清、浦发 27-04 清</li>
 </ul>
 </div>
 <div class="ph-bal">
@@ -259,7 +235,7 @@ li b{color:var(--pd)}
 <div class="bar"><i style="width:86%"></i></div>
 <div class="bal-row"><span>本阶段还款现金</span><b>71万（月均8.9万）</b></div>
 <div class="bal-row"><span>下一程面临</span><b>月供降回 66,048</b></div>
-<div class="bal-note">卡债 33.1万 → 循环余 9.2万；招行分期 26-12 清、中信 27-01 清、浦发 27-04 清，三颗雷全部拆完</div>
+<div class="bal-note">卡债 33.1万 → 循环余 9.2万；三颗雷拆完，月供结构第一次质变</div>
 </div>
 </div>
 
@@ -270,7 +246,7 @@ li b{color:var(--pd)}
 <div class="ph-time">2027-05 ~ 2028-05</div>
 <ul>
 <li>2027-05 起：分期墙清零，月支出降回 <b>66,048</b></li>
-<li>清还循环余额 → 信用卡使用率从 70.5% 压到 <b>50% 以下</b>（破银行风控线）</li>
+<li>清还循环余额 → 信用卡使用率从 <b>71.2%</b> 压到 <b>50% 以下</b>（破银行风控线）</li>
 <li>硬查询 3~6 个月自然淡出 + 使用率达标 → <b>2027 下半年征信窗口重新打开</b></li>
 <li>2028-05：微众到期，月供释放 <b>16,290.77</b>，月支出降至 49,757</li>
 </ul>
@@ -282,7 +258,7 @@ li b{color:var(--pd)}
 <div class="bar"><i style="width:70%"></i></div>
 <div class="bal-row"><span>本阶段还款现金</span><b>86万（13个月）</b></div>
 <div class="bal-row"><span>下一程面临</span><b>月供降至 49,757</b></div>
-<div class="bal-note">循环余额 14.9万目标本阶段用月度盈余清零（不在 66,048 内，靠 X 和增收）；清完后只剩四笔低息贷款，结构质变</div>
+<div class="bal-note">循环余额用月度盈余清零（不在 66,048 内，靠 X 和增收）；清完后只剩四笔低息贷款</div>
 </div>
 </div>
 
@@ -292,12 +268,12 @@ li b{color:var(--pd)}
 <div class="ph-title">积累期 · 增收减支、为气球贷蓄水</div>
 <div class="ph-time">2028-05 ~ 2032-12</div>
 <ul>
-<li>2029-05：总部金融到期，再释放 <b>18,757</b>，月支出降至 <b>33,467</b>；从 2029-05 起两道减压阀全开，月结余转正 +1.1~+2.9 万（净利润口径）</li>
-<li>谷底在 2029-04（累计 −18 ~ −71.7 万），之后只回升不再下沉</li>
-<li><b>增收五路（罗湖口岸特有）</b>：①口岸跨境件/港澳件揽收激励单独谈 ②退货逆向件派费政策问总部 ③CCR 罚款治理（你已有工具链）④超重费清收 ⑤<b>口岸合作门店份额争夺</b>（对象：多头出货申通/中通/韵达的第三方门店，非自有两家承包店）：面单物理绑定 + 量返利益捆绑（让利恒定增量毛利 30%，基数按我方渠道当前量定档）+ 返利月结不压款；散单门店三板斧 = 丢损先行赔付（7 天先行、单件 200 / 月 500 上限）+ 每日出货日报 + 明码标价（方案细节见《口岸门店量返方案与先行赔付条款》）。另：自有两家承包门店 = 管理线（CCR 罚款传导 + 保证金 + 收益模式确认），其经营数据同时是给流失门店做样板招商的素材</li>
-<li><b>减支三路（已修正）</b>：①件量费阶梯谈判——城市服务中心轻资产结构下房租已含在付总部的件量费里，重谈对象是<b>总部不是房东</b>，与降息捆绑一次谈、一次谈判两筹码 ②派费考核谈判（法律依据在握）③预充值折扣阶梯化</li>
-<li>2029 年底：房贷剩余本金降至约 220 万，房产 LTV 约 <b>57%</b>——此时是主动选择"转按揭/经营贷置换"条件最好的窗口</li>
-<li><b>2032 年 1–2 月（关键节点）</b>：向招行个贷部<b>书面</b>申请确认气球贷到期续期（不打电话、要留痕）；你说的"大概率可续期"按高概率期权处理，现金+转按揭双轨备份不撤</li>
+<li>2029-05：总部金融到期，再释放 <b>18,757</b>，月支出降至 <b>33,467</b>；两道减压阀全开，月结余转正</li>
+<li>谷底在 2029-04，之后只回升不再下沉</li>
+<li><b>增收五路</b>：①口岸跨境件/港澳件揽收激励单独谈 ②退货逆向件派费政策问总部 ③CCR 罚款治理 ④超重费清收 ⑤<b>合作门店份额争夺</b>（对象＝多头出货的第三方门店；面单物理绑定 + 量返利益捆绑 + 丢损 7 天先行赔付）</li>
+<li><b>减支三路</b>：①件量费阶梯谈判（重谈对象是<b>总部不是房东</b>，与降息捆绑一次谈）②派费考核谈判 ③预充值折扣阶梯化</li>
+<li>2029 年底：房贷剩余本金约 220 万，房产 LTV 约 <b>57%</b>——转按揭/置换条件最好的窗口</li>
+<li><b>2032 年 1-2 月</b>：向招行个贷部<b>书面</b>申请确认气球贷到期续期（留痕）；现金+转按揭双轨备份不撤</li>
 </ul>
 </div>
 <div class="ph-bal">
@@ -307,7 +283,7 @@ li b{color:var(--pd)}
 <div class="bar"><i style="width:39%"></i></div>
 <div class="bal-row"><span>本阶段还款现金</span><b>191万（55个月）</b></div>
 <div class="bal-row"><span>下一程面临</span><b style="color:var(--r)">气球一击 181.6万</b></div>
-<div class="bal-note">29-05 总部清零后月供仅 33,467，是蓄水主力期；还剩的 193 万里 181.5 万是房贷本金 + 平安尾款约 11 万</div>
+<div class="bal-note">29-05 总部清零后月供仅 33,467，是蓄水主力期</div>
 </div>
 </div>
 
@@ -318,8 +294,8 @@ li b{color:var(--pd)}
 <div class="ph-time">2033-02</div>
 <ul>
 <li><b>路径 A（首选）</b>：招行续期成功 → 继续按低息摊还</li>
-<li><b>路径 B</b>：现金 + 转按揭组合。现金全额覆盖需月净利 6.85 万；月净利 5 万需转约 145 万、6 万需约 67 万——届时 LTV 57%、30 年期月供约 9,400，审批条件从容</li>
-<li>届时房产若按成交口径 350–370 万计，转按揭空间充足，<b>这一步不赌、只选</b></li>
+<li><b>路径 B</b>：现金 + 转按揭组合。现金全额覆盖需月净利 6.85 万；月净利 5 万需转约 145 万</li>
+<li>届时房产按成交口径 350–370 万计，转按揭空间充足，<b>这一步不赌、只选</b></li>
 </ul>
 </div>
 <div class="ph-bal">
@@ -329,162 +305,141 @@ li b{color:var(--pd)}
 <div class="bar"><i style="width:37%;background:linear-gradient(90deg,#d93636,#e87a7a)"></i></div>
 <div class="bal-row"><span>一次性还本</span><b>1,816,425</b></div>
 <div class="bal-row"><span>还后剩余</span><b>仅平安尾款 ≈8万</b></div>
-<div class="bal-note">六整年后只剩最后一击。零逾期记录是 2032 年书面续期谈判的底气——从现在起每一次按时还款都是在为它投票</div>
+<div class="bal-note">零逾期记录是 2032 年书面续期谈判的底气——每一次按时还款都是在为它投票</div>
 </div>
 </div>
 
-<h2>四、绝对不做清单（与做什么同样重要）</h2>
-<div class="card">
-<ul>
-<li>❌ 不再向任何银行/网贷提交新申请（已测 5 家被拒，继续申请=自毁征信）</li>
-<li>❌ 不走个人破产（触发房贷+抵押贷提前到期、房产进拍卖，豁免上限仅 20 万）</li>
-<li>❌ 不做房贷转经营贷（2.6% 已是底部，倒腾风险远大于收益）</li>
-<li>❌ 不碰二押（LTV 已 70.9%，无空间）</li>
-<li>❌ 不再套现养循环（风控识别后降额封卡=循环当天断裂）</li>
-<li>❌ 不动预充值池还债（客户的钱，挪用=纠纷）</li>
-<li>❌ 承包门店协议里不写 CCR 罚款传导条款（对象是自有两家承包店：量是他的、骂名罚款是你的，CCR 数据会失控）</li>
-</ul>
-</div>
-
-<h2>四·五、★★ 额度时间套利（2026-09-21 新增 · 最高性价比技巧）</h2>
-<div class="card" style="border-left:4px solid var(--g)">
-<p style="font-size:13.5px;line-height:1.85;margin-bottom:14px">
-<b>核心洞察</b>：<b>已出账单的卡不必等还款日</b>——现金一到手就还，<b>账单立即结清 + 额度立即恢复</b>，
-需要钱时再刷出来用。中间的现金只是<b>"路过"，不是净消耗</b>。<br>
-→ <b>还款 ≠ 额度净消耗，还款 = 现金路过 + 额度解锁。</b></p>
-
-<table>
-<tr><th>时点</th><th>旧做法（还款日还款）</th><th style="color:#1a7f4b">新做法（额度时间套利）</th></tr>
-<tr><td>9/25 招信出账 99,000</td><td>干等到 10/13</td><td style="color:#1a7f4b;font-weight:700">当天即还 50,000 → 额度立即 +50,000</td></tr>
-<tr><td>9/26</td><td>还广发 16,400</td><td style="color:#1a7f4b;font-weight:700">还广发 16,400 + 招信刷回 50,000</td></tr>
-<tr><td>10/5 出货费到账</td><td>存着等 10/13</td><td style="color:#1a7f4b;font-weight:700">立即还招信 49,000 → 99,000 全清</td></tr>
-<tr><td><b>10/13 还款日</b></td><td style="color:#c0392b;font-weight:700">★ 需一天凑 99,000</td><td style="color:#1a7f4b;font-weight:700">✅ 无需凑钱，已结清</td></tr>
-<tr><td><b>最大单日现金压力</b></td><td style="color:#c0392b;font-weight:700">99,000</td><td style="color:#1a7f4b;font-weight:700">约 50,000</td></tr>
-</table>
-
-<p style="margin:16px 0 8px"><b>套利收益公式</b>：<span style="font-family:monospace;background:rgba(0,0,0,.05);padding:3px 8px;border-radius:4px">收益 = 账单金额 × (还款日 − 提前还款日)　单位：元·天</span></p>
-
-<table>
-<tr><th>卡</th><th>账单金额</th><th>提前至</th><th>提前天数</th><th>额外释放额度</th></tr>
-<tr><td>招信</td><td class="num">99,000</td><td>9/25（出账当天）</td><td class="num">18 天</td><td class="num" style="color:#1a7f4b;font-weight:700">1,782,000 元·天</td></tr>
-<tr><td>浦发</td><td class="num">42,000</td><td>9/22（出账次日）</td><td class="num">18 天</td><td class="num" style="color:#1a7f4b;font-weight:700">756,000 元·天</td></tr>
-<tr><td colspan="4"><b>合计</b></td><td class="num" style="color:#1a7f4b;font-weight:700">2,538,000 元·天 ≈ 全月多出 84,600 可用额度</td></tr>
-</table>
-
-<p style="margin:16px 0 8px"><b>三重收益</b>：</p>
-<ul>
-<li>① <b>削峰（最重要）</b>：10/13 需凑金额 99,000 → <b>0</b>。逾期风险大幅下降——零逾期是 2033 续贷的地基</li>
-<li>② <b>额度窗口前移</b>：招信 99,000 额度在 9/25 恢复（而非 10/13），多释放 178.2 万元·天</li>
-<li>③ <b>使用率读数改善（最被低估）</b>：银行风控看账单日/月末读数，10 月招信使用率读数低于 9 月 → 为后续<b>提额/降息谈判</b>攒好感度</li>
-</ul>
-
-<p style="margin:16px 0 8px"><b>成本</b>：<b>零</b>（过路现金本来闲置时）。唯一约束 = 这笔现金在额度恢复前不能被别处占用。</p>
-
-<div style="margin-top:18px;padding:14px 16px;background:rgba(192,57,43,.07);border-radius:8px;border-left:4px solid #c0392b">
-<p style="margin:0 0 8px;font-weight:700;color:#c0392b">⚠️ 两条红线，务必守住</p>
-<p style="margin:0 0 8px;line-height:1.8;font-size:13px">
-<b>红线 1 · 防判定套现</b>：「还进去再刷出来」若形成 <b>同卡 + 高频 + 大额 + 整数 + 快进快出</b> 的固定模式，
-正是 2026-06 信用卡新规里"疑似套现"的画像 → <b>连续 3 个月即 100% 降额/封卡</b>。<br>
-对策：金额避整数（还 50,000 → 改 <b>49,750 / 49,860</b>）、进出间隔拉开、用途真实留发票、
-单卡单月套利 ≤2 次、单月复用 ≤30,000。★ <b>招信这 99,000 是真实账单还款，不是套利，可放行。</b></p>
-<p style="margin:0;line-height:1.8;font-size:13px">
-<b>红线 2 · 账单日之前还 ≠ 解锁已出账单额度</b>：账单日<b>之前</b>还只会"做小本期账单额"；
-真正解锁的是<b>已出账单</b>那笔欠款。<b>套利时间窗 = 账单日当天 起 ~ 还款日</b>，越靠前收益越大。</p>
-</div>
-
-<p style="margin-top:14px;line-height:1.8;font-size:13px;color:var(--t2)">
-<b>诚实声明</b>：套利解决的是<b>时点风险（逾期风险）</b>，<b>不能</b>补掉收支总额缺口。
-要还的总额一分没少，只是时点前移 → 缺口仍需靠浦发刷出、社保拆期、e招贷提额、发件增收来补。</p>
-</div>
-
-<h2>四·六、★★★★ 主战场：降息是保命线，增收是续命线（2026-09-21 定）</h2>
-<div class="card" style="border-left:4px solid #c0392b">
-<p style="font-size:13.5px;line-height:1.85;margin-bottom:14px">
-<b>为什么是这两条</b>：<b>降息是唯一能压月供的手段</b>（月供是硬支出、唯一可压缩的结构性变量）；
-<b>增收是唯一能填缺口的手段</b>（月供降完仍有 4.8~5.7 万缺口）。<br>
-<b>技巧层不解决缺口</b>——全部技巧持续项合计只有 <b>448 元/月</b>（月缺口的 <b>0.6%</b>）。</p>
-
-<p style="margin:0 0 8px;font-weight:700;color:#1a7f4b">✅ 降息全部到位 → 月供 66,048 → 59,191（第一次站进 6 万线内）</p>
-<table>
-<tr><th>债务</th><th>现月供</th><th>降息后</th><th>降幅</th><th>怎么降</th></tr>
-<tr><td>招行气球贷</td><td class="num">17,000</td><td class="num">13,800</td><td class="num" style="color:#1a7f4b;font-weight:700">−3,200</td><td>期限 30→40 年（2026-08-28 央行新规）</td></tr>
-<tr><td>妈平安</td><td class="num">14,000</td><td class="num">11,800</td><td class="num" style="color:#1a7f4b;font-weight:700">−2,200</td><td>同上（<b>需母亲同意</b>）</td></tr>
-<tr><td><b>总部金融</b></td><td class="num">18,757</td><td class="num">17,300</td><td class="num" style="color:#1a7f4b;font-weight:700">−1,457</td><td><b>11%→7% 谈判（最大单笔收益）</b></td></tr>
-<tr><td>微众</td><td class="num">16,291</td><td class="num">16,291</td><td class="num">0</td><td>无空间（系统动态评分）</td></tr>
-<tr style="background:rgba(26,127,75,.08)"><td><b>合计</b></td><td class="num"><b>66,048</b></td><td class="num"><b>59,191</b></td><td class="num" style="color:#1a7f4b;font-weight:700"><b>−6,857</b></td><td></td></tr>
-</table>
-
-<p style="margin:16px 0 8px;font-weight:700;color:#c0392b">⚠️ 房贷期限延长的重大风险</p>
-<p style="line-height:1.85;font-size:13px;margin:0">
-必须与 <b>2033 气球贷续贷资格在同一窗口谈</b> —— 若银行把"40 年期"视为最终展期，
-2033-02 那 <b>181.6 万本金续贷可能被拒</b>。<br>
-→ 申请时必须<b>同时递「2033 续贷意向函」并取得书面回应</b>。</p>
-</div>
-
-<div class="card" style="border-left:4px solid #c0392b;margin-top:14px">
-<p style="font-weight:700;color:#c0392b;margin:0 0 10px">❌ 已作废：微众"额度 2027-09-05 到期 / 归零"议题</p>
-<p style="line-height:1.85;font-size:13px;margin:0">
-<b>z 2026-09-21 明确</b>：「微众循环额度会随着还款增大额度对应上账」，<b>会一直在</b>，
-不存在到期收回/归零风险。<br>
-→ 原「单月断口 21 万 / 101 天倒计时 / 活账户维护（5,000~10,000 小额循环）」<b>整段推演作废</b>。<br>
-★ <b>永久生效：不再讨论"额度被收回/降额"议题。</b>重心是<b>降低借款成本</b>。</p>
-</div>
-
-<div class="card" style="border-left:4px solid #c0392b;margin-top:14px">
-<p style="font-weight:700;color:#c0392b;margin:0 0 10px">⚠️ 关键修正：真实边际毛利 = 1.09~1.19 元/票，<b>不是 1.54</b></p>
-<table style="margin:8px 0">
-<tr><th>项目</th><th>金额</th><th>说明</th></tr>
-<tr><td>名义单票毛利</td><td class="num">1.54</td><td>经营报表口径</td></tr>
-<tr><td>减 发件操作费</td><td class="num" style="color:#c0392b">−0.10</td><td>总部场地费（发件 0.10/票）</td></tr>
-<tr><td>减 边际人工</td><td class="num" style="color:#c0392b">−0.35</td><td>增量需加揽收/分拣人力</td></tr>
-<tr style="background:rgba(192,57,43,.08)"><td><b>真实边际毛利</b></td><td class="num"><b>1.09 ~ 1.19</b></td><td>元/票</td></tr>
-</table>
-<p style="line-height:1.85;font-size:13px;margin:0">
-★ <b>面单费 0.30【不扣】</b>——面单是<b>客户预充值付款</b>的，收入端 1.54 已含，再扣＝重复计算。<br>
-→ 所有"按 1.54 算"的增收测算<b>高估 30~40%</b>。<br>
-→ 补 7.8 万缺口需净增 <b>2,170~2,380 票/天</b>（现 1,404/天 = <b>+155~170%</b>）→ <b>纯增量路径不成立</b>。<br>
-★ 反直觉换算：<b>单票毛利 +1.54 元 ≙ 增量 +100%</b> → 提价并不比增量便宜。</p>
-</div>
-
-<h2>四·七、📏 量级铁律：为什么"技巧"不是主战场</h2>
+<h2>四、绝对不做（与做什么同样重要）</h2>
 <div class="card">
 <table>
-<tr><th>层</th><th>年收益</th><th>折月</th><th>对月缺口 78,000 的覆盖</th></tr>
-<tr><td><b>全部技巧层持续项</b>（贴息 2,681 + 工伤费率 2,700）</td><td class="num">5,381</td><td class="num">448</td><td class="num" style="color:#c0392b;font-weight:700">0.6%</td></tr>
-<tr><td><b>总部金融降息 11% → 5%</b>（一次谈判）</td><td class="num" style="color:#1a7f4b;font-weight:700">31,090</td><td class="num" style="color:#1a7f4b;font-weight:700">2,591</td><td class="num">3.3%</td></tr>
-<tr><td><b>总部金融降息 11% → 7%</b>（谈判区间）</td><td class="num" style="color:#1a7f4b;font-weight:700">20,700~25,900</td><td class="num" style="color:#1a7f4b;font-weight:700">1,725~2,158</td><td class="num">2.2~2.8%</td></tr>
+<tr><th style="width:46%">不做</th><th>原因</th></tr>
+<tr><td>❌ 向任何银行/网贷提交新申请</td><td>每次申请都是硬查询，3~6 个月才淡出；继续申请＝自毁征信</td></tr>
+<tr><td>❌ 走个人破产</td><td>触发房贷+抵押贷提前到期、房产进拍卖，豁免上限仅 20 万</td></tr>
+<tr><td>❌ 房贷转经营贷 / 二押 / 谈展期</td><td><b>z 明确：不可能再展期 + 利息已最低</b>；LTV 已 70.9% 无空间 → 视为固定底座 31,000/月</td></tr>
+<tr><td>❌ 任何情况走最低还款</td><td>连续 6 个月最低还款 → 标记「还款能力存疑」，影响房贷续期与经营贷审批</td></tr>
+<tr><td>❌ 动预充值池还债</td><td>那是客户的钱，挪用＝纠纷</td></tr>
+<tr><td>❌ 派件数据/客户名单转售</td><td>《个保法》＋数据控制方是总部 → <b>违法</b>，非灰色</td></tr>
+<tr><td>❌ 让员工签「自愿放弃社保」</td><td>《社会保险法》强制，无效；离职可反悔 → 补缴＋滞纳金＋罚款</td></tr>
+<tr><td>❌ 非营运车辆对外收费运输</td><td>非法营运硬红线</td></tr>
+<tr><td>❌ 许可证出租出借</td><td>硬法条，吊销＋黑名单</td></tr>
+<tr><td>❌ COD 代收</td><td>现金经手＋对账＋资金池风险，与「零逾期」冲突</td></tr>
 </table>
-<p style="margin:16px 0 8px;line-height:1.85;font-size:13.5px">
-<b>★ 一次谈判 = 全部技巧总和的 5.8 倍。</b></p>
-<p style="line-height:1.8;font-size:13px;margin:0;color:var(--t2)">
-<b>量级门槛</b>：≥4,000/月 值得做｜≥16,000/月 才叫改变局面｜<b>生存级豁免</b>（防逾期/保授信类不受门槛约束）。<br>
-<b>每周复盘必问</b>：本周花在"省几百"上几小时？花在"总部 11%"上几小时？<b>前者 &gt; 后者 = 技巧成瘾。</b>
-</p>
 </div>
 
-<h2>五、每月例行 5 分钟（把执行变成肌肉记忆）</h2>
+<h2>五、每周复盘必问（防偏移）</h2>
 <div class="card">
 <ol>
-<li>月初 1 日：五格盘点填数（1 分钟）</li>
-<li>4 日前：确认微众 16,290.77 + 总部金融 18,757 = 35,048 资金到位（池内常驻 ≥10 万）</li>
-<li>月中 14–28 日：唯一攒钱窗口，优先清循环余额</li>
-<li>月末最后一天：五格盘点 + 导出 CSV 发我</li>
-<li>我每月回你一版：真实 X、与方案对账偏差、下月动作微调</li>
+<li>本周花在「省几百」上几小时？花在「总部 11%」上几小时？<b>前者 &gt; 后者 ＝ 技巧成瘾。</b></li>
+<li>方案是否还在朝「撑零逾期 ＋ 月供结构」走？有没有偏回「填缺口」？</li>
+<li>量级门槛：≥4,000/月 值得做｜≥16,000/月 才叫改变局面｜<b>生存级豁免</b>（防逾期/保授信类不受门槛约束）</li>
+<li>零逾期还在吗？—— 这是 2033 续贷的地基，一次逾期全盘皆输</li>
 </ol>
 </div>
 
-<h2>六、数据回传清单（有空就补，不着急）</h2>
+<h2>六、数据回传清单（有空补，不着急）</h2>
 <div class="card">
 <ul>
-<li>① 90 天实测首月 CSV（9 月底）</li>
-<li>② 平安抵押贷剩余期数与利率（判断是否纳入提前还款序列，也直接修正本页余额快照的估算）</li>
-<li>③ 总部金融提前还款是否收违约金（决定闲钱先还总部还是微众）</li>
-<li>④ 经营主体工商性质（分公司 / 个体户 / 有限公司）——决定股权融资走工商股权还是虚拟分红权路径</li>
+<li>① <b>广发账单实际金额</b>（16,400 或 17,400）—— 唯一遗留数字</li>
+<li>② <b>90 天实测首月 CSV</b>（9 月底导出）</li>
+<li>③ 20 名员工<b>户籍构成</b>（深户/非深户）—— 决定医保降档能否省 6,000+/月</li>
+<li>④ 上游耗材能否「代销不囤货、账期 15 天」—— 决定耗材分销方向生死</li>
 </ul>
-补齐后测算误差从 ±10% 收窄到 ±3%，并排出精确到周的还款时间表。
+<p style="font-size:12.5px;color:var(--t2);margin-top:8px">补齐后测算误差从 ±10% 收窄到 ±3%。</p>
 </div>
 
-<div class="foot">口径：净利润 4.33 万/月（年均）· 谷底 2029-04 · 转折点 2029-05 · 决战日 2033-02-06<br>余额快照：平安按年化 6% 估算、循环余额按 2028-05 清零假设 · 待数据回传后更新<br>本方案零逾期是全部地基——保住它，时间站在你这边</div>
+<h2>📎 备查（已确立前提，第二遍无需再读）</h2>
+
+<details>
+<summary>备查 A · 记账规则：一条标准 + 两张速查表</summary>
+<div>
+<p><b>唯一判断标准：钱有没有真实进出你的「五个钱袋子」（现金／银行卡／微信／支付宝／预充值池）。进了就记、出了就记，没碰过的坚决不记。</b></p>
+<h3 style="font-size:13.5px">✅ 要记</h3>
+<table style="font-size:12.5px">
+<tr><th>场景</th><th>页签 → 分类</th></tr>
+<tr><td>月初结账单回款（约 5 万出货费）</td><td>收入 → 应收账款·出货费</td></tr>
+<tr><td>客户预充面单的钱进来</td><td>收入 → 预充值面单收入（这是客户的钱，月报盯池余额）</td></tr>
+<tr><td>超重费、理赔款到账</td><td>收入 → 赔款收入 / 其他收入</td></tr>
+<tr><td>工资、系统充值、房租、油电保险、杂费赔偿</td><td>支出 → 各对应分类</td></tr>
+<tr><td>家庭生活费、学费、运动消费</td><td>支出 → 家庭生活 / 学费教育 / 运动（<b>必须记</b>）</td></tr>
+<tr><td>各笔固定还款</td><td>还款 → 微众/总部/房贷/平安/招商/中信/浦发/广发/建行（<b>一笔都不能漏</b>）</td></tr>
+<tr><td>信用卡套现到账</td><td>套现/内部 → 套现·招商/中信/浦发/广发/建行卡（<b>必须记</b>，不记月结余虚高）</td></tr>
+<tr><td>套现手续费</td><td>套现/内部 → 套现手续费</td></tr>
+</table>
+<h3 style="font-size:13.5px">❌ 不记</h3>
+<table style="font-size:12.5px">
+<tr><th>场景</th><th>为什么</th></tr>
+<tr><td>赊账出货（应收发出时）</td><td>账不是钱，回款那天才记</td></tr>
+<tr><td>五格之间的互转</td><td>左口袋换右口袋，总额没变</td></tr>
+<tr><td>直接刷卡付掉的钱</td><td>到还款日记「还款」即可，备注写清含什么</td></tr>
+<tr><td>未到账的承诺收入、口头退款</td><td>只记落袋的真金白银</td></tr>
+<tr><td>小额零星（&lt;50 元）</td><td>不追完美，追真实。盘点对账能兜住漏记</td></tr>
+</table>
+<p><b>最省力的节奏：</b>平时每天 1 分钟只记大额和还款；<b>真正不能漏的是每月 1 日 + 每月最后一天各一次「五格盘点」</b>。真实月结余 X 以盘点差为准（再减套现净额），漏记会被自动勾稽暴露。每月底导出 CSV。</p>
+</div>
+</details>
+
+<details>
+<summary>备查 B · 额度时间套利（最高性价比技巧）</summary>
+<div>
+<p><b>核心洞察：已出账单的卡不必等还款日</b>——现金一到手就还，<b>账单立即结清 + 额度立即恢复</b>，需要钱时再刷出来用。中间的现金只是「路过」，不是净消耗。<br>
+→ <b>还款 ≠ 额度净消耗，还款 ＝ 现金路过 + 额度解锁。</b></p>
+<p><b>收益公式</b>：<code>收益 = 账单金额 × (还款日 − 提前还款日)</code>，单位<b>元·天</b>。窗口 ＝【账单日当天 ~ 还款日】，越靠前收益越大。</p>
+<table style="font-size:12.5px">
+<tr><th>时点</th><th>旧做法</th><th>新做法</th></tr>
+<tr><td>招信出账 99,000</td><td>干等到 10/13</td><td>当天即还 50,000 → 额度立即 +50,000</td></tr>
+<tr><td>10/5 出货费到账</td><td>存着等 10/13</td><td>立即还招信 49,000 → 99,000 全清</td></tr>
+<tr><td><b>10/13 还款日</b></td><td><b style="color:var(--r)">需一天凑 99,000</b></td><td><b style="color:var(--g)">✅ 无需凑钱，已结清</b></td></tr>
+</table>
+<p><b>三重收益</b>：① <b>削峰（最重要）</b>——最大单日现金压力 99,000 → 约 50,000，逾期风险大幅下降 ② 额度窗口前移 ③ <b>使用率读数改善</b>（银行风控看账单日/月末读数）→ 为提额/降息谈判攒好感度</p>
+<p><b>成本 = 零</b>（过路现金本来闲置时）。唯一约束＝这笔现金在额度恢复前不能被别处占用。</p>
+<p><b>⚠️ 两条红线</b>：<br>
+① <b>防判定套现</b>：「还进去再刷出来」若形成 <b>同卡+高频+大额+整数+快进快出</b> 固定模式 ＝ 2026-06 新规「疑似套现」画像 → 连续 3 个月即 100% 降额/封卡。对策＝金额避整数、间隔拉开、用途真实留发票、单卡单月 ≤2 次。<br>
+② <b>账单日之前还 ≠ 解锁已出账单额度</b>：账单日<b>之前</b>还只「做小本期账单额」；真正解锁的是<b>已出账单</b>那笔欠款。</p>
+<p><b>诚实声明</b>：套利解决<b>时点风险（逾期风险）</b>，<b>不能</b>补掉收支总额缺口 —— 要还的总额一分没少，只是时点前移。</p>
+</div>
+</details>
+
+<details>
+<summary>备查 C · 量级铁律：为什么「技巧」不是主战场</summary>
+<div>
+<table style="font-size:12.5px">
+<tr><th>层</th><th>年收益</th><th>折月</th><th>覆盖月缺口</th></tr>
+<tr><td>全部技巧层持续项（贴息 2,681 + 工伤费率 2,700）</td><td class="num">5,381</td><td class="num">448</td><td class="num" style="color:var(--r)">0.6%</td></tr>
+<tr><td><b>总部金融降息 11% → 5%</b>（一次谈判）</td><td class="num" style="color:var(--g)">31,090</td><td class="num" style="color:var(--g)">2,591</td><td class="num">3.3%</td></tr>
+<tr><td><b>总部金融降息 11% → 7%</b>（谈判区间）</td><td class="num" style="color:var(--g)">20,700~25,900</td><td class="num" style="color:var(--g)">1,725~2,158</td><td class="num">2.2~2.8%</td></tr>
+</table>
+<p><b>★ 一次谈判 ＝ 全部技巧总和的 5.8 倍。</b></p>
+<p><b>门槛</b>：≥4,000/月 值得做｜≥16,000/月 才叫改变局面｜生存级豁免（防逾期/保授信类不受门槛约束）。</p>
+</div>
+</details>
+
+<details>
+<summary>备查 D · 已作废议题登记（防旧结论复活）</summary>
+<div>
+<div class="rev-row"><b>微众额度到期</b><span>z 明确「循环额度随还款对应上账，会一直在」→ 原「2027-09-05 归零／单月断口 21 万／101 天倒计时／活账户维护」整段推演作废。<b>永久不再讨论"额度被收回/降额"议题。</b></span></div>
+<div class="rev-row"><b>房贷 30→40 年</b><span>z 明确「不可能再展期 + 利息最低」→ 原「招行省 3,200／平安省 2,200」作废，两笔视为固定底座 31,000/月锁死。→ <b>月供下限 64,591（不是 59,191）</b></span></div>
+<div class="rev-row"><b>对存量提价</b><span>z：「涨价即可能转去别家公司发货，难以实现」→ 原 +4,550/月 作废</span></div>
+<div class="rev-row"><b>逆向退货件（港人）</b><span>z：「港人找走出关口走路或最先看到的门店寄件，我司靠后/上楼，被选可能低」</span></div>
+<div class="rev-row"><b>派件接触面插页</b><span>z：「散单多来自平台退货再平台直接下单，线下难接触」→ 分销分母 1,404 本身也错（是出港口径）</span></div>
+<div class="rev-row"><b>取消京沪深加收</b><span>方向搞反了 —— z 要的是<b>并入价格表分列改呈现</b>，不是取消</span></div>
+<div class="rev-row"><b>派件数据转售</b><span>《个保法》+ 数据控制方是总部 → <b>违法</b>，永久排除</span></div>
+<div class="rev-row"><b>e招贷置换总部</b><span>资金流向追踪覆盖「贷款→还贷」，30 万级异常流向触发<b>提前收贷条款</b> → 撤回</span></div>
+<div class="rev-row"><b>深圳创业担保贷</b><span>需执照注册 3 年内 + 社保缴满 6 个月 → 两条全违</span></div>
+<div class="rev-row"><b>社保滞纳金减免</b><span>z 明确已申请被拒 → 撤回（但<b>区社保局窗口</b>仍可当面问一次，与"独立程序"口径不同）</span></div>
+<div class="rev-row"><b>员工自缴社保</b><span>个人部分本就是员工的钱；单位部分转嫁＝变相降薪，成功率 &lt;20% → 否决。合法路径只有：非深户医保降档 + 分拣岗改非全日制</span></div>
+<div class="rev-row"><b>末端暂存</b><span>区域内点位难找、大量已被丰巢占位 → 落地难</span></div>
+<div class="rev-row"><b>医院文件件</b><span>顺丰等有专门服务方</span></div>
+<div class="rev-row"><b>同行代派</b><span>涉及派送质量与稳定性，可能造成网点质量下降 → 得不偿失</span></div>
+<div class="rev-row"><b>稳岗返还</b><span>需不裁员 + 失业保险无欠缴 → 大概率 0 元</span></div>
+<div class="rev-row"><b>一次性扩岗补助</b><span>z 明确需补回同等新增人数才够格 → 撤回</span></div>
+</div>
+</details>
+
+<div class="foot">
+口径：净利润 4.33 万/月（年均）· 谷底 2029-04 · 转折点 2029-05 · 决战日 2033-02-06<br>
+实时数据（额度/贷款）一律跑 <code>python credit_truth.py</code> 与 <code>python loans_truth.py</code>，本页不复写<br>
+<b>本方案零逾期是全部地基——保住它，时间站在你这边</b>
+</div>
 
 </div>
 <div id="__popup"><div class="b">
