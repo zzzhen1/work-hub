@@ -2172,7 +2172,10 @@ function saveDailyReview() {
   _unlockReviewScroll();
   window.__rsY = null;
   // 滚动还原：任何一步失败都不得影响"已保存"这一事实
-  const _restore = () => { try { window.scrollTo(0, restoreY); } catch (e) {} };
+  const _restore = () => {
+    try { _unlockReviewScroll(); } catch (e) {}          // 兜底再解一次，防止 body 卡在 fixed
+    try { window.scrollTo(0, restoreY); } catch (e) {}
+  };
   _restore();
   try { requestAnimationFrame(_restore); } catch (e) {}
   setTimeout(_restore, 60);
@@ -4131,12 +4134,18 @@ function _lockReviewScroll() {
   window.__reviewLocked = true;
 }
 function _unlockReviewScroll() {
-  if (!window.__reviewLocked) return;
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.width = '';
+  // 注意：退出路径必须幂等 + 覆盖「标记已被清掉但样式还挂着」的情况。
+  // 保存按钮 onmousedown preventDefault 后若触发 onblur，blur 会先调本函数把 __reviewLocked 置 false，
+  // 随后 saveDailyReview 再调本函数——若此处提前 return，body 就永久卡在 position:fixed（页面滚不动）。
+  // 故判定依据不看 __reviewLocked，只看「body 上是否还挂着锁」。
+  const b = document.body.style;
+  const dirty = b.position === 'fixed' || b.top || b.left || b.right || b.width;
+  if (!window.__reviewLocked && !dirty) return;
+  b.position = '';
+  b.top = '';
+  b.left = '';
+  b.right = '';
+  b.width = '';
   window.__reviewLocked = false;
 }
 
