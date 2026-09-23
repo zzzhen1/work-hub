@@ -2072,30 +2072,28 @@ function toggleCheck(el) {
 
 // ===== 债务执行路线 =====
 const DEBT_PLAN = [
-  { id:'dp-b3', g:'9/22-9/27 ★本周必做', p:'P0', badge:'badge-p1', name:'★分批刷出（9 笔 · 套现风控）', amt:'合计 138,000', key:'浦发 9/22-24、招信 9/26-30＋10/5-7，9 笔，单笔 1.3~1.7 万避整数' },
-  { id:'dp-a2', g:'9/22-9/27 ★本周必做', p:'P0', badge:'badge-p1', name:'★社保：缴 1 个月（方案B）', amt:'27,000', key:'9/23 缴 1 个月停滞纳金＋保医保；剩 54,000 留 10 月（代价约 405 元）' },
-  { id:'dp-f1', g:'9/22-9/27 ★本周必做', p:'P1', badge:'badge-p2', name:'★报价表：京沪深加收并入（含复算）', amt:'保全 500~1,700/月', key:'并入分档（≤3kg 首重 3.7／>3kg 用 3.2）；换表前抽 10 张单据复算，收入一分不变' },
-  { id:'dp-f4', g:'9/22-9/27 ★本周必做', p:'P1', badge:'badge-p2', name:'核实：加盟合同三条款', amt:'一票否决 6 条', key:'转包/代发·代操作 ｜ 场地用途与转租 ｜ 员工从事非快递业务' },
-  { id:'dp-f3', g:'9/22-9/27 ★本周必做', p:'P1', badge:'badge-p2', name:'核实：意外险覆盖范围', amt:'决定人力外派', key:'总部已强制购买 → 只需确认保额及是否覆盖非派件时段/临时外派人员' },
-  { id:'dp-b6', g:'9/22-9/27 ★本周必做', p:'P2', badge:'badge-p3', name:'★社保：区社保局窗口咨询', amt:'零成本', key:'窗口问：分期缴款 · 滞纳金减免 · 重点群体补贴（基数已最低，此项无空间）' },
-  { id:'dp-f7', g:'9/22-9/27 ★本周必做', p:'P1', badge:'badge-p2', name:'★守住现金缓冲（不动用）', amt:'留 18,000', key:'缴社保后剩 18,000，留作 10/4 双贷兜底（9/26-10/4 零经营进项）' },
+  { id:'dp-b3', g:'9/22-9/27 ★本周必做', p:'P0', badge:'badge-p1', name:'★分批刷出（9 笔）', amt:'合计 138,000', key:'浦发 9/22-24、招信 9/26-30＋10/5-7；单笔 1.3~1.7 万' },
+  { id:'dp-a2', g:'9/22-9/27 ★本周必做', p:'P0', badge:'badge-p1', name:'★社保：缴 1 个月', amt:'27,000', key:'9/23 缴，停滞纳金＋保医保；剩 54,000 留 10 月' },
+  { id:'dp-f1', g:'9/22-9/27 ★本周必做', p:'P1', badge:'badge-p2', name:'★报价表：加收并入', amt:'保全 500~1,700/月', key:'≤3kg 首重 3.7／>3kg 用 3.2；换表前抽 10 张单据复算' },
+  { id:'dp-b6', g:'9/22-9/27 ★本周必做', p:'P2', badge:'badge-p3', name:'★社保：区社保局窗口咨询', amt:'零成本', key:'问三件：分期缴款 · 滞纳金减免 · 重点群体补贴' },
+  { id:'dp-f7', g:'9/22-9/27 ★本周必做', p:'P1', badge:'badge-p2', name:'★守住现金缓冲', amt:'留 18,000', key:'留作 10/4 双贷兜底（9/26-10/4 零经营进项）' },
   { id:'dp-b4', g:'9/22-9/27 ★本周必做', p:'', badge:'', name:'还广发（全额）', amt:'16,400 ⚠️待核', key:'26 日全额还（禁最低）；来源＝浦发刷出款。金额待核：16,400 或 17,400' },
-  { id:'dp-c1', g:'9/29-10/2', p:'P0', badge:'badge-p1', name:'★总部微信报备 10/4 延期', amt:'保 18,757', key:'提前 3-5 天微信报备并取得「可延期」回复（截图留痕）。绝不能无声不还' },
+  { id:'dp-c1', g:'9/29-10/2', p:'P0', badge:'badge-p1', name:'★总部报备 10/4 延期', amt:'保 18,757', key:'提前 3-5 天微信报备，留「可延期」截图' },
   { id:'dp-c2', g:'10/4 周日', p:'', badge:'', name:'双贷还款', amt:'35,048', key:'微众 16,290.77 ＋ 总部 18,757（总部若展期则只还微众）' },
-  { id:'dp-c3', g:'10/5 周一', p:'', badge:'', name:'★还招信 49,000（出货费到账即还）', amt:'49,000', key:'出货费 5-8 号到账即还 → 10/13 账单提前结清' },
+  { id:'dp-c3', g:'10/5 周一', p:'', badge:'', name:'★还招信 49,000', amt:'49,000', key:'出货费 5-8 号到账即还 → 10/13 账单提前结清' },
   { id:'dp-c4', g:'10/9 周五', p:'', badge:'', name:'招房贷', amt:'17,000', key:'还款日当天还。房贷 31,000 是固定底座，不可展期，勿再讨论' },
-  { id:'dp-c5', g:'10/13 周二', p:'P0', badge:'badge-p1', name:'★招信账单 —— ✅已提前结清', amt:'0（原需 99,000）', key:'已由 9/25 还 50,000 ＋ 10/5 还 49,000 提前结清，当天无需凑钱' },
+  { id:'dp-c5', g:'10/13 周二', p:'P0', badge:'badge-p1', name:'★招信账单 —— 已提前结清', amt:'0（原 99,000）', key:'9/25 还 50,000 ＋ 10/5 还 49,000，当天无需凑钱' },
   { id:'dp-c6', g:'10/20 周二', p:'', badge:'', name:'妈平安', amt:'14,000', key:'还款日当天还 14,000（母亲名下抵押，不可逾期）' },
   { id:'dp-c7', g:'10/29 周四', p:'', badge:'', name:'中信账单', amt:'待出账', key:'10/6 出账后复核金额；可用仅 764 已锁死，走卡内周转' },
   { id:'dp-d1', g:'10月底', p:'P2', badge:'badge-p3', name:'结余去向（优先序已重排）', amt:'看实际结余', key:'优先序：补缓冲 ＞ 提前还总部 11% ＞ 微众 6.66%（微众是低息，不必优先还）' },
-  { id:'dp-a1', g:'持续 · 谈判', p:'P0', badge:'badge-p1', name:'★总部金融降息谈判（11%→7%）', amt:'−1,457/月', key:'提价被否后确定性最高。微信沟通留痕，目标 11%→7%' },
-  { id:'dp-a3', g:'持续 · 政策', p:'P1', badge:'badge-p2', name:'71 号文分期贴息', amt:'2,681/年', key:'真实上限＝信用卡余额×1%≈2,681/年（勿再引用「2 万/年」旧值）' },
-  { id:'dp-e2', g:'持续 · 政策', p:'P2', badge:'badge-p3', name:'稳岗返还 ＋ 重点群体社保补贴', amt:'数千~1.5 万/年', key:'稳岗返还因社保欠缴大概率 0；重点群体社保补贴是白给的钱，窗口可问' },
-  { id:'dp-e3', g:'持续 · 政策', p:'P2', badge:'badge-p3', name:'倒扣撤销谈判', amt:'+8,560/月', key:'2,450 票/天不达标→全量倒扣 8,560/月。反内卷通知撑腰，第 1-2 层温和试' },
-  { id:'dp-e4', g:'持续 · 人力', p:'P1', badge:'badge-p2', name:'★社保结构优化（区社保局窗口）', amt:'省 6,000~6,300/月', key:'窗口问非深户医保档位可否下调 ＋ 分拣岗改非全日制（基数已最低，不再查）' },
-  { id:'dp-e1', g:'持续 · 经营', p:'P1', badge:'badge-p2', name:'量返方案推进', amt:'增发件量', key:'口岸门店 v11：超基数每票返 0.30。禁提价（涨价即流失），改做降流失' },
-  { id:'dp-b1', g:'已完成', p:'', badge:'', name:'✅ 还妈平安（9/20 已付）', amt:'14,000', key:'已付。⚠️记账流水漏记需补记（否则 9 月 L1 少算 14,000）' },
-  { id:'dp-f6', g:'可选（花 1 天验证）', p:'P3', badge:'badge-p3', name:'知识变现验证（规则引擎资产化）', amt:'不确定', key:'只做规则引擎授权软件厂商（一次性 5,000~20,000）。1 天验证，无反馈即关闭' },
+  { id:'dp-a1', g:'持续 · 谈判', p:'P0', badge:'badge-p1', name:'★总部金融降息谈判（11%→7%）', amt:'−1,457/月', key:'提价被否后确定性最高的一条；微信沟通留痕' },
+  { id:'dp-a3', g:'持续 · 政策', p:'P1', badge:'badge-p2', name:'71 号文分期贴息', amt:'2,681/年', key:'真实上限＝信用卡余额×1%≈2,681/年' },
+  { id:'dp-e2', g:'持续 · 政策', p:'P2', badge:'badge-p3', name:'稳岗返还 ＋ 重点群体补贴', amt:'数千~1.5 万/年', key:'稳岗返还有社保欠缴大概率 0；重点群体补贴窗口可问' },
+  { id:'dp-e3', g:'持续 · 政策', p:'P2', badge:'badge-p3', name:'倒扣撤销谈判', amt:'+8,560/月', key:'2,450 票/天不达标→全量倒扣 8,560/月；反内卷通知撑腰' },
+  { id:'dp-e4', g:'持续 · 人力', p:'P1', badge:'badge-p2', name:'★社保结构优化（区社保局窗口）', amt:'省 6,000~6,300/月', key:'问非深户医保档位可否下调 ＋ 分拣岗改非全日制' },
+  { id:'dp-e1', g:'持续 · 经营', p:'P1', badge:'badge-p2', name:'量返方案推进', amt:'增发件量', key:'口岸门店 v11：超基数每票返 0.30；禁提价，做降流失' },
+  { id:'dp-b1', g:'已完成', p:'', badge:'', name:'✅ 还妈平安（9/20 已付）', amt:'14,000', key:'已付；记账流水需补记（否则 9 月少算 14,000）' },
+  { id:'dp-f6', g:'可选（花 1 天验证）', p:'P3', badge:'badge-p3', name:'知识变现验证（规则引擎资产化）', amt:'不确定', key:'只做规则引擎授权软件厂商（一次性 5,000~20,000）' },
 ];
 function getDebtPlan() {
   const d = loadData('debtPlan', { done: {} });
@@ -2173,9 +2171,10 @@ function saveDailyReview() {
   ri.blur(); // 收起键盘
   _unlockReviewScroll();
   window.__rsY = null;
-  const _restore = () => window.scrollTo(0, restoreY);
+  // 滚动还原：任何一步失败都不得影响"已保存"这一事实
+  const _restore = () => { try { window.scrollTo(0, restoreY); } catch (e) {} };
   _restore();
-  requestAnimationFrame(_restore);
+  try { requestAnimationFrame(_restore); } catch (e) {}
   setTimeout(_restore, 60);
   setTimeout(_restore, 200);
   // 调试读数（仅 ?diagscroll 显示），用于确认真机 scrollY 行为，避免再靠猜测
@@ -4242,23 +4241,33 @@ function _diagCheckDailyReviewLock() {
     const ri = document.getElementById('reviewInput');
     if (!ri) return { pass: false, msg: '找不到复盘输入框' };
     const origSave = window.saveData, origDeb = window.cloudSyncDebounced, origPush = window.cloudPush;
+    const origScrollTo = window.scrollTo, origUnlock = window._unlockReviewScroll;
     const savedKeys = [];
     window.saveData = function (k) { savedKeys.push(k); };
     window.cloudSyncDebounced = function () {};
     window.cloudPush = function () {};
+    // 自检零副作用：屏蔽滚动还原与解锁，否则静默自检会把用户滚动位置拉走
+    window.scrollTo = function () {};
+    window._unlockReviewScroll = function () {};
     const prevVal = ri.value;
     const rn = document.getElementById('reviewNote');
     const prevNote = rn ? rn.textContent : '';
+    const prevDisplay = ri.style.display;
     ri.value = '自检占位-' + Date.now();
     saveDailyReview();
-    const visible = ri.style.display !== 'none' && ri.offsetParent !== null;
+    // 可见性判定：以「未被显式隐藏」为准。
+    // 不用 offsetParent —— position:fixed 祖先或滚动容器内会返回 null，导致可见元素被误判为隐藏。
+    const visible = ri.style.display !== 'none' && ri.style.visibility !== 'hidden';
     const btn = document.querySelector('#dailyReviewCard .note-save');
-    const btnVisible = !btn || btn.style.display !== 'none';
+    const btnVisible = !btn || (btn.style.display !== 'none' && btn.style.visibility !== 'hidden');
     const valKept = ri.value && ri.value.indexOf('自检占位') === 0;
-    // 还原现场
+    // 还原现场（含 display，避免自检留下污染）
     ri.value = prevVal;
+    ri.style.display = prevDisplay;
     if (rn) rn.textContent = prevNote;
     window.saveData = origSave; window.cloudSyncDebounced = origDeb; window.cloudPush = origPush;
+    window.scrollTo = origScrollTo;
+    if (origUnlock) window._unlockReviewScroll = origUnlock;
     if (!savedKeys.includes('dailyReview-' + getDateKey())) return { pass: false, msg: '未写入 dailyReview' };
     if (!visible) return { pass: false, msg: '保存后输入框被隐藏' };
     if (!btnVisible) return { pass: false, msg: '保存后保存按钮被隐藏' };
