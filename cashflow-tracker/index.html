@@ -215,8 +215,8 @@ table.brk td:last-child{text-align:right;font-weight:600}
 const CATS={
  in:["应收账款·出货费","预充值面单收入","赔款收入","其他收入"],
  out:["员工工资","系统充值","房租税点","车辆油电保险维修","杂费赔偿","刷单","其他经营","家庭生活","学费教育","运动"],
- debt:["还款·微众","还款·总部金融","还款·招行房贷","还款·平安抵押","还款·招商卡","还款·中信卡","还款·浦发卡"],
- xfer:["套现·招商卡","套现·中信卡","套现·浦发卡","套现手续费","其他内部划转"]
+ debt:["还款·微众","还款·总部金融","还款·招行房贷","还款·平安抵押","还款·招商卡","还款·中信卡","还款·浦发卡","还款·广发卡","还款·建行卡"],
+ xfer:["套现·招商卡","套现·中信卡","套现·浦发卡","套现·广发卡","套现·建行卡","套现手续费","其他内部划转"]
 };
 const LS_E="debt90_entries",LS_S="debt90_snaps";
 let entries=JSON.parse(localStorage.getItem(LS_E)||"[]");
@@ -313,7 +313,7 @@ function calcMonth(m){
  document.getElementById("sumGrid").innerHTML=
   '<div class="sum-b"><div class="k">收入合计</div><div class="v in">+'+fmt(Math.round(tin))+'</div></div>'+
   '<div class="sum-b"><div class="k">经营+家庭支出</div><div class="v out">−'+fmt(Math.round(tout))+'</div></div>'+
-  '<div class="sum-b"><div class="k">还款合计（七笔）</div><div class="v debt">−'+fmt(Math.round(tdebt))+'</div></div>'+
+  '<div class="sum-b"><div class="k">还款合计</div><div class="v debt">−'+fmt(Math.round(tdebt))+'</div></div>'+
   '<div class="sum-b"><div class="k">套现/内部划转</div><div class="v" style="color:#0a7fa8">'+fmt(Math.round(txf))+'</div></div>'+
   '<div class="sum-b"><div class="k">当月净流量</div><div class="v net">'+(net>=0?"+":"−")+fmt(Math.abs(Math.round(net)))+'</div></div>';
  const rows=Object.entries(brk).sort((a,b)=>b[1]-a[1]);
