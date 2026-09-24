@@ -117,7 +117,7 @@ details>div{padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.8}
 <div class="kpi">
 <div><div class="k">总债务</div><div class="v num">474 万</div></div>
 <div><div class="k">月刚性月供</div><div class="v num">66,048</div></div>
-<div><div class="k">月供现实下限</div><div class="v num">64,591</div></div>
+<div><div class="k">月供现实下限</div><div class="v num">65,089</div></div>
 <div><div class="k">最大风险日</div><div class="v num" style="color:var(--r)">每月 4 日</div></div>
 <div><div class="k">当前剩余现金</div><div class="v num" style="color:var(--r)">只余 4,000</div></div>
 </div>
@@ -137,8 +137,8 @@ details>div{padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.8}
 <div class="card">
 <table>
 <tr><th style="width:34%">事项</th><th>现行结论</th></tr>
-<tr><td><b>主战场</b></td><td><b>降息是保命线，增收是续命线</b>。月供可压空间只剩一条：<b>总部金融 11%→7%＝−1,457/月</b>。技巧层全部持续项合计仅 <b>448 元/月</b>（缺口 0.6%）→ <b>一次谈判 ≈ 技巧总和的 5.8 倍</b></td></tr>
-<tr><td><b>月供现实下限</b></td><td><b>64,591</b>（房贷 31,000 锁死）。「压到 6 万以下」须靠增收垫，不可能靠结构性调整达成</td></tr>
+<tr><td><b>主战场</b></td><td><b>降息是保命线，增收是续命线</b>。月供可压空间只剩一条：<b>总部金融 11%→7%＝−959/月</b>（★ 取偏保守口径：等额本息重算剩余 32 期）。技巧层全部持续项合计仅 <b>448 元/月</b>（缺口 0.6%）→ <b>一次谈判 ≈ 技巧总和的 2.1 倍</b></td></tr>
+<tr><td><b>月供现实下限</b></td><td><b>65,089</b>（房贷 31,000 锁死）。「压到 6 万以下」须靠增收垫，不可能靠结构性调整达成</td></tr>
 <tr><td><b>派件 / 出港口径</b></td><td>派件（进港）<b>7,100 票/天</b>｜出港（发件）<b>1,517 票/天</b>（月 4.55 万票）<br>→ 派件亏损 <b>17,040/月</b>；<b>揽件权净价值 32,555/月</b> → 派件＝保揽件权的「保护费」，<b>减派件量＝净亏 3.26 万</b></td></tr>
 <tr><td><b>真实边际毛利</b></td><td><b>1.09~1.19 元/票</b>（不是 1.54）。面单费 0.30 <b>不扣</b>（客户预充值付款，再扣＝重复计算）</td></tr>
 <tr><td><b>总额度 / 使用率</b></td><td>卡总额度 <b>376,500</b>｜已用 <b>268,136</b>｜可用 <b>108,364</b>｜使用率 <b>71.2%</b><br><span style="color:var(--t2)">★ 实时数一律跑 <code>python credit_truth.py</code>，本页不复写</span></td></tr>
@@ -222,7 +222,7 @@ details>div{padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.8}
 <div class="ph-time">2026-09 ~ 2027-04（8 个月）｜<b>当前所处阶段</b></div>
 <ul>
 <li>月均还款 <b>约 8.9 万</b> vs 净利润 <b>3.04 万</b>（经营报表 13 个月月均 30,434）→ 缺口靠展期谈判 + 刷出周转 + 社保拆期扛</li>
-<li><b>总部金融降息谈判（生存级优先）</b>：11% → 7%，月供 18,757 → 17,300，月省 <b>1,457</b>。筹码：加盟年限、日揽件量、零逾期、CCR 评级</li>
+<li><b>总部金融降息谈判（生存级优先）</b>：11% → 7%，月供 18,757 → 17,798（等额本息重算 32 期），月省 <b>959</b>。★ 降息仍在沟通，取偏保守值。筹码：加盟年限、日揽件量、零逾期、CCR 评级</li>
 <li>还款日历（当前）：<b>4 日 35,048</b>｜9 日 招房贷 17,000｜<b style="color:var(--r)">10 日 浦发 38,000</b>（本期账单，z 09-24 确认）｜13 日 招信｜20 日 妈平安 14,000｜26 日 广发｜29 日 中信</li>
 <li>信用卡分期<b>绝不允许任何一笔裸露进 18% 循环计息</b>——每笔到期前 3 个月启动续作</li>
 <li>目标：<b>三颗雷全部拆完</b>——招行分期 26-12 清、中信 27-01 清、浦发 27-04 清</li>
@@ -409,10 +409,10 @@ details>div{padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.8}
 <table style="font-size:12.5px">
 <tr><th>层</th><th>年收益</th><th>折月</th><th>覆盖月缺口</th></tr>
 <tr><td>全部技巧层持续项（贴息 2,681 + 工伤费率 2,700）</td><td class="num">5,381</td><td class="num">448</td><td class="num" style="color:var(--r)">0.6%</td></tr>
-<tr><td><b>总部金融降息 11% → 5%</b>（一次谈判）</td><td class="num" style="color:var(--g)">31,090</td><td class="num" style="color:var(--g)">2,591</td><td class="num">3.3%</td></tr>
-<tr><td><b>总部金融降息 11% → 7%</b>（谈判区间）</td><td class="num" style="color:var(--g)">20,700~25,900</td><td class="num" style="color:var(--g)">1,725~2,158</td><td class="num">2.2~2.8%</td></tr>
+<tr><td><b>总部金融降息 11% → 7%</b>（沟通中，★ 取保守口径：等额本息重算剩余 32 期 → 17,798）</td><td class="num" style="color:var(--g)">11,508</td><td class="num" style="color:var(--g)">959</td><td class="num">1.5%</td></tr>
 </table>
-<p><b>★ 一次谈判 ＝ 全部技巧总和的 5.8 倍。</b></p>
+<p><b>★ 一次谈判 ＝ 全部技巧总和的 2.1 倍。</b></p>
+<p style="font-size:12px;color:var(--t2)">口径说明：原「11%→5% ＝ 2,591/月」与「简单利息 1,725~2,158/月」两个更乐观的算法<b>不再采用</b> —— z 2026-09-24：降息仍在沟通中，<b>按偏保守值算</b>。</p>
 <p><b>门槛</b>：≥4,000/月 值得做｜≥16,000/月 才叫改变局面｜生存级豁免（防逾期/保授信类不受门槛约束）。</p>
 </div>
 </details>
@@ -421,7 +421,7 @@ details>div{padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.8}
 <summary>备查 D · 已作废议题登记（防旧结论复活）</summary>
 <div>
 <div class="rev-row"><b>微众额度到期</b><span>z 明确「循环额度随还款对应上账，会一直在」→ 原「2027-09-05 归零／单月断口 21 万／101 天倒计时／活账户维护」整段推演作废。<b>永久不再讨论"额度被收回/降额"议题。</b></span></div>
-<div class="rev-row"><b>房贷 30→40 年</b><span>z 明确「不可能再展期 + 利息最低」→ 原「招行省 3,200／平安省 2,200」作废，两笔视为固定底座 31,000/月锁死。→ <b>月供下限 64,591（不是 59,191）</b></span></div>
+<div class="rev-row"><b>房贷 30→40 年</b><span>z 明确「不可能再展期 + 利息最低」→ 原「招行省 3,200／平安省 2,200」作废，两笔视为固定底座 31,000/月锁死。→ <b>月供下限 65,089（不是 59,191）</b></span></div>
 <div class="rev-row"><b>对存量提价</b><span>z：「涨价即可能转去别家公司发货，难以实现」→ 原 +4,550/月 作废</span></div>
 <div class="rev-row"><b>逆向退货件（港人）</b><span>z：「港人找走出关口走路或最先看到的门店寄件，我司靠后/上楼，被选可能低」</span></div>
 <div class="rev-row"><b>派件接触面插页</b><span>z：「散单多来自平台退货再平台直接下单，线下难接触」→ 分销分母 1,404 本身也错（是出港口径）</span></div>
