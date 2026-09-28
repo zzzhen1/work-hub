@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="我的工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%234f46e5' width='100' height='100' rx='22'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>台</text></svg>">
 <title>我的工作台</title>
-<meta name="code-sync-ts" content="2026-08-24T13:55:05.228Z">
+<meta name="code-sync-ts" content="2026-09-28T08:02:07.035Z">
 <style>
 :root {
   --bg: #f5f5f7;
@@ -979,6 +979,44 @@ body {
   padding: 10px 12px;
   margin-top: 12px;
 }
+/* 弹窗内的「昨日复盘」区块 */
+.rm-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0 12px;
+}
+.rm-ytitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.rm-yrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 0;
+}
+.rm-yrow .good { color: var(--green); font-weight: 600; }
+.rm-yrow .warn { color: var(--orange); font-weight: 600; }
+.rm-yrow .bad { color: var(--red); font-weight: 600; }
+.rm-yreview {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.rm-ymiss { color: var(--text-secondary); }
 .rm-actions {
   display: flex;
   gap: 10px;
@@ -2461,8 +2499,12 @@ function markCCPaid(cardId, billKey) {
 // CC bill reminder popup
 let _ccBillModalQueue = [];
 let _ccBillModalIdx = 0;
+let _ccBillPending = false; // 报告/复盘弹窗正在显示时，账单提醒排队等待，避免两个弹窗叠在一起
 
 function checkCCBillReminder() {
+  // 若报告/复盘弹窗正在显示，先排队，等它关闭后再提醒（避免两个弹窗重叠）
+  const rmOverlay = document.getElementById('reportModalOverlay');
+  if (rmOverlay && rmOverlay.classList.contains('show')) { _ccBillPending = true; return; }
   _ccBillModalQueue = [];
   _ccBillModalIdx = 0;
   CC_CONFIG.forEach(card => {
@@ -3141,6 +3183,26 @@ function getWeekStart(offset) {
   return new Date(d.getFullYear(), d.getMonth(), diff);
 }
 
+// 周复盘固定复盘「上一个完整周」（周一~周日）：
+// 周一打开时本周才刚开始，若看本周则是空报告，失去复盘意义。
+function getReviewWeekStart() { return getWeekStart(-1); }
+function getReviewWeekEnd() {
+  const e = new Date(getWeekStart(-1));
+  e.setDate(e.getDate() + 6);
+  return e;
+}
+function getWeekKeyOf(monday) {
+  return monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
+}
+function getReviewWeekKey() { return getWeekKeyOf(getWeekStart(-1)); }
+function getDateKeyOffset(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return fmtDateKey(d);
+}
+const DOW_CN = ['周日','周一','周二','周三','周四','周五','周六'];
+function fmtMD(d) { return (d.getMonth()+1) + '/' + d.getDate(); }
+
 function getMonthStart(offset) {
   const d = new Date();
   return new Date(d.getFullYear(), d.getMonth() + offset, 1);
@@ -3254,23 +3316,31 @@ function collectReviews(start, end) {
 
 // --- Report generators ---
 function generateWeeklyReport() {
-  const start = getWeekStart(0);
-  const end = new Date(start);
-  end.setDate(end.getDate() + 6);
-  const wk = getWeekKey();
+  // 周复盘 = 复盘「上周」（上一个完整周，周一~周日）
+  const start = getReviewWeekStart();
+  const end = getReviewWeekEnd();
+  const wk = getWeekKeyOf(start);
 
   const daily = collectDailyData(start, end);
   const sport = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
   const weekReviews = collectReviews(start, end);
   const weekdays = countWeekdays(start, end);
 
-  let html = '<div class="report-period-label">📅 周报 ' + wk + '（' + (start.getMonth()+1) + '/' + start.getDate() + ' - ' + (end.getMonth()+1) + '/' + end.getDate() + '）</div>';
+  // 环比：上上周，用来看趋势
+  const prevStart = getWeekStart(-2);
+  const prevEnd = new Date(prevStart); prevEnd.setDate(prevEnd.getDate() + 6);
+  const prevDaily = collectDailyData(prevStart, prevEnd);
+  const prevWorkPct = prevDaily.workTotal ? Math.round(prevDaily.workDone / prevDaily.workTotal * 100) : -1;
+  const prevLearnPct = prevDaily.learnTotal ? Math.round(prevDaily.learnDone / prevDaily.learnTotal * 100) : -1;
+
+  const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+  const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+
+  let html = '<div class="report-period-label">📅 周复盘 · 上周（' + fmtMD(start) + ' - ' + fmtMD(end) + '）</div>';
 
   // Stats card
   html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">完成情况</div></div></div>';
-  const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
   html += '<div class="report-stat"><span class="report-stat-label">工作日完成率</span><span class="report-stat-value ' + (workPct>=80?'good':workPct>=50?'warn':'bad') + '">' + workPct + '% (' + daily.workDone + '/' + daily.workTotal + '天)</span></div>';
-  const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
   html += '<div class="report-stat"><span class="report-stat-label">学习完成率</span><span class="report-stat-value ' + (learnPct>=80?'good':learnPct>=50?'warn':'bad') + '">' + learnPct + '% (' + daily.learnDone + '/' + daily.learnTotal + '天)</span></div>';
 
   // Sport stats
@@ -3286,21 +3356,28 @@ function generateWeeklyReport() {
   });
   const sportTotal = sport.tennis + sport.golf + sport.strength;
   html += '<div class="report-stat"><span class="report-stat-label">运动总次数</span><span class="report-stat-value">' + sportTotal + '/6' + (sportTotal > 6 ? ' 🔥' : '') + '</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">复盘篇数</span><span class="report-stat-value ' + (weekReviews.length>=4?'good':weekReviews.length>0?'warn':'bad') + '">' + weekReviews.length + ' 篇</span></div>';
   html += '</div>';
 
   // Review
-  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">本周复盘 (' + weekReviews.length + '篇)</div></div></div>';
+  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">上周日复盘 (' + weekReviews.length + '篇)</div></div></div>';
   if (weekReviews.length > 0) {
     weekReviews.forEach(r => {
       html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
     });
   } else {
-    html += '<div class="report-stat-label" style="padding:8px 0">本周暂无复盘记录</div>';
+    html += '<div class="report-stat-label" style="padding:8px 0">上周暂无复盘记录</div>';
   }
   html += '</div>';
 
   // Analysis
-  html += '<div class="report-analysis">' + generateWeeklyAnalysis(workPct, learnPct, sport) + '</div>';
+  html += '<div class="report-analysis">' + generateWeeklyAnalysis(workPct, learnPct, sport, {
+    seed: wk,
+    reviewCount: weekReviews.length,
+    prevWorkPct: prevWorkPct,
+    prevLearnPct: prevLearnPct,
+    weekdays: weekdays
+  }) + '</div>';
 
   // Share button
   html += '<button class="share-btn" onclick="shareReport(\'' + wk + '\')">📤 分享周报</button>';
@@ -3308,40 +3385,151 @@ function generateWeeklyReport() {
   return html;
 }
 
-function generateWeeklyAnalysis(workPct, learnPct, sport) {
+// ====================
+//  周复盘文案引擎
+//  以「周标识」为随机种子：同一周内文案稳定（刷新不变），跨周自然换新，避免每周雷同敷衍。
+// ====================
+function seedRng(seedStr) {
+  let h = 2166136261 >>> 0;
+  const s = String(seedStr || '');
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return function () {
+    h = (h + 0x6D2B79F5) >>> 0;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function makePicker(seedStr) {
+  const rnd = seedRng(seedStr);
+  return function (arr) { return arr[Math.floor(rnd() * arr.length) % arr.length]; };
+}
+function trendTag(cur, prev) {
+  if (prev === undefined || prev === null || prev < 0) return '';
+  if (cur > prev) return '（较上上周 ↑' + (cur - prev) + '%）';
+  if (cur < prev) return '（较上上周 ↓' + (prev - cur) + '%）';
+  return '（与上上周持平）';
+}
+function nl2br(t) { return escapeHtml(String(t || '')).replace(/\n/g, '<br>'); }
+
+// 一句话结论（弹窗用，同样随周变化）
+function weeklyConclusion(workPct, learnPct, sport, seedKey) {
+  const P = makePicker((seedKey || '') + '-concl');
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+  const areas = [
+    ['工作', Math.min(100, workPct), workPct + '%'],
+    ['学习', Math.min(100, learnPct), learnPct + '%'],
+    ['运动', Math.min(100, Math.round(sportTotal / 6 * 100)), sportTotal + ' 次'],
+  ];
+  const worst = areas.reduce((a, b) => a[1] < b[1] ? a : b);
+  if (worst[1] >= 85) {
+    return P([
+      '三项都在 85% 以上，上周几乎没有短板——这周可以挑战"零遗漏"。',
+      '全线达标，这套节奏值得原封不动搬到这周。',
+      '上周的状态是标杆级的，保持住比冲高更重要。'
+    ]);
+  }
+  if (worst[1] >= 60) {
+    return P([
+      '整体在轨道上，唯一拖后腿的是<b>' + worst[0] + '</b>（' + worst[2] + '），这周盯它一个就够。',
+      '大局稳住了，短板是<b>' + worst[0] + '</b>（' + worst[2] + '），把它排到每天第一件事。',
+      '六成以上的盘面已经跑通，剩下<b>' + worst[0] + '</b>补上就完整了。'
+    ]);
+  }
+  return P([
+    '上周缺口主要在<b>' + worst[0] + '</b>（' + worst[2] + '），别的先不动，这周只补这一块。',
+    '先别追求全面达标，这周把<b>' + worst[0] + '</b>先做到一半，就算赢。',
+    '上周整体偏低，但不推倒重来——这周只把<b>' + worst[0] + '</b>拉起来。'
+  ]);
+}
+
+function generateWeeklyAnalysis(workPct, learnPct, sport, opts) {
+  opts = opts || {};
+  const P = makePicker(opts.seed || getReviewWeekKey());
   const sportTotal = sport.tennis + sport.golf + sport.strength;
   const sportPct = Math.round(sportTotal / 6 * 100);
-  let html = '⚡ <b>本周诊断</b><br><br>';
+  const reviewCount = opts.reviewCount || 0;
+  const prevW = (opts.prevWorkPct === undefined) ? -1 : opts.prevWorkPct;
+  const prevL = (opts.prevLearnPct === undefined) ? -1 : opts.prevLearnPct;
+
+  let html = '⚡ <b>上周诊断</b><br><br>';
 
   // --- 工作 ---
   if (workPct === 0) {
-    html += '🔴 <b>工作零完成。</b>CCR、业务量、服务质量三项是每日底线，漏一天月底汇总就对不上。<br>';
-    html += '<b>→ 办法：</b>今天先只勾CCR一项，降低启动门槛——打开工作台就先点掉它。<br>';
+    html += P([
+      '🔴 <b>工作挂了零。</b>CCR、业务量、服务质量是每天的地基，整周没点等于这周没留痕。',
+      '🔴 <b>工作 0 天完整打卡。</b>不是没做事，是没记录——月底汇总时会变成一段空白。',
+      '🔴 <b>工作完成率 0%。</b>三项每天一共 5 分钟，整周一次没点，说明它还没进你的日常动线。'
+    ]);
+    html += '<br><b>→ 先做一件：</b>' + P([
+      '这周只要求自己点掉「CCR 数据处理」一项，先连续 3 天，把动作做出来。',
+      '把工作台挪到手机首屏第一格，早上到网点第一眼看它，先点 CCR。',
+      '今晚花 30 秒给这三项补一次勾，让习惯有个起点，别等"下周一开始"。'
+    ]) + '<br>';
   } else if (workPct < 50) {
-    html += '🟠 <b>工作' + workPct + '%，过半天数有遗漏。</b>月底报告数据会有缺口，回头补也记不清做了什么。<br>';
-    html += '<b>→ 办法：</b>把工作台加到手机首屏，早上第一件事打开它，3项总共5分钟。<br>';
+    html += P([
+      '🟠 <b>工作 ' + workPct + '%，一周有一半以上天数断档。</b>' + trendTag(workPct, prevW) + '数据缺口补不回来，月底只能估算。',
+      '🟠 <b>工作 ' + workPct + '%，缺勤天数偏多。</b>' + trendTag(workPct, prevW) + '记录一断，回头看就说不清这周到底做了什么。',
+      '🟠 <b>工作只保住 ' + workPct + '%。</b>' + trendTag(workPct, prevW) + '不是时间不够，是它没被排进固定时段。'
+    ]);
+    html += '<br><b>→ 办法：</b>' + P([
+      '给三项定一个固定时间点（比如到网点坐下后的 5 分钟），到点就做，不靠记性。',
+      '把打卡绑在已有动作后：泡好茶 → 打开工作台 → 点三下。',
+      '允许自己只点一项也算，先把"每天都打开"这件事做稳。'
+    ]) + '<br>';
   } else if (workPct < 80) {
-    html += '🟡 <b>工作' + workPct + '%，差' + (80-workPct) + '%达标。</b>偶尔遗漏说明还没形成肌肉记忆。<br>';
-    html += '<b>→ 办法：</b>设一个每天10:00的日历提醒，标题就叫"工作台打卡"。<br>';
+    html += '🟡 <b>工作 ' + workPct + '%，差 ' + (80 - workPct) + '% 到稳的线。</b>' + trendTag(workPct, prevW) + '<br>';
+    html += '<b>→ 办法：</b>' + P([
+      '缺的这天通常是忙乱的那天——反而更该点，因为那天信息量最大。',
+      '设个每天上午 10:00 的日历提醒，标题就写"工作台 5 分钟"。',
+      '把最容易漏的一项（业务量监控）单独设提醒，其余两项已经习惯了。'
+    ]) + '<br>';
   } else {
-    html += '🟢 <b>工作' + workPct + '%，稳。</b>';
-    if (workPct === 100) html += '本周全勤，重点可以转向复盘质量而非打卡本身。';
+    html += '🟢 <b>工作 ' + workPct + '%，稳。</b>' + trendTag(workPct, prevW);
+    if (workPct === 100) html += P([
+      '整周无遗漏，重点可以从"打卡"转向"复盘质量"了。',
+      '满勤。这时候记录的价值不再是提醒，而是给你积累判断素材。'
+    ]);
     html += '<br>';
   }
 
   // --- 学习 ---
   if (learnPct === 0) {
-    html += '🔴 <b>学习本周零完成。</b>英语+网球+高尔夫加起来每天才25分钟，一次没看说明习惯没建立。<br>';
-    html += '<b>→ 办法：</b>绑到已有习惯后面——比如"刷完牙→看英语视频→点打卡"。<br>';
+    html += P([
+      '🔴 <b>学习整周零完成。</b>英语 + 网球 + 高尔夫 + 阅读，加起来每天不到 1 小时，一次没启动说明优先级被挤到最后。',
+      '🔴 <b>学习 0 天。</b>这件事不紧急但很贵——它决定三年后的选择权。',
+      '🔴 <b>学习完成率 0%。</b>不是没时间，是它永远排在"忙完再说"后面。'
+    ]);
+    html += '<br><b>→ 起步就好：</b>' + P([
+      '只挑一项启动：每天刷牙后看 15 分钟老友记，看完顺手点勾。',
+      '把 B 站链接放到收藏夹第一个，减少打开步骤，5 分钟也算一次。',
+      '这周只求"连续 3 天打开视频"，不要求四项全打。'
+    ]) + '<br>';
   } else if (learnPct < 50) {
-    html += '🟠 <b>学习' + learnPct + '%。</b>碎片时间就能做的事排到了最后，说明优先级太低。<br>';
-    html += '<b>→ 办法：</b>把B站链接存到收藏夹第一个，减少打开步骤，5分钟也能看一个视频。<br>';
+    html += P([
+      '🟠 <b>学习 ' + learnPct + '%。</b>' + trendTag(learnPct, prevL) + '碎片时间就能做的事被排到了最后，说明它没占到固定时段。',
+      '🟠 <b>学习只完成 ' + learnPct + '%。</b>' + trendTag(learnPct, prevL) + '四项要求同时满足，门槛一下抬太高了。',
+      '🟠 <b>学习 ' + learnPct + '%，断断续续。</b>' + trendTag(learnPct, prevL) + '没有固定时间的事，基本都会被挤掉。'
+    ]);
+    html += '<br><b>→ 办法：</b>' + P([
+      '降到"每天至少 1 项"，连续一周后再加到 2 项，别一上来求 4/4。',
+      '固定一个时段（比如午休后或睡前），到点就开，不看心情。',
+      '阅读 30 分钟最容易坚持，用它当每天的"保底勾"，其余三项看余力。'
+    ]) + '<br>';
   } else if (learnPct < 80) {
-    html += '🟡 <b>学习' + learnPct + '%，差几天。</b>可能是周末断了。<br>';
-    html += '<b>→ 办法：</b>周末也保持，但可以只看5分钟网球或高尔夫视频，不求三项全打。<br>';
+    html += '🟡 <b>学习 ' + learnPct + '%，差几天。</b>' + trendTag(learnPct, prevL) + '<br>';
+    html += '<b>→ 办法：</b>' + P([
+      '断点通常出现在周末或出差日——这两天允许"只做阅读"，不算断。',
+      '把最费劲的英语放早上精力最好的时候，网球/高尔夫视频放晚上。',
+      '给自己定一条底线：任何一天至少完成 1 项，绝不挂零。'
+    ]) + '<br>';
   } else {
-    html += '🟢 <b>学习' + learnPct + '%，习惯成型。</b>';
-    if (learnPct === 100) html += '可以尝试加大英语视频难度，或换一部新剧跟读。';
+    html += '🟢 <b>学习 ' + learnPct + '%，习惯已经成型。</b>' + trendTag(learnPct, prevL);
+    if (learnPct === 100) html += P([
+      '可以试着加深一步：英语跟读从"看"升级到"开口复述"。',
+      '满勤。下一步不是加量，而是把输入变成输出（笔记/复述）。'
+    ]);
     html += '<br>';
   }
 
@@ -3354,43 +3542,143 @@ function generateWeeklyAnalysis(workPct, learnPct, sport) {
   const weakest = items.reduce((a, b) => a.c < b.c ? a : b);
 
   if (sportTotal === 0) {
-    html += '🔴 <b>运动零打卡。</b>久坐不运动，颈椎和腰椎会先报警。<br>';
-    html += '<b>→ 办法：</b>这周先只做一次力量训练——20分钟深蹲+俯卧撑，在家就能做。<br>';
+    html += P([
+      '🔴 <b>运动一整周零打卡。</b>久坐 + 高强度脑力，最先报警的会是颈椎和腰。',
+      '🔴 <b>上周一次没动。</b>精力是债务工作里最容易被忽略、却最先耗尽的资源。',
+      '🔴 <b>运动 0 次。</b>这个数字比工作完成率更值得盯——身体是唯一不能透支的账户。'
+    ]);
+    html += '<br><b>→ 只做一次：</b>' + P([
+      '这周只做一次力量训练：20 分钟深蹲 + 俯卧撑，在家就能完成。',
+      '先约一场网球，把"要运动"变成"有人等"，成功率会高很多。',
+      '去练习场打一筐高尔夫球就够，不用下场、不用凑人。'
+    ]) + '<br>';
   } else if (sportTotal < 6) {
-    html += '🟠 <b>运动' + sportTotal + '/6次。</b>最薄弱：' + weakest.n + '（' + weakest.c + '/2）。<br>';
+    html += '🟠 <b>运动 ' + sportTotal + '/6 次，未达标。</b>最薄弱：' + weakest.n + '（' + weakest.c + '/2）。<br>';
     if (weakest.n === '力量训练') {
-      html += '<b>→ 办法：</b>力量是网球和高尔夫的基础，核心力量不够打球容易受伤。至少做1次平板支撑+深蹲。<br>';
+      html += '<b>→ 办法：</b>' + P([
+        '力量是网球和高尔夫的基础，核心不稳，球打多了肩和膝先出问题。目标先定 1 次：平板支撑 + 深蹲各 3 组。',
+        '把力量训练塞进"打球前"的 10 分钟热身，不用单独找时间。',
+        '锁定一个固定时段（比如周日早上），只做自重训练，20 分钟收工。'
+      ]) + '<br>';
     } else if (weakest.n === '网球') {
-      html += '<b>→ 办法：</b>约不到人可以先对着墙练30分钟挥拍，也算一次。<br>';
+      html += '<b>→ 办法：</b>' + P([
+        '约不到人可以先对墙练 30 分钟挥拍，同样算一次。',
+        '提前一周把球局定进日历，约人比约自己容易。',
+        '把网球放在周末上午固定档期，别等"有空再说"。'
+      ]) + '<br>';
     } else {
-      html += '<b>→ 办法：</b>去练习场打一筐球就行，不需要下场。<br>';
+      html += '<b>→ 办法：</b>' + P([
+        '去练习场打一筐球就行，不需要下场。',
+        '把高尔夫排在下班路上，顺路过去打 1 小时，比专程去容易坚持。',
+        '约一个球友固定周三，人到了场地，习惯就成型了。'
+      ]) + '<br>';
     }
   } else {
-    html += '🟢 <b>运动达标' + sportTotal + '次';
-    if (sportTotal > 6) html += '，超额' + (sportTotal-6) + '🔥';
+    html += '🟢 <b>运动达标 ' + sportTotal + ' 次';
+    if (sportTotal > 6) html += '，超额 ' + (sportTotal - 6) + ' 次 🔥';
     html += '。</b>';
     if (sport.strength < Math.max(sport.tennis, sport.golf) * 0.5) {
-      html += '但力量训练偏少，球类运动多了不练力量容易受伤。<br>';
-      html += '<b>→ 办法：</b>下周把力量提到3次，打球前先做10分钟热身力量。<br>';
+      html += '但力量训练偏少，球类堆多了不练力量容易受伤。<br>';
+      html += '<b>→ 办法：</b>这周把力量提到 3 次，打球前先做 10 分钟热身力量。<br>';
     } else {
-      html += '三项均衡，继续保持。<br>';
+      html += P([
+        '三项结构合理，继续保持这个节奏。',
+        '球类 + 力量配比健康，这套组合长期做下去性价比最高。'
+      ]) + '<br>';
     }
   }
 
-  // --- 一句话定论 ---
-  html += '<br>📌 <b>下周优先：</b>';
-  const pcts = [['工作',workPct],['学习',learnPct],['运动',sportPct]];
-  const worst = pcts.reduce((a,b) => a[1] < b[1] ? a : b);
-  if (worst[1] >= 85) {
-    html += '整体优秀，挑战"零遗漏全勤"。';
-  } else if (worst[1] >= 60) {
-    html += '重点抓<b>' + worst[0] + '</b>（当前' + worst[1] + '%），其余维持。';
+  // --- 复盘质量（数据维度）---
+  if (reviewCount === 0) {
+    html += '<br>📝 <b>上周零复盘。</b>数据能告诉你"做了多少"，只有复盘能告诉你"为什么"。<br>';
+    html += '<b>→ 办法：</b>每天 3 句话就够：今天做成了什么、哪里卡住、明天先改哪一件。<br>';
+  } else if (reviewCount < 4) {
+    html += '<br>📝 <b>上周复盘 ' + reviewCount + ' 篇，不足 5 个工作日。</b>有些天的判断依据缺了，回头只能靠回忆。<br>';
+    html += '<b>→ 办法：</b>把复盘和打卡绑在一起——点完三项顺手写两句，节省一次启动成本。<br>';
+  }
+
+  // --- 本周视角（每周轮换，避免诊断角度一成不变）---
+  const theme = P(['稳定性', '精力管理', '复盘质量', '时间结构']);
+  html += '<br>🧭 <b>上周视角 · ' + theme + '</b>：';
+  if (theme === '稳定性') {
+    html += P([
+      '你上周的问题不在"做得多不多"，而在"断不断"。打卡一旦断一天，接下来两三天很容易连着断。这周只盯一个字：连。',
+      '比上周做得好更值钱的，是每天都做。哪怕每天只完成一半，连续 7 天也比忽高忽低强。',
+      '把标准降到"每天必须动一下"，抬高的是坚持概率，不是任务量。'
+    ]);
+  } else if (theme === '精力管理') {
+    html += P([
+      '你上周的完成率波动，多半跟精力曲线有关，不是意志力。精力靠三段撑：睡眠、运动、进食节奏。这周先把运动那一格补上。',
+      '忙的时候最先被砍的通常是运动和阅读，也恰恰是恢复精力的两项。这周试试反过来：越忙越先做这两件。',
+      '把最容易完成的一项放在精力最低的时段（比如晚间阅读），高难度任务放早上，一天能多出不少有效时间。'
+    ]);
+  } else if (theme === '复盘质量') {
+    html += P([
+      '打卡解决"有没有做"，复盘解决"做得对不对"。这周写复盘时多问一句：这件事为什么是这样？下次怎么改？',
+      '一份好的复盘有三段：现象、原因、下一步动作。缺了最后一段，写多少遍问题都会重来。',
+      '别把它写成流水账。每天挑一件最值得说的事写透，胜过把十件事各写一行。'
+    ]);
   } else {
-    html += '先保证每天<b>工作+学习</b>两项打卡，运动保底1次。';
+    html += P([
+      '一周的时间是固定的，完成率低往往是排序问题而不是总量问题。这周把最难的一件事提到上午第一件。',
+      '把每天切成"上午做难事、下午做杂事、晚上做轻事"，比单纯早起更管用。',
+      '三件工作 + 四项学习一共不到 1 小时，只要给它一个固定档期，就不会被临时事务挤掉。'
+    ]);
+  }
+  html += '<br>';
+
+  // --- 鼓励 ---
+  const areas = [
+    ['工作', Math.min(100, workPct), workPct + '%'],
+    ['学习', Math.min(100, learnPct), learnPct + '%'],
+    ['运动', Math.min(100, sportPct), sportTotal + ' 次'],
+  ];
+  const best = areas.reduce((a, b) => a[1] > b[1] ? a : b);
+  const worst = areas.reduce((a, b) => a[1] < b[1] ? a : b);
+  html += '<br>💚 <b>写给你：</b>';
+  if (best[1] >= 80) {
+    html += P([
+      best[0] + '已经做到 ' + best[2] + '，这不是运气，是你把这件事排进了生活。你完全有能力把另一项也带到同样的水位。',
+      '先把话说清楚：' + best[0] + ' ' + best[2] + ' 是实打实的成绩。你能做成一件，就能做成第二件——剩下的只是排序问题。',
+      best[0] + '稳住了（' + best[2] + '），这是你自己挣来的基本盘。有基本盘的人，才有资格谈优化。'
+    ]);
+  } else if (best[1] >= 50) {
+    html += P([
+      '上周不算漂亮，但你在最难的时候还在记录——记录本身就是不想认输的证据。',
+      '能持续打开这个工作台的人，已经赢过大多数"想改变但没开始"的人。',
+      '别因为一周的数字否定自己。你在同时处理债务、家庭和生意，还能保持记录，这本身就要力气。'
+    ]);
+  } else {
+    html += P([
+      '先说一句实话：上周很难。但你没有删掉这个工作台，说明你还想把它扳回来。',
+      '数字低不代表你不行，只代表上周的方式不合适。换方式，不换目标。',
+      '低谷期的动作要小到不可能失败：每天 1 分钟、点亮 1 个勾，先把火种留住。'
+    ]);
+  }
+  html += ' ' + P([
+    '进步不是一次做很多，是把一件小事做很多次。',
+    '不用追求完美的一周，只要比上周好一点点，一年后就是完全不同的人。',
+    '自律不是不累，是累的时候还愿意点一下那个勾。',
+    '你正在为三年后的自己铺路，现在点的每一格都是路基。',
+    '慢一点没关系，别停。',
+    '把目标切小，把动作做熟，剩下的交给时间。',
+    '今天不用赢过别人，只要赢过上周的自己。',
+    '真正拉开差距的不是爆发，是你在没人看见的日子里还在做。'
+  ]);
+
+  // --- 一句话定论 ---
+  html += '<br><br>📌 <b>这周优先：</b>';
+  if (worst[1] >= 85) {
+    html += '整体优秀，挑战"零遗漏全勤"，同时把复盘写深一档。';
+  } else if (worst[1] >= 60) {
+    html += '重点抓<b>' + worst[0] + '</b>（上周 ' + worst[1] + '%），其余维持不动。';
+  } else {
+    html += '先保证每天<b>工作 + 学习</b>各完成一半，运动保底 1 次——不追求全面，只追求不断。';
   }
 
   return html;
 }
+
 
 function generateMonthlyReport() {
   const start = getMonthStart(0);
@@ -3460,7 +3748,7 @@ function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing,
 
   // --- 运动平衡 ---
   if (sportTotal < 12) {
-    html += '�� <b>运动' + sportTotal + '次，不到目标一半。</b>长期不运动，精力跟不上工作强度。<br>';
+    html += '🔴 <b>运动' + sportTotal + '次，不到目标一半。</b>长期不运动，精力跟不上工作强度。<br>';
     html += '<b>→ 办法：</b>下月先保证每周1次力量训练，4次就好，最容易安排。<br>';
   } else if (sportTotal < 24) {
     const weakest = [
@@ -3656,12 +3944,12 @@ function escapeHtml(text) {
 function shareReport(periodKey) {
   let text;
   if (_reportPeriod === 'week') {
-    text = '📊 工作台周报 ' + periodKey + '\n\n';
-    const start = getWeekStart(0);
-    const end = new Date(start); end.setDate(end.getDate() + 6);
-    const daily = collectDailyData(start, end);
+    const wStart = getReviewWeekStart();
+    const wEnd = getReviewWeekEnd();
+    text = '📊 工作台周复盘 ' + fmtMD(wStart) + '-' + fmtMD(wEnd) + '\n\n';
+    const daily = collectDailyData(wStart, wEnd);
     const sport = loadData('sport-' + periodKey, { tennis: 0, golf: 0, strength: 0 });
-    const weekReviews = collectReviews(start, end);
+    const weekReviews = collectReviews(wStart, wEnd);
     text += '工作完成率: ' + Math.round(daily.workDone/Math.max(1,daily.workTotal)*100) + '%\n';
     text += '学习完成率: ' + Math.round(daily.learnDone/Math.max(1,daily.learnTotal)*100) + '%\n';
     text += '运动: 网球' + sport.tennis + ' 高尔夫' + sport.golf + ' 力量' + sport.strength + '\n';
@@ -4360,10 +4648,11 @@ function closeDiagModal() { const m = document.getElementById('diagModal'); if (
 //  REPORT MODAL POPUP
 // ====================
 function checkReportPopup() {
+  const todayKey = getDateKey();
   const wk = getWeekKey();
   const mk = getMonthKey();
   const yk = String(new Date().getFullYear());
-  const seen = loadData('reportSeen', { week: '', month: '', year: '' });
+  const seen = loadData('reportSeen', { week: '', month: '', year: '', day: '' });
 
   // Priority: year > month > week — show the most significant new one
   let period = null, key = null, label = '';
@@ -4372,37 +4661,44 @@ function checkReportPopup() {
   } else if (seen.month !== mk) {
     period = 'month'; key = mk; label = mk;
   } else if (seen.week !== wk) {
-    period = 'week'; key = wk; label = wk;
+    period = 'week'; key = wk;
+    label = '上周 ' + fmtMD(getReviewWeekStart()) + ' - ' + fmtMD(getReviewWeekEnd());
   }
-  if (!period) {
+
+  // 当天首次打开：附上「昨日复盘」
+  const firstOpenToday = seen.day !== todayKey;
+  const yBlock = firstOpenToday ? buildYesterdayBlock() : '';
+
+  if (period && !hasReportData(period)) {
+    // 空周期不弹，标记已读避免反复提示，但仍保留「昨日复盘」
+    seen[period] = key;
+    saveData('reportSeen', seen);
+    period = null; key = null; label = '';
+  }
+
+  if (!period && !yBlock) {
     document.getElementById('reportNavBadge').style.display = 'none';
     return;
   }
 
-  // Show badge on nav bar
-  document.getElementById('reportNavBadge').style.display = 'flex';
+  // 有周期报告时在导航上挂"新"角标
+  document.getElementById('reportNavBadge').style.display = period ? 'flex' : 'none';
 
-  // Only show if there's actual data in this period
-  if (!hasReportData(period)) {
-    // Still mark as seen so it doesn't pop up on empty periods
-    seen[period] = key;
-    saveData('reportSeen', seen);
-    return;
-  }
-
-  showReportModal(period, key, label);
+  showReportModal(period, key, label, yBlock);
 }
 
 function hasReportData(period) {
   if (period === 'week') {
-    const wk = getWeekKey();
+    // 周复盘看的是「上周」，用上周的数据判断有没有内容
+    const start = getReviewWeekStart();
+    const end = getReviewWeekEnd();
+    const wk = getWeekKeyOf(start);
     const sport = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
-    const today = getDateKey();
-    const dailyReview = loadData('dailyReview-' + today, '');
+    const daily = collectDailyData(start, end);
+    const reviews = collectReviews(start, end);
     const oldReview = loadData('review-' + wk, '');
-    const work = loadData('work-' + today, { daily: [], review: '' });
-    const learn = loadData('learn-' + today, { english: false, tennis: false, golf: false });
-    return sport.tennis + sport.golf + sport.strength > 0 || !!dailyReview || !!oldReview || (work.daily && work.daily.length > 0) || learn.english || learn.tennis || learn.golf;
+    return daily.workDone > 0 || daily.learnDone > 0 || reviews.length > 0 || !!oldReview ||
+      (sport.tennis + sport.golf + sport.strength) > 0;
   }
   if (period === 'month') {
     const start = getMonthStart(0);
@@ -4421,20 +4717,89 @@ function hasReportData(period) {
   return false;
 }
 
-function showReportModal(period, key, label) {
+// 构建「昨日复盘」区块：当天首次打开时展示
+// 1) 优先昨天的复盘文本；昨天没写则回退到最近 7 天内最近一篇，并标注实际日期
+// 2) 附上昨天的完成情况（工作日），让复盘有数据对照
+function buildYesterdayBlock() {
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const yKey = fmtDateKey(y);
+  const yLabel = fmtMD(y) + '（' + DOW_CN[y.getDay()] + '）';
+
+  // 找最近一篇复盘（昨天优先，最多回溯 7 天）
+  let rDate = null, rText = '';
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const t = loadData('dailyReview-' + fmtDateKey(d), '');
+    if (t && String(t).trim()) { rDate = d; rText = String(t); break; }
+  }
+
+  const w = loadData('work-' + yKey, { daily: [], review: '' });
+  const l = loadData('learn-' + yKey, { english: false, tennis: false, golf: false, reading: false });
+  const workDone = (w.daily || []).length;
+  const isWeekend = y.getDay() === 0 || y.getDay() === 6;
+  const learnItems = [['英语', l.english], ['网球课', l.tennis], ['高尔夫', l.golf], ['阅读', l.reading]];
+  const learnDone = learnItems.filter(x => x[1]).length;
+
+  const hasYesterdayData = workDone > 0 || learnDone > 0;
+  if (!rText && !hasYesterdayData) return ''; // 没内容就不打扰
+
+  let html = '<div class="rm-sep"></div><div class="rm-ysec">';
+
+  if (rDate && fmtDateKey(rDate) === yKey) {
+    html += '<div class="rm-ytitle">🌙 昨日复盘 · ' + yLabel + '</div>';
+  } else if (rDate) {
+    html += '<div class="rm-ytitle">🌙 最近一篇复盘 · ' + fmtMD(rDate) + '（' + DOW_CN[rDate.getDay()] + '）</div>';
+  } else {
+    html += '<div class="rm-ytitle">🌙 昨日回顾 · ' + yLabel + '</div>';
+  }
+
+  if (!isWeekend) {
+    html += '<div class="rm-yrow"><span>昨日工作</span><span class="' + (workDone >= 3 ? 'good' : workDone > 0 ? 'warn' : 'bad') + '">' + workDone + '/3 项</span></div>';
+    html += '<div class="rm-yrow"><span>昨日学习</span><span class="' + (learnDone >= 4 ? 'good' : learnDone > 0 ? 'warn' : 'bad') + '">' + learnDone + '/4 项' +
+      (learnDone > 0 && learnDone < 4 ? '（' + learnItems.filter(x => x[1]).map(x => x[0]).join('、') + '）' : '') + '</span></div>';
+  } else {
+    html += '<div class="rm-yrow"><span>昨天是' + DOW_CN[y.getDay()] + '</span><span style="color:var(--text-secondary)">周末不强制打卡</span></div>';
+  }
+
+  if (rText) {
+    const shown = rText.length > 400 ? rText.substring(0, 400) + '…' : rText;
+    html += '<div class="rm-yreview">' + nl2br(shown) + '</div>';
+  } else {
+    html += '<div class="rm-yreview rm-ymiss">昨天还没写复盘。补一句也好：今天最想记住的是什么？</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function showReportModal(period, key, label, yBlock) {
   const icons = { week: '📊', month: '📈', year: '🏆' };
-  const titles = { week: '周报已生成', month: '月报已生成', year: '年报已生成' };
-  document.getElementById('rmIcon').textContent = icons[period];
-  document.getElementById('rmTitle').textContent = titles[period];
-  document.getElementById('rmPeriod').textContent = label;
+  const titles = { week: '上周复盘已生成', month: '月报已生成', year: '年报已生成' };
+  if (!period) {
+    document.getElementById('rmIcon').textContent = '🌙';
+    document.getElementById('rmTitle').textContent = '昨日复盘';
+    document.getElementById('rmPeriod').textContent = '新的一天，先看看昨天写了什么';
+  } else {
+    document.getElementById('rmIcon').textContent = icons[period];
+    document.getElementById('rmTitle').textContent = titles[period];
+    document.getElementById('rmPeriod').textContent = label;
+  }
+  window._rmPeriod = period || null;
+
+  // 按钮文案随内容变化
+  const laterBtn = document.querySelector('#reportModalOverlay .rm-btn-later');
+  const viewBtn = document.querySelector('#reportModalOverlay .rm-btn-view');
+  if (laterBtn) laterBtn.textContent = period ? '稍后阅读' : '知道了';
+  if (viewBtn) viewBtn.textContent = period ? '立即查看' : '去写今日复盘';
 
   // Build summary
   let html = '';
   if (period === 'week') {
-    const start = getWeekStart(0);
-    const end = new Date(start); end.setDate(end.getDate() + 6);
+    const start = getReviewWeekStart();
+    const end = getReviewWeekEnd();
+    const wk = getWeekKeyOf(start);
     const daily = collectDailyData(start, end);
-    const sport = loadData('sport-' + key, { tennis: 0, golf: 0, strength: 0 });
+    const sport = loadData('sport-' + wk, { tennis: 0, golf: 0, strength: 0 });
     const weekReviews = collectReviews(start, end);
     const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
     const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
@@ -4444,8 +4809,9 @@ function showReportModal(period, key, label) {
     html += rmStatRow('⛳ 高尔夫', sport.golf + '/2' + (sport.golf > 2 ? ' 🔥' : ''), sport.golf);
     html += rmStatRow('💪 力量训练', sport.strength + '/2' + (sport.strength > 2 ? ' 🔥' : ''), sport.strength);
     if (weekReviews.length > 0) html += '<div class="rm-analysis">📝 ' + weekReviews.length + '篇日复盘 · ' + escapeHtml(weekReviews[0].text.substring(0, 80)) + (weekReviews[0].text.length > 80 ? '...' : '') + '</div>';
-    else html += '<div class="rm-analysis">⚠️ 本周尚未填写复盘记录</div>';
-    html += '<div class="rm-analysis">' + generateWeeklyAnalysis(workPct, learnPct, sport).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
+    else html += '<div class="rm-analysis">⚠️ 上周尚未填写复盘记录</div>';
+    html += '<div class="rm-analysis">' + weeklyConclusion(workPct, learnPct, sport, wk) + '</div>';
+
   } else if (period === 'month') {
     const start = getMonthStart(0);
     const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
@@ -4475,6 +4841,8 @@ function showReportModal(period, key, label) {
     html += rmStatRow('复盘总篇数', reviews.length + '篇', reviews.length);
     html += '<div class="rm-analysis">' + generateYearlyAnalysis(workPct, learnPct, sport, reviews.length).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
   }
+  // 当天首次打开：在报告下方附上「昨日复盘」
+  if (yBlock) html += yBlock;
   document.getElementById('rmBody').innerHTML = html;
   document.getElementById('reportModalOverlay').classList.add('show');
 }
@@ -4486,33 +4854,40 @@ function rmStatRow(label, value, pct) {
   return '<div class="rm-stat-row"><span class="rm-stat-label">' + label + '</span><span class="rm-stat-val ' + cls + '">' + value + '</span></div>';
 }
 
+// 标记弹窗已读（含"当天已打开过"标记）
+function markReportSeen() {
+  const seen = loadData('reportSeen', { week: '', month: '', year: '', day: '' });
+  const wk = getWeekKey(), mk = getMonthKey(), yk = String(new Date().getFullYear());
+  seen.week = wk; seen.month = mk; seen.year = yk;
+  seen.day = getDateKey();
+  saveData('reportSeen', seen);
+}
+
 function dismissReportModal() {
   document.getElementById('reportModalOverlay').classList.remove('show');
   document.getElementById('reportNavBadge').style.display = 'none';
-  // Mark current period as seen
-  const seen = loadData('reportSeen', { week: '', month: '', year: '' });
-  const wk = getWeekKey(), mk = getMonthKey(), yk = String(new Date().getFullYear());
-  seen.week = wk; seen.month = mk; seen.year = yk;
-  saveData('reportSeen', seen);
+  markReportSeen();
+  if (_ccBillPending) { _ccBillPending = false; setTimeout(checkCCBillReminder, 400); }
 }
 
 function viewReportNow() {
   document.getElementById('reportModalOverlay').classList.remove('show');
   document.getElementById('reportNavBadge').style.display = 'none';
-  // Mark as seen
-  const seen = loadData('reportSeen', { week: '', month: '', year: '' });
-  const wk = getWeekKey(), mk = getMonthKey(), yk = String(new Date().getFullYear());
-  seen.week = wk; seen.month = mk; seen.year = yk;
-  saveData('reportSeen', seen);
-  // Determine which period was shown and switch to it
-  const periodLabel = document.getElementById('rmPeriod').textContent;
-  if (periodLabel.includes('年') && periodLabel.length <= 5) {
-    switchReportPeriod('year');
-  } else if (periodLabel.includes('-W')) {
-    switchReportPeriod('week');
-  } else {
-    switchReportPeriod('month');
+  markReportSeen();
+  if (_ccBillPending) { _ccBillPending = false; setTimeout(checkCCBillReminder, 600); }
+  const period = window._rmPeriod;
+  // 纯「昨日复盘」弹窗：跳到工作 Tab 并聚焦今日复盘输入框
+  if (!period) {
+    switchTab('work');
+    setTimeout(() => {
+      const ri = document.getElementById('reviewInput');
+      const card = document.getElementById('dailyReviewCard');
+      if (card && card.scrollIntoView) card.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      if (ri) { try { ri.focus({ preventScroll: true }); } catch (e) { ri.focus(); } }
+    }, 350);
+    return;
   }
+  switchReportPeriod(period === 'year' ? 'year' : period === 'week' ? 'week' : 'month');
   switchTab('report');
 }
 
