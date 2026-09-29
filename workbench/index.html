@@ -1137,6 +1137,39 @@ body {
 }
 .pay-check-btn:active { background: var(--bg); }
 .pay-check-btn.done { background: var(--green-light); color: var(--green); border-color: var(--green); }
+/* ============ ★ 信用卡分次还款区（2026-09-29）============ */
+.cc-pay-zone { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.cc-pay-zone .progress-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+.cc-remain {
+  margin-top: 6px; font-size: 13px; color: var(--red); font-weight: 600;
+}
+.cc-remain b { font-size: 16px; }
+.cc-remain.partial { color: var(--orange); }
+.cc-remain.done { color: var(--green); font-weight: 600; }
+.cc-pay-zone .pay-register-row { margin-top: 8px; }
+.pay-register-btn.alt { background: var(--green); }
+.cc-log { margin-top: 8px; }
+.cc-log summary {
+  font-size: 11px; color: var(--text-secondary); cursor: pointer;
+  padding: 4px 0; list-style: none; -webkit-tap-highlight-color: transparent;
+}
+.cc-log summary::-webkit-details-marker { display: none; }
+.cc-log summary::before { content: '▸ '; }
+.cc-log[open] summary::before { content: '▾ '; }
+.cc-log-list { margin-top: 4px; }
+.cc-log-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border);
+}
+.cc-log-item span:first-child { color: var(--text-secondary); min-width: 74px; }
+.cc-log-item span:nth-child(2) { flex: 1; font-weight: 600; }
+.cc-log-del {
+  border: none; background: transparent; color: var(--red);
+  font-size: 15px; line-height: 1; cursor: pointer; padding: 2px 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.progress-fill.partial { background: var(--orange); }
+.progress-fill.done { background: var(--green); }
 .pay-summary {
   font-size: 12px;
   color: var(--text-secondary);
@@ -2300,6 +2333,81 @@ function fmtMoney(n) {
   return '¥' + (n || 0).toLocaleString('zh-CN');
 }
 
+// ============ ★ 信用卡分次还款（2026-09-29 新增）============
+// 背景：信用卡还款往往不是一次还清，而是分多次转入（如招信 88,000 分 25,000/30,000/33,000）。
+//       旧的 ccPaid 只是布尔值（已还/未还），记不了进度 → 剩余应还只能靠脑子算。
+// 结构：ccPay-{cardId}-{billKey} = [{ d:'YYYY-MM-DD', a:金额, ts:时间戳 }, ...]
+//       ccBill-{cardId}-{billKey} = 本期账单应还（已有）
+//       剩余应还 = 账单 − 已还合计（自动算，不手工维护）
+function getCCPayments(cardId, billKey) {
+  const v = loadData('ccPay-' + cardId + '-' + billKey, []);
+  return Array.isArray(v) ? v : [];
+}
+
+function getCCPaidSum(cardId, billKey) {
+  return getCCPayments(cardId, billKey).reduce((s, p) => s + (Number(p && p.a) || 0), 0);
+}
+
+function getCCRemain(cardId, billKey, billAmount) {
+  const bill = Number(billAmount) || 0;
+  const remain = bill - getCCPaidSum(cardId, billKey);
+  return Math.round(remain * 100) / 100;   // 避免浮点毛刺
+}
+
+function addCCPayment(cardId, billKey, rawAmount) {
+  const amt = parseFloat(rawAmount);
+  if (isNaN(amt) || amt <= 0) { showToast('请输入有效金额'); return false; }
+  const list = getCCPayments(cardId, billKey);
+  const now = new Date();
+  const pad = n => (n < 10 ? '0' : '') + n;
+  const dstr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+  list.push({ d: dstr, a: Math.round(amt * 100) / 100, ts: now.getTime() });
+  saveData('ccPay-' + cardId + '-' + billKey, list);
+  // 还满则同步旧标记（兼容以 ccPaid 为准的排序/提醒逻辑）
+  const bill = Number(loadData('ccBill-' + cardId + '-' + billKey, 0)) || 0;
+  if (bill > 0 && getCCRemain(cardId, billKey, bill) <= 0.01) {
+    saveData('ccPaid-' + cardId + '-' + billKey, true);
+  }
+  return true;
+}
+
+function removeCCPayment(cardId, billKey, idx) {
+  const list = getCCPayments(cardId, billKey);
+  if (idx < 0 || idx >= list.length) return;
+  list.splice(idx, 1);
+  saveData('ccPay-' + cardId + '-' + billKey, list);
+  // 删后若不再还满，撤销旧标记
+  const bill = Number(loadData('ccBill-' + cardId + '-' + billKey, 0)) || 0;
+  if (bill > 0 && getCCRemain(cardId, billKey, bill) > 0.01) {
+    saveData('ccPaid-' + cardId + '-' + billKey, false);
+  }
+}
+
+// 「记一笔」：从卡片上的 inline 输入框取数
+function submitCCPayment(cardId, billKey) {
+  const input = document.getElementById('ccPayInput-' + cardId);
+  if (!input) return;
+  const val = input.value;
+  if (val === '' || val === null) { showToast('请输入还款金额'); return; }
+  if (!addCCPayment(cardId, billKey, val)) return;
+  input.value = '';
+  showToast('✅ 已记录还款');
+  renderMonthlyPayments();
+  cloudPush();   // 财务关键数据立即上云
+}
+
+// 「还清」：把剩余应还一次性记为一笔
+function payCCRemainAll(cardId, billKey) {
+  const bill = Number(loadData('ccBill-' + cardId + '-' + billKey, 0)) || 0;
+  const remain = getCCRemain(cardId, billKey, bill);
+  if (bill <= 0) { showToast('请先登记账单金额'); return; }
+  if (remain <= 0.01) { showToast('本期已还清'); return; }
+  if (!addCCPayment(cardId, billKey, remain)) return;
+  showToast('✅ 已还清 ' + fmtMoney(remain));
+  renderMonthlyPayments();
+  cloudPush();
+}
+
 function renderMonthlyPayments() {
   const container = document.getElementById('paymentContent');
   if (!container) return;
@@ -2310,18 +2418,22 @@ function renderMonthlyPayments() {
   html += '<div class="pay-section-title">💳 信用卡</div>';
 
   // Calculate cycles, pre-compute paid status, then sort: unpaid first, paid last
+  // ★ 2026-09-29：paid 由「剩余应还 ≤0」推导（支持分次还款），不再只看布尔标记
   const cardsWithCycles = CC_CONFIG.map(c => {
     const cycle = getCardCycle(c);
-    const paid = loadData('ccPaid-' + c.id + '-' + cycle.billKey, false);
-    return { card: c, cycle, paid };
+    const billAmount = loadData('ccBill-' + c.id + '-' + cycle.billKey, null);
+    const paidSum = getCCPaidSum(c.id, cycle.billKey);
+    const remain = billAmount === null ? null : getCCRemain(c.id, cycle.billKey, billAmount);
+    const flagPaid = loadData('ccPaid-' + c.id + '-' + cycle.billKey, false);
+    const paid = (billAmount !== null && remain !== null && remain <= 0.01) || (flagPaid && paidSum === 0);
+    return { card: c, cycle, billAmount, paidSum, remain, paid };
   });
   cardsWithCycles.sort((a, b) => {
     if (a.paid !== b.paid) return a.paid ? 1 : -1; // unpaid first
     return a.cycle.daysUntil - b.cycle.daysUntil;   // then by urgency
   });
 
-  cardsWithCycles.forEach(({ card, cycle, paid }) => {
-    const billAmount = loadData('ccBill-' + card.id + '-' + cycle.billKey, null);
+  cardsWithCycles.forEach(({ card, cycle, paid, billAmount, paidSum, remain }) => {
 
     // Check if register day has passed for this billing month
     const billYear = parseInt(cycle.billKey.substring(0, 4));
@@ -2334,7 +2446,7 @@ function renderMonthlyPayments() {
     const isDueSoon = cycle.daysUntil <= 7 && !paid && !isUrgent;
 
     let statusClass = 'idle', statusText = '';
-    if (paid) { statusClass = 'done'; statusText = '✅ 已还款'; }
+    if (paid) { statusClass = 'done'; statusText = '✅ 已还清'; }
     else if (isUrgent) { statusClass = 'urgent'; statusText = cycle.daysUntil <= 0 ? '⚠️ 逾期' : '🔴 ' + cycle.daysUntil + '天'; }
     else if (isDueSoon) { statusClass = 'pending'; statusText = '🟠 ' + cycle.daysUntil + '天'; }
     else { statusClass = 'idle'; statusText = cycle.daysUntil + '天'; }
@@ -2362,6 +2474,46 @@ function renderMonthlyPayments() {
     }
     html += '</div>';
     html += '</div>';
+
+    // === ★ 分次还款区（2026-09-29）：进度 + 实时录入 + 明细 ===
+    if (billAmount !== null && billAmount > 0) {
+      const pct = Math.max(0, Math.min(100, Math.round((paidSum / billAmount) * 100)));
+      const partial = !paid && paidSum > 0;
+      html += '<div class="cc-pay-zone">';
+      // 进度条
+      html += '<div class="progress-label" style="margin-top:2px;">';
+      html += '<span>已还 ' + fmtMoney(paidSum) + ' / ' + fmtMoney(billAmount) + '</span>';
+      html += '<span>' + pct + '%</span>';
+      html += '</div>';
+      html += '<div class="progress-bar"><div class="progress-fill' + (paid ? ' done' : partial ? ' partial' : '') + '" style="width:' + pct + '%"></div></div>';
+      // 剩余应还（醒目）
+      if (paid) {
+        html += '<div class="cc-remain done">✅ 本期已还清</div>';
+      } else {
+        html += '<div class="cc-remain' + (partial ? ' partial' : '') + '">剩 <b>' + fmtMoney(remain) + '</b></div>';
+      }
+      // 录入行（未还清时显示）
+      if (!paid) {
+        html += '<div class="pay-register-row">';
+        html += '<input type="number" id="ccPayInput-' + card.id + '" placeholder="本次还款金额" inputmode="decimal"';
+        html += ' onkeydown="if(event.key===\'Enter\')submitCCPayment(\'' + card.id + '\',\'' + cycle.billKey + '\')">';
+        html += '<button class="pay-register-btn" onclick="submitCCPayment(\'' + card.id + '\', \'' + cycle.billKey + '\')">记一笔</button>';
+        html += '<button class="pay-register-btn alt" onclick="payCCRemainAll(\'' + card.id + '\', \'' + cycle.billKey + '\')">还清</button>';
+        html += '</div>';
+      }
+      // 明细（可折叠）
+      const logs = getCCPayments(card.id, cycle.billKey);
+      if (logs.length > 0) {
+        html += '<details class="cc-log"><summary>还款明细（' + logs.length + ' 笔）</summary><div class="cc-log-list">';
+        logs.slice().sort((a, b) => (b.ts || 0) - (a.ts || 0)).forEach((p) => {
+          const idx = logs.indexOf(p);
+          html += '<div class="cc-log-item"><span>' + (p.d || '') + '</span><span>' + fmtMoney(p.a) + '</span>';
+          html += '<button class="cc-log-del" onclick="removeCCPayment(\'' + card.id + '\',\'' + cycle.billKey + '\',' + idx + ');renderMonthlyPayments();cloudPush();">×</button></div>';
+        });
+        html += '</div></details>';
+      }
+      html += '</div>';
+    }
     html += '</div>';
 
     // Register prompt - only when bill is out (register day passed)
