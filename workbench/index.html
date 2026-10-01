@@ -1384,7 +1384,7 @@ body {
         <div class="card-icon payroll">💳</div>
         <div>
           <div class="card-title">月度待还款项</div>
-          <div class="card-subtitle" id="paymentHint">信用卡 · 贷款 · 工资单</div>
+          <div class="card-subtitle" id="paymentHint">信用卡 · 贷款</div>
         </div>
       </div>
       <div id="paymentContent" style="margin-top: 8px;"></div>
@@ -2585,48 +2585,6 @@ function renderMonthlyPayments() {
   });
   html += '</div>';
 
-  // === 工资单 ===
-  html += '<div class="pay-section">';
-  html += '<div class="pay-section-title">💰 工资单待发</div>';
-  const payrollTrack = loadData('payrollTrack-' + mk, { total: 0, payments: [] });
-  const totalPaid = (payrollTrack.payments || []).reduce((s, a) => s + a, 0);
-  const remaining = (payrollTrack.total || 0) - totalPaid;
-  const today = new Date().getDate();
-  const isRegisterDay = today === 3;
-
-  if (!payrollTrack.total || payrollTrack.total === 0) {
-    // Always show register prompt — no date restriction
-    html += '<div class="pay-register-prompt">';
-    html += '<label>💰 登记本月待发工资总额</label>';
-    html += '<div class="pay-register-row">';
-    html += '<input type="number" id="payrollTotalInput" placeholder="输入待发总额" inputmode="decimal">';
-    html += '<button class="pay-register-btn" onclick="savePayrollTotal()">登记</button>';
-    html += '</div>';
-    html += '</div>';
-  } else {
-    html += '<div class="pay-item">';
-    html += '<div class="pay-item-info">';
-    html += '<div class="pay-item-name">本月工资单</div>';
-    html += '<div class="pay-item-detail">总额 ' + fmtMoney(payrollTrack.total) + ' · 已发 ' + fmtMoney(totalPaid) + '</div>';
-    html += '</div>';
-    const cls = remaining <= 0 ? 'paid' : 'urgent';
-    html += '<span class="pay-item-amount ' + cls + '">' + fmtMoney(remaining) + '</span>';
-    html += '</div>';
-
-    if (remaining > 0) {
-      html += '<div class="pay-register-prompt">';
-      html += '<label>记录一笔发放</label>';
-      html += '<div class="pay-register-row">';
-      html += '<input type="number" id="payrollPayInput" placeholder="输入发放金额" inputmode="decimal">';
-      html += '<button class="pay-register-btn" onclick="recordPayrollPayment()">记录</button>';
-      html += '</div>';
-      html += '</div>';
-    } else {
-      html += '<div class="pay-summary">✅ 本月工资已全部发放</div>';
-    }
-  }
-  html += '</div>';
-
   container.innerHTML = html;
 }
 
@@ -2733,33 +2691,6 @@ function markLoanPaid(loanId) {
     saveData('loanState', loanState);
   }
   showToast('✅ ' + loan.name + '已还款 ' + fmtMoney(loan.monthly));
-  renderMonthlyPayments();
-}
-
-function savePayrollTotal() {
-  const input = document.getElementById('payrollTotalInput');
-  if (!input || !input.value) { showToast('请输入金额'); return; }
-  const total = parseFloat(input.value);
-  if (isNaN(total) || total <= 0) { showToast('金额无效'); return; }
-  const mk = getMonthKey();
-  saveData('payrollTrack-' + mk, { total: total, payments: [] });
-  showToast('✅ 工资总额已登记: ' + fmtMoney(total));
-  renderMonthlyPayments();
-}
-
-function recordPayrollPayment() {
-  const input = document.getElementById('payrollPayInput');
-  if (!input || !input.value) { showToast('请输入金额'); return; }
-  const amount = parseFloat(input.value);
-  if (isNaN(amount) || amount <= 0) { showToast('金额无效'); return; }
-  const mk = getMonthKey();
-  const track = loadData('payrollTrack-' + mk, { total: 0, payments: [] });
-  if (!track.payments) track.payments = [];
-  track.payments.push(amount);
-  saveData('payrollTrack-' + mk, track);
-  const totalPaid = track.payments.reduce((s, a) => s + a, 0);
-  const remaining = track.total - totalPaid;
-  showToast('✅ 已记录发放 ' + fmtMoney(amount) + ' · 剩余 ' + fmtMoney(Math.max(0, remaining)));
   renderMonthlyPayments();
 }
 
