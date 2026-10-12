@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="我的工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%234f46e5' width='100' height='100' rx='22'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>台</text></svg>">
 <title>我的工作台</title>
-<meta name="code-sync-ts" content="2026-09-28T08:02:07.035Z">
+<meta name="code-sync-ts" content="2026-10-12T09:27:27.429Z">
 <style>
 :root {
   --bg: #f5f5f7;
@@ -600,6 +600,99 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 .undo-link:active { color: var(--accent); }
+
+/* 力量训练 · 专项体能清单（卡内嵌） */
+.fit-plan {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.fit-plan-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fit-plan-title {
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+}
+.fit-plan-progress {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.fit-plan-progress.all {
+  color: var(--green);
+  background: var(--green-light);
+}
+.fit-plan-arrow {
+  font-size: 11px;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+.fit-plan-arrow.folded { transform: rotate(-90deg); }
+.fit-plan-body { margin-top: 6px; }
+.fit-plan-body.folded { display: none; }
+.fit-item {
+  display: flex;
+  gap: 9px;
+  padding: 6px 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.fit-item:active { opacity: 0.7; }
+.fit-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid #d1d5db;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  color: #fff;
+  transition: all 0.15s;
+}
+.fit-item.done .fit-box {
+  background: var(--green);
+  border-color: var(--green);
+}
+.fit-item.done .fit-name {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+.fit-item.done .fit-note { opacity: 0.5; }
+.fit-main { flex: 1; min-width: 0; }
+.fit-name {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.fit-dose {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--orange);
+  background: var(--orange-light);
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-left: 5px;
+  white-space: nowrap;
+}
+.fit-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-top: 2px;
+}
 
 /* Report Tab */
 .report-tabs {
@@ -1583,6 +1676,15 @@ body {
         💪 打卡签到
       </button>
       <div class="undo-link" id="strengthUndo" style="display:none" onclick="undoCheckin('strength')">↩️ 撤销上次打卡</div>
+
+      <div class="fit-plan">
+        <div class="fit-plan-head" onclick="toggleGolfFitPlan()">
+          <span class="fit-plan-title">⛳ 高尔夫专项体能 · 今日</span>
+          <span class="fit-plan-progress" id="golfFitProgress">0/4</span>
+          <span class="fit-plan-arrow" id="golfFitArrow">▾</span>
+        </div>
+        <div class="fit-plan-body" id="golfFitBody"></div>
+      </div>
     </div>
 
     <div class="card" style="margin-top: 16px;">
@@ -3244,6 +3346,73 @@ function renderSportTab() {
     el.textContent = actualTotal + '/' + targetTotal;
   }
   document.getElementById('sportProgressBar').style.width = Math.min(100, actualTotal/targetTotal*100) + '%';
+
+  renderGolfFit();
+}
+
+// --- 高尔夫专项体能 · 每日清单（独立数据 key，不参与 sport 计数） ---
+const GOLF_FIT_ITEMS = [
+  { name: '徒手深蹲', dose: '3×15', note: '慢下快上、膝不内扣 —— 补下肢驱动，治手臂代偿' },
+  { name: '弓步转体', dose: '3×10/侧', note: '转体时后脚跟离地 —— 练髋部旋转' },
+  { name: '平板支撑', dose: '3×45 秒', note: '收紧臀部别塌腰 —— 核心抗晃动，治左右晃' },
+  { name: '快速转体甩臂', dose: '3×10/侧', note: '徒手、越快越好像扔球 —— 旋转爆发力' }
+];
+const GOLF_FIT_FOLD_KEY = 'golfFitFolded';
+
+function golfFitKey() { return 'golfFit-' + getDateKey(); }
+
+function renderGolfFit() {
+  const body = document.getElementById('golfFitBody');
+  if (!body) return;
+
+  let done = loadData(golfFitKey(), []);
+  if (!Array.isArray(done)) done = [];
+
+  let html = '';
+  GOLF_FIT_ITEMS.forEach(function(it, i) {
+    const isDone = done.indexOf(i) >= 0;
+    html += '<div class="fit-item' + (isDone ? ' done' : '') + '" onclick="toggleGolfFit(' + i + ')">' +
+              '<div class="fit-box">' + (isDone ? '✓' : '') + '</div>' +
+              '<div class="fit-main">' +
+                '<div class="fit-name">' + it.name + '<span class="fit-dose">' + it.dose + '</span></div>' +
+                '<div class="fit-note">' + it.note + '</div>' +
+              '</div>' +
+            '</div>';
+  });
+  body.innerHTML = html;
+
+  const allDone = done.length >= GOLF_FIT_ITEMS.length;
+  const pEl = document.getElementById('golfFitProgress');
+  if (pEl) {
+    pEl.textContent = done.length + '/' + GOLF_FIT_ITEMS.length + (allDone ? ' ✅' : '');
+    pEl.classList.toggle('all', allDone);
+  }
+
+  // 折叠状态（跨天保留用户选择）
+  const folded = loadData(GOLF_FIT_FOLD_KEY, false) === true;
+  body.classList.toggle('folded', folded);
+  const arrow = document.getElementById('golfFitArrow');
+  if (arrow) arrow.classList.toggle('folded', folded);
+}
+
+function toggleGolfFit(i) {
+  const key = golfFitKey();
+  let arr = loadData(key, []);
+  if (!Array.isArray(arr)) arr = [];
+  const pos = arr.indexOf(i);
+  if (pos >= 0) arr.splice(pos, 1); else arr.push(i);
+  arr.sort(function(a, b) { return a - b; });
+  saveData(key, arr);
+  renderGolfFit();   // 只刷新清单区，不整 Tab 重渲染（防焦点/滚动跳动）
+  if (arr.length >= GOLF_FIT_ITEMS.length) {
+    showToast('🎉 今日高尔夫专项体能 4 项全部完成！');
+  }
+}
+
+function toggleGolfFitPlan() {
+  const folded = loadData(GOLF_FIT_FOLD_KEY, false) !== true;
+  saveData(GOLF_FIT_FOLD_KEY, folded);
+  renderGolfFit();
 }
 
 // ====================
