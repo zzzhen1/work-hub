@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="我的工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%234f46e5' width='100' height='100' rx='22'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>台</text></svg>">
 <title>我的工作台</title>
-<meta name="code-sync-ts" content="2026-10-14T13:21:33.041Z">
+<meta name="code-sync-ts" content="2026-10-14T13:42:41.074Z">
 <style>
 :root {
   --bg: #f5f5f7;
@@ -1113,6 +1113,93 @@ body {
   word-break: break-word;
 }
 .rm-ymiss { color: var(--text-secondary); }
+/* 昨日复盘 · 五维对话 */
+.rm-dims { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.rm-dim {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 11px;
+}
+.rm-dim-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.rm-dim-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.rm-dim-meta { font-size: 11px; font-weight: 500; color: var(--text-secondary); margin-left: 4px; }
+.rm-dim-line { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+.rm-rate {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rm-rate.r-zero { color: var(--red); background: rgba(239,68,68,.12); }
+.rm-rate.r-soso { color: var(--orange); background: rgba(245,158,11,.14); }
+.rm-rate.r-ok { color: var(--text-secondary); background: var(--accent-light); }
+.rm-rate.r-great { color: var(--green); background: rgba(34,197,94,.13); }
+.rm-rate.r-super { color: var(--orange); background: rgba(245,158,11,.2); }
+.rm-rate.r-ask { color: var(--text-secondary); background: var(--accent-light); }
+.rm-ysub { font-size: 12px; font-weight: 700; color: var(--text); margin-top: 12px; }
+.rm-yclose {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--accent-light);
+  border-radius: 10px;
+  padding: 9px 11px;
+  margin-top: 10px;
+}
+/* 报告页 · 我的日复盘全集 */
+.ra-head {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ra-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.ra-count { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+.ra-body { margin-top: 8px; }
+.ra-body.folded { display: none; }
+.ra-tools { display: flex; gap: 8px; margin-bottom: 6px; }
+.ra-tool {
+  flex: 1;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ra-item { border-bottom: 1px solid var(--border); }
+.ra-item:last-child { border-bottom: none; }
+.ra-item-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 2px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ra-date { font-size: 12.5px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.ra-badge { font-size: 11px; color: var(--text-secondary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ra-arrow { font-size: 11px; color: var(--text-secondary); transition: transform .18s; }
+.ra-item.open .ra-arrow { transform: rotate(180deg); }
+.ra-item-body {
+  display: none;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 0 2px 10px;
+}
+.ra-item.open .ra-item-body { display: block; }
 .rm-actions {
   display: flex;
   gap: 10px;
@@ -1711,9 +1798,11 @@ body {
     <div class="report-tabs">
       <button class="report-tab active" onclick="switchReportPeriod('week')" id="rp-week">周报</button>
       <button class="report-tab" onclick="switchReportPeriod('month')" id="rp-month">月报</button>
+      <button class="report-tab" onclick="switchReportPeriod('quarter')" id="rp-quarter">季报</button>
       <button class="report-tab" onclick="switchReportPeriod('year')" id="rp-year">年报</button>
     </div>
     <div id="reportContent"></div>
+    <div id="reviewArchive"></div>
     <div class="data-migration">
       <div class="dm-title">📱 数据迁移（换设备时使用）</div>
       <button class="dm-btn" onclick="exportAllData()">📤 导出全部数据</button>
@@ -3505,6 +3594,73 @@ function getWeekKeyOf(monday) {
   return monday.getFullYear() + '-W' + String(Math.ceil((monday.getTime() - new Date(monday.getFullYear(),0,1).getTime())/(7*86400000))).padStart(2,'0');
 }
 function getReviewWeekKey() { return getWeekKeyOf(getWeekStart(-1)); }
+
+// ===== 复盘周期口径（2026-10-14 定，铁律）=====
+// 每个复盘日只复盘「上一个完整周期」，绝不掺入更大的周期：
+//   每日 → 昨天 ／ 周复盘日 → 上周 ／ 月复盘日 → 上月 ／ 季复盘日 → 上季度 ／ 年复盘日 → 去年
+function getReviewMonthStart() { return getMonthStart(-1); }
+function getReviewMonthEnd() {
+  const s = getReviewMonthStart();
+  return new Date(s.getFullYear(), s.getMonth() + 1, 0);
+}
+function getReviewMonthKey() {
+  const s = getReviewMonthStart();
+  return s.getFullYear() + '-' + String(s.getMonth() + 1).padStart(2, '0');
+}
+function getReviewMonthLabel() {
+  const s = getReviewMonthStart();
+  return s.getFullYear() + '年' + (s.getMonth() + 1) + '月';
+}
+// 上季度首月 1 号（跨年由 Date 自动归一：1 月时 -3 → 去年 10 月）
+function getReviewQuarterStart() {
+  const d = new Date();
+  const q = Math.floor(d.getMonth() / 3); // 本季度序号 0..3
+  return new Date(d.getFullYear(), (q - 1) * 3, 1);
+}
+function getReviewQuarterEnd() {
+  const s = getReviewQuarterStart();
+  return new Date(s.getFullYear(), s.getMonth() + 3, 0);
+}
+function getQuarterKeyOf(d) { return d.getFullYear() + '-Q' + (Math.floor(d.getMonth() / 3) + 1); }
+function getReviewQuarterKey() { return getQuarterKeyOf(getReviewQuarterStart()); }
+function getReviewQuarterLabel() {
+  const s = getReviewQuarterStart();
+  return s.getFullYear() + '年 Q' + (Math.floor(s.getMonth() / 3) + 1);
+}
+function getReviewYearStart() { return getYearStart(-1); }
+function getReviewYearEnd() {
+  const s = getReviewYearStart();
+  return new Date(s.getFullYear(), 11, 31);
+}
+function getReviewYearKey() { return String(getReviewYearStart().getFullYear()); }
+
+// 今天是哪种「复盘日」——决定当天弹窗只复盘哪个周期
+// 元旦 → 去年 ／ 季首月 1 号 → 上季度 ／ 每月 1 号 → 上月 ／ 周一 → 上周 ／ 其余 → 昨天
+function getReviewDayType() {
+  const t = new Date();
+  const d = t.getDate(), m = t.getMonth() + 1;
+  if (m === 1 && d === 1) return 'year';
+  if (d === 1 && (m === 4 || m === 7 || m === 10)) return 'quarter';
+  if (d === 1) return 'month';
+  if (t.getDay() === 1) return 'week';
+  return 'day';
+}
+// 每种复盘日对应的周期 key / 展示标签（弹窗用）
+function getReviewPeriodKey(type) {
+  if (type === 'week') return getReviewWeekKey();
+  if (type === 'month') return getReviewMonthKey();
+  if (type === 'quarter') return getReviewQuarterKey();
+  if (type === 'year') return getReviewYearKey();
+  return '';
+}
+function getReviewPeriodLabel(type) {
+  if (type === 'week') return '上周 ' + fmtMD(getReviewWeekStart()) + ' - ' + fmtMD(getReviewWeekEnd());
+  if (type === 'month') return getReviewMonthLabel() + '（上月）';
+  if (type === 'quarter') return getReviewQuarterLabel() + '（上季度）';
+  if (type === 'year') return getReviewYearStart().getFullYear() + '年（去年）';
+  return '';
+}
+
 function getDateKeyOffset(offset) {
   const d = new Date();
   d.setDate(d.getDate() + offset);
@@ -3991,9 +4147,10 @@ function generateWeeklyAnalysis(workPct, learnPct, sport, opts) {
 
 
 function generateMonthlyReport() {
-  const start = getMonthStart(0);
-  const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
-  const mk = getMonthKey();
+  // 月复盘 = 复盘「上个月」（上一个完整自然月）
+  const start = getReviewMonthStart();
+  const end = getReviewMonthEnd();
+  const mk = getReviewMonthKey();
 
   const daily = collectDailyData(start, end);
   const sport = collectSportData(start, end);
@@ -4001,7 +4158,7 @@ function generateMonthlyReport() {
   const billing = loadData('billing-' + mk, []);
   const payroll = loadData('payroll-' + mk, []);
 
-  let html = '<div class="report-period-label">📅 月报 ' + start.getFullYear() + '年' + (start.getMonth()+1) + '月</div>';
+  let html = '<div class="report-period-label">📅 月复盘 · 上月（' + getReviewMonthLabel() + '）</div>';
 
   html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">月度完成情况</div></div></div>';
   const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
@@ -4016,13 +4173,13 @@ function generateMonthlyReport() {
   html += '</div>';
 
   // Reviews
-  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">本月复盘汇总 (' + reviews.length + '篇)</div></div></div>';
+  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">上月复盘汇总 (' + reviews.length + '篇)</div></div></div>';
   if (reviews.length > 0) {
     reviews.forEach(r => {
       html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
     });
   } else {
-    html += '<div class="report-stat-label" style="padding:8px 0">本月暂无复盘记录</div>';
+    html += '<div class="report-stat-label" style="padding:8px 0">上月暂无复盘记录</div>';
   }
   html += '</div>';
 
@@ -4036,7 +4193,7 @@ function generateMonthlyReport() {
 function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing, payroll) {
   const sportTotal = sport.tennis + sport.golf + sport.strength;
   const sportPct = Math.round(sportTotal / 24 * 100);
-  let html = '⚡ <b>月度诊断</b><br><br>';
+  let html = '⚡ <b>上月诊断</b><br><br>';
 
   // --- 工作 vs 学习 ---
   const gap = Math.abs(workPct - learnPct);
@@ -4048,7 +4205,7 @@ function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing,
     const worst = workPct < learnPct ? '工作' : '学习';
     const worstPct = Math.min(workPct, learnPct);
     html += '🔴 <b>' + worst + '仅' + worstPct + '%，严重偏低。</b>一个月过半天数没打卡，习惯根本没建立。<br>';
-    html += '<b>→ 办法：</b>下月不求全勤，先定底线——每周至少3天完成，连续4周后再提目标。<br>';
+    html += '<b>→ 办法：</b>本月不求全勤，先定底线——每周至少3天完成，连续4周后再提目标。<br>';
   } else {
     const worst = workPct < learnPct ? '工作' : '学习';
     const worstPct = Math.min(workPct, learnPct);
@@ -4059,7 +4216,7 @@ function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing,
   // --- 运动平衡 ---
   if (sportTotal < 12) {
     html += '🔴 <b>运动' + sportTotal + '次，不到目标一半。</b>长期不运动，精力跟不上工作强度。<br>';
-    html += '<b>→ 办法：</b>下月先保证每周1次力量训练，4次就好，最容易安排。<br>';
+    html += '<b>→ 办法：</b>本月先保证每周1次力量训练，4次就好，最容易安排。<br>';
   } else if (sportTotal < 24) {
     const weakest = [
       { n: '网球', c: sport.tennis },
@@ -4067,14 +4224,14 @@ function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing,
       { n: '力量', c: sport.strength },
     ].reduce((a, b) => a.c < b.c ? a : b);
     html += '🟡 <b>运动' + sportTotal + '次，' + weakest.n + '偏少（' + weakest.c + '次）。</b><br>';
-    html += '<b>→ 办法：</b>下月给' + weakest.n + '固定一个时间段，比如每周三晚上。<br>';
+    html += '<b>→ 办法：</b>本月给' + weakest.n + '固定一个时间段，比如每周三晚上。<br>';
   } else {
     html += '🟢 <b>运动' + sportTotal + '次，达标';
     if (sportTotal > 24) html += '且超额' + (sportTotal-24) + '🔥';
     html += '。</b>';
     if (sport.strength < (sport.tennis + sport.golf) * 0.4) {
       html += '但力量训练占比偏低，球类多了不练力量，膝盖和肩膀会先出问题。<br>';
-      html += '<b>→ 办法：</b>下月力量次数提到网球+高尔夫总和的一半以上。<br>';
+      html += '<b>→ 办法：</b>本月力量次数提到网球+高尔夫总和的一半以上。<br>';
     } else {
       html += '三项均衡，继续保持。<br>';
     }
@@ -4097,19 +4254,19 @@ function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing,
 
   // --- 复盘 ---
   if (reviewCount === 0) {
-    html += '🟠 <b>本月零复盘。</b>不复盘等于白干一个月，问题会反复出现。<br>';
+    html += '🟠 <b>上月零复盘。</b>不复盘等于白干一个月，问题会反复出现。<br>';
     html += '<b>→ 办法：</b>每周五下班前花10分钟写3句话：做了什么、什么没做好、下周改什么。<br>';
   } else if (reviewCount < 4) {
     html += '🟡 <b>复盘' + reviewCount + '篇，不到每周一篇。</b>有些周跳过了。<br>';
     html += '<b>→ 办法：</b>手机日历设每周五16:50提醒"写复盘"，10分钟够了。<br>';
   } else {
     html += '🟢 <b>复盘' + reviewCount + '篇，习惯稳定。</b>';
-    if (reviewCount >= 4) html += '下月可以提升复盘深度，不只记流水账，多写"为什么"和"怎么改"。';
+    if (reviewCount >= 4) html += '本月可以提升复盘深度，不只记流水账，多写"为什么"和"怎么改"。';
     html += '<br>';
   }
 
   // --- 定论 ---
-  html += '<br>📌 <b>下月优先：</b>';
+  html += '<br>📌 <b>本月优先：</b>';
   if (billing !== undefined && billing.length === 0) {
     html += '客户账单是硬指标，先补上。';
   } else if (payroll !== undefined && payroll.length < 7) {
@@ -4127,20 +4284,187 @@ function generateMonthlyAnalysis(workPct, learnPct, sport, reviewCount, billing,
   return html;
 }
 
+// 把区间按月拆开，拿到逐月完成率（季报要看「三个月怎么走的」，只看均值等于没看）
+function collectMonthlyBreakdown(start, end) {
+  const out = [];
+  let cur = new Date(start.getFullYear(), start.getMonth(), 1);
+  while (cur <= end) {
+    const mStart = new Date(cur.getFullYear(), cur.getMonth(), 1);
+    const mEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0);
+    const d = collectDailyData(mStart, mEnd);
+    out.push({
+      label: (mStart.getMonth() + 1) + '月',
+      workPct: d.workTotal ? Math.round(d.workDone / d.workTotal * 100) : -1,
+      learnPct: d.learnTotal ? Math.round(d.learnDone / d.learnTotal * 100) : -1,
+      workDone: d.workDone, workTotal: d.workTotal
+    });
+    cur.setMonth(cur.getMonth() + 1);
+  }
+  return out;
+}
+
+function generateQuarterlyReport() {
+  // 季复盘 = 复盘「上季度」（上一个完整季度）
+  const start = getReviewQuarterStart();
+  const end = getReviewQuarterEnd();
+  const qk = getReviewQuarterKey();
+
+  const daily = collectDailyData(start, end);
+  const sport = collectSportData(start, end);
+  const reviews = collectReviews(start, end);
+  const breakdown = collectMonthlyBreakdown(start, end);
+  const days = Math.round((end - start) / 86400000) + 1;
+  const weeks = Math.max(1, Math.round(days / 7));
+  const sportTarget = weeks * 6;
+
+  const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+  const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+
+  let html = '<div class="report-period-label">📅 季复盘 · 上季度（' + getReviewQuarterLabel() + '）</div>';
+
+  html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">上季度完成情况</div></div></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">工作日完成率</span><span class="report-stat-value ' + (workPct>=80?'good':workPct>=50?'warn':'bad') + '">' + workPct + '% (' + daily.workDone + '/' + daily.workTotal + '天)</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">学习完成率</span><span class="report-stat-value ' + (learnPct>=80?'good':learnPct>=50?'warn':'bad') + '">' + learnPct + '% (' + daily.learnDone + '/' + daily.learnTotal + '天)</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">🎾 网球</span><span class="report-stat-value">' + sport.tennis + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">⛳ 高尔夫</span><span class="report-stat-value">' + sport.golf + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">💪 力量训练</span><span class="report-stat-value">' + sport.strength + '次</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">运动总次数</span><span class="report-stat-value ' + (sportTotal>=sportTarget?'good':sportTotal>=sportTarget*0.5?'warn':'bad') + '">' + sportTotal + '/' + sportTarget + ' (' + Math.round(sportTotal/sportTarget*100) + '%)</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">📝 复盘篇数</span><span class="report-stat-value ' + (reviews.length>=weeks?'good':reviews.length>0?'warn':'bad') + '">' + reviews.length + ' 篇 / 基准 ' + weeks + ' 篇</span></div>';
+  html += '</div>';
+
+  // 逐月走势
+  if (breakdown.length > 0) {
+    html += '<div class="card"><div class="card-header"><div class="card-icon review">📈</div><div><div class="card-title">三个月走势</div></div></div>';
+    breakdown.forEach(b => {
+      const cls = b.workPct >= 80 ? 'good' : b.workPct >= 50 ? 'warn' : 'bad';
+      html += '<div class="report-stat"><span class="report-stat-label">' + b.label + ' 工作 / 学习</span><span class="report-stat-value">' +
+        '<span class="' + cls + '">' + (b.workPct < 0 ? '—' : b.workPct + '%') + '</span>' +
+        ' / ' + (b.learnPct < 0 ? '—' : b.learnPct + '%') + '</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Reviews
+  html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">上季度复盘汇总 (' + reviews.length + '篇)</div></div></div>';
+  if (reviews.length > 0) {
+    reviews.forEach(r => {
+      html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
+    });
+  } else {
+    html += '<div class="report-stat-label" style="padding:8px 0">上季度暂无复盘记录</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="report-analysis">' + generateQuarterlyAnalysis(workPct, learnPct, sport, reviews.length, weeks, breakdown, qk) + '</div>';
+  html += '<button class="share-btn" onclick="shareReport(\'' + qk + '\')">📤 分享季报</button>';
+
+  return html;
+}
+
+// 季报专属诊断：看「三个月怎么走的」+ 结构，不重复月报那套
+function generateQuarterlyAnalysis(workPct, learnPct, sport, reviewCount, weeks, breakdown, seedKey) {
+  const P = makePicker((seedKey || '') + '-q');
+  const sportTotal = sport.tennis + sport.golf + sport.strength;
+  const sportTarget = weeks * 6;
+  const vals = (breakdown || []).map(b => b.workPct).filter(v => v >= 0);
+  let html = '⚡ <b>上季度诊断</b><br><br>';
+
+  // --- 1. 三个月的工作走势（季报的核心，看趋势不看均值）---
+  if (vals.length >= 2) {
+    const first = vals[0], last = vals[vals.length - 1];
+    const trend = last - first;
+    const swing = Math.max.apply(null, vals) - Math.min.apply(null, vals);
+    html += '📈 <b>工作走势：' + (breakdown || []).map(b => b.label + ' ' + (b.workPct < 0 ? '—' : b.workPct + '%')).join(' → ') + '</b>。';
+    if (trend >= 15) {
+      html += '三个月整体往上走，前后差了 ' + trend + ' 个百分点——这是方法在生效，不是运气好。';
+    } else if (trend <= -15) {
+      html += '整体往下掉，掉了 ' + Math.abs(trend) + ' 个百分点。下滑一般不是意志问题，是某个月断了一次没接回来。';
+    } else if (swing >= 30) {
+      html += '上下摆动了 ' + swing + ' 个百分点。这说明"能不能完成"取决于那个月忙不忙，而不取决于习惯——习惯是不会随忙闲起伏的。';
+    } else {
+      html += '三个月基本持平，波动 ' + swing + ' 个百分点，说明已经进入了稳定区间。';
+    }
+    html += '<br>';
+  }
+
+  // --- 2. 双线是否偏科 ---
+  const gap = Math.abs(workPct - learnPct);
+  html += '📚 <b>工作 ' + workPct + '% · 学习 ' + learnPct + '%</b>。';
+  if (gap >= 20) {
+    html += '差距 ' + gap + ' 个百分点，一个季度下来偏科明显。整块时间给了' + (workPct > learnPct ? '工作' : '学习') + '，另一个只能捡碎片时间。';
+  } else if (Math.min(workPct, learnPct) >= 80) {
+    html += '双线同时站上 80%，这是能长期维持的配置，比任何单点爆发都值钱。';
+  } else if (Math.max(workPct, learnPct) < 50) {
+    html += '两条线都没立住，说明这一个季度的节奏本身不对——先修节奏，别急着加目标。';
+  } else {
+    html += '两条线咬得比较紧，没有明显偏科，接下来是把它们一起往上抬的问题。';
+  }
+  html += '<br>';
+
+  // --- 3. 运动结构 ---
+  html += '🏃 <b>运动 ' + sportTotal + '/' + sportTarget + ' 次（' + Math.round(sportTotal / sportTarget * 100) + '%）</b>。';
+  if (sportTotal === 0) {
+    html += '整个季度一次没动。三个月是身体变化能被察觉的尺度——这一个季度，身体没收到任何信号。<br>';
+    html += '<b>→ 下一步：</b>下季度只设一个目标：每周 1 次力量训练，13 周就是 13 次，做到就算赢。<br>';
+  } else {
+    const ball = sport.tennis + sport.golf;
+    if (sportTotal >= sportTarget) {
+      html += '达标' + (sportTotal > sportTarget ? '，还超额 ' + (sportTotal - sportTarget) + ' 次' : '') + '。';
+    } else {
+      const weakest = [{ n: '网球', c: sport.tennis }, { n: '高尔夫', c: sport.golf }, { n: '力量训练', c: sport.strength }]
+        .reduce((a, b) => a.c < b.c ? a : b);
+      html += '没达标，缺 ' + (sportTarget - sportTotal) + ' 次，最弱的是' + weakest.n + '（' + weakest.c + ' 次）。';
+    }
+    if (ball > 0 && sport.strength < ball * 0.4) {
+      html += '<br>⚠️ 球类 ' + ball + ' 次、力量只有 ' + sport.strength + ' 次。球打得多、力量跟不上，肩和膝是最先出账单的地方。<b>→ 下季度力量次数至少追到球类的一半。</b>';
+    }
+    html += '<br>';
+  }
+
+  // --- 4. 复盘覆盖率 ---
+  html += '📝 <b>复盘 ' + reviewCount + ' 篇 / 基准 ' + weeks + ' 篇</b>。';
+  if (reviewCount === 0) {
+    html += '一个季度没留下一行字。三个月后回头看，只剩一个完成率数字，具体卡在哪、怎么破的，全丢了。<br>';
+  } else if (reviewCount < weeks) {
+    html += '覆盖率约 ' + Math.round(reviewCount / weeks * 100) + '%，有些周是空白的。空白的周往往正是问题发生的周，也是最该记的周。<br>';
+  } else {
+    html += '覆盖率 ' + Math.round(reviewCount / weeks * 100) + '%，一个季度没断过。这份记录本身就是资产——它能告诉你哪种做法有效。<br>';
+  }
+
+  // --- 5. 季度定论 ---
+  html += '<br>📌 <b>下季度一句话：</b>';
+  if (workPct >= 80 && learnPct >= 80 && sportTotal >= sportTarget && reviewCount >= weeks) {
+    html += '四项全达标。下一个季度不要加量，把其中一项难度提上去（比如学习从"看完"改成"复述"）。';
+  } else if (sportTotal < sportTarget * 0.5) {
+    html += '先把运动补齐——它是其他三项的地基，一周 2 次球 + 1 次力量，先连续坚持一个月。';
+  } else if (reviewCount < weeks / 2) {
+    html += '把复盘变成每周固定动作（周五收工前 10 分钟），先保住连续性，再谈质量。';
+  } else if (Math.min(workPct, learnPct) < 60) {
+    html += '重点补<b>' + (workPct < learnPct ? '工作' : '学习') + '</b>：给它一个固定时段，而不是"有空再做"。';
+  } else {
+    html += P([
+      '这季度没有大漏洞，下季度把最弱那一项往上提 10 个百分点，比全面加码更实际。',
+      '整体成型了，下季度可以试一件"略超出舒适区"的事，用来打破平台期。'
+    ]);
+  }
+
+  return html;
+}
+
 function generateYearlyReport() {
-  const start = getYearStart(0);
-  const end = new Date(start.getFullYear(), 11, 31);
+  // 年复盘 = 复盘「去年」（上一个完整自然年）
+  const start = getReviewYearStart();
+  const end = getReviewYearEnd();
   const year = start.getFullYear();
-  const now = new Date();
-  const actualEnd = end > now ? now : end;
 
-  const daily = collectDailyData(start, actualEnd);
-  const sport = collectSportData(start, actualEnd);
-  const reviews = collectReviews(start, actualEnd);
+  const daily = collectDailyData(start, end);
+  const sport = collectSportData(start, end);
+  const reviews = collectReviews(start, end);
 
-  let html = '<div class="report-period-label">📅 年报 ' + year + '年</div>';
+  let html = '<div class="report-period-label">📅 年度复盘 · 去年（' + year + '年）</div>';
 
-  html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">年度统计</div></div></div>';
+  html += '<div class="card"><div class="card-header"><div class="card-icon work">📊</div><div><div class="card-title">去年统计</div></div></div>';
   const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
   html += '<div class="report-stat"><span class="report-stat-label">工作日全部完成</span><span class="report-stat-value ' + (workPct>=80?'good':workPct>=50?'warn':'bad') + '">' + daily.workDone + '/' + daily.workTotal + '天 (' + workPct + '%)</span></div>';
   const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
@@ -4148,7 +4472,7 @@ function generateYearlyReport() {
   html += '<div class="report-stat"><span class="report-stat-label">🎾 网球总次数</span><span class="report-stat-value">' + sport.tennis + '次</span></div>';
   html += '<div class="report-stat"><span class="report-stat-label">⛳ 高尔夫总次数</span><span class="report-stat-value">' + sport.golf + '次</span></div>';
   html += '<div class="report-stat"><span class="report-stat-label">💪 力量训练总次数</span><span class="report-stat-value">' + sport.strength + '次</span></div>';
-  html += '<div class="report-stat"><span class="report-stat-label">📝 复盘总篇数</span><span class="report-stat-value">' + reviews.length + '篇</span></div>';
+  html += '<div class="report-stat"><span class="report-stat-label">📝 去年复盘总篇数</span><span class="report-stat-value">' + reviews.length + '篇</span></div>';
   html += '</div>';
 
   // Analysis
@@ -4156,7 +4480,7 @@ function generateYearlyReport() {
 
   // All reviews
   if (reviews.length > 0) {
-    html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">年度复盘记录</div></div></div>';
+    html += '<div class="card"><div class="card-header"><div class="card-icon review">📝</div><div><div class="card-title">去年复盘记录</div></div></div>';
     reviews.forEach(r => {
       html += '<div class="report-review-block"><div class="report-review-date">' + r.date + '</div><div class="report-review-text">' + escapeHtml(r.text) + '</div></div>';
     });
@@ -4171,17 +4495,17 @@ function generateYearlyReport() {
 function generateYearlyAnalysis(workPct, learnPct, sport, reviewCount) {
   const sportTotal = sport.tennis + sport.golf + sport.strength;
   const avgPct = Math.round((workPct + learnPct) / 2);
-  let html = '⚡ <b>年度诊断</b><br><br>';
+  let html = '⚡ <b>去年诊断</b><br><br>';
 
   // --- 整体一致性 ---
   if (avgPct >= 85) {
-    html += '🟢 <b>全年均完成率' + avgPct + '%，执行力出色。</b>这一年你把"每天打卡"变成了肌肉记忆，这比任何单次成就都值钱。<br>';
+    html += '🟢 <b>全年均完成率' + avgPct + '%，执行力出色。</b>去年你把"每天打卡"变成了肌肉记忆，这比任何单次成就都值钱。<br>';
   } else if (avgPct >= 60) {
     html += '🟡 <b>全年均完成率' + avgPct + '%，及格但不稳。</b>有些月份认真、有些月份松懈，波动太大。问题不在能力，在持续性。<br>';
-    html += '<b>→ 办法：</b>明年不追求100%，追求"最差月份不低于70%"——降低峰值、抬高底线。<br>';
+    html += '<b>→ 办法：</b>今年不追求100%，追求"最差月份不低于70%"——降低峰值、抬高底线。<br>';
   } else {
     html += '🔴 <b>全年均完成率' + avgPct + '%，偏低。</b>一整年的数据说明这不是偶尔偷懒，是系统性的习惯问题。<br>';
-    html += '<b>→ 办法：</b>明年先把目标砍半——每天只保证工作1项+学习1项，连续30天后再加量。<br>';
+    html += '<b>→ 办法：</b>今年先把目标砍半——每天只保证工作1项+学习1项，连续30天后再加量。<br>';
   }
 
   // --- 偏科检查 ---
@@ -4190,13 +4514,13 @@ function generateYearlyAnalysis(workPct, learnPct, sport, reviewCount) {
     const strong = workPct > learnPct ? '工作' : '学习';
     const weak = workPct > learnPct ? '学习' : '工作';
     html += '⚠️ <b>' + strong + '远好于' + weak + '（差距' + gap + '%）。</b>精力花在一边，另一边荒了。<br>';
-    html += '<b>→ 办法：</b>明年在' + weak + '上投入固定时间，哪怕每天5分钟，先建习惯再提量。<br>';
+    html += '<b>→ 办法：</b>今年在' + weak + '上投入固定时间，哪怕每天5分钟，先建习惯再提量。<br>';
   }
 
   // --- 运动分析 ---
   if (sportTotal === 0) {
     html += '🔴 <b>全年运动零记录。</b>这比任何工作未完成都严重——身体是所有事的基础。<br>';
-    html += '<b>→ 办法：</b>明年从最简单的开始：每周1次力量��练，20分钟，在家做。先动起来再说。<br>';
+    html += '<b>→ 办法：</b>今年从最简单的开始：每周1次力量训练，20分钟，在家做。先动起来再说。<br>';
   } else {
     const avgPerWeek = (sportTotal / 52).toFixed(1);
     html += '📊 <b>全年运动' + sportTotal + '次，周均' + avgPerWeek + '次。</b>';
@@ -4206,7 +4530,7 @@ function generateYearlyAnalysis(workPct, learnPct, sport, reviewCount) {
     // 伤病风险
     if (sport.strength < (sport.tennis + sport.golf) * 0.4 && (sport.tennis + sport.golf) > 20) {
       html += '<br>⚠️ <b>力量训练仅' + sport.strength + '次，但球类' + (sport.tennis+sport.golf) + '次。</b>球类多、力量少，肩袖和膝关节受伤风险高。<br>';
-      html += '<b>→ 办法：</b>明年力量次数至少达到球类一半，打球前必做10分钟热身。<br>';
+      html += '<b>→ 办法：</b>今年力量次数至少达到球类一半，打球前必做10分钟热身。<br>';
     } else {
       html += '<br>';
     }
@@ -4215,22 +4539,22 @@ function generateYearlyAnalysis(workPct, learnPct, sport, reviewCount) {
   // --- 复盘 ---
   if (reviewCount === 0) {
     html += '🟠 <b>全年零复盘。</b>不复盘的循环就是"忙了一年但说不清忙了什么"。<br>';
-    html += '<b>→ 办法：</b>明年每周五花10分钟写3句话：做了什么、什么没做好、下周改什么。<br>';
+    html += '<b>→ 办法：</b>今年每周五花10分钟写3句话：做了什么、什么没做好、下周改什么。<br>';
   } else if (reviewCount < 40) {
     html += '🟡 <b>全年复盘' + reviewCount + '篇，不到每周一篇。</b>有些周跳过了，断断续续效果打折。<br>';
     html += '<b>→ 办法：</b>把复盘绑定到必做的事——比如周五下班关电脑前，先写复盘再关机。<br>';
   } else {
-    html += '🟢 <b>全年复盘' + reviewCount + '篇，习惯优秀。</b>这些记录就是你的年度成长轨迹。<br>';
+    html += '🟢 <b>全年复盘' + reviewCount + '篇，习惯优秀。</b>这些记录就是你去年一步步走过来的路。<br>';
   }
 
   // --- 战略定论 ---
-  html += '<br>📌 <b>明年一句话：</b>';
+  html += '<br>📌 <b>今年一句话：</b>';
   if (avgPct >= 85 && sportTotal >= 150 && reviewCount >= 40) {
-    html += '全面优秀，明年挑战"教别人"——把你的方法提炼成可复制的流程。';
+    html += '全面优秀，今年挑战"教别人"——把你的方法提炼成可复制的流程。';
   } else if (avgPct >= 70) {
-    html += '基础不错，明年重点补<b>' + (sportTotal < 100 ? '运动规律性' : reviewCount < 40 ? '复盘习惯' : '薄弱项') + '</b>，把短板拉到及格线。';
+    html += '基础不错，今年重点补<b>' + (sportTotal < 100 ? '运动规律性' : reviewCount < 40 ? '复盘习惯' : '薄弱项') + '</b>，把短板拉到及格线。';
   } else {
-    html += '先别想完美，明年只做一件事：连续30天每天打卡工作+学习各1项，建立习惯再说。';
+    html += '先别想完美，今年只做一件事：连续30天每天打卡工作+学习各1项，建立习惯再说。';
   }
 
   return html;
@@ -4240,8 +4564,153 @@ function renderReportTab() {
   let html;
   if (_reportPeriod === 'week') html = generateWeeklyReport();
   else if (_reportPeriod === 'month') html = generateMonthlyReport();
+  else if (_reportPeriod === 'quarter') html = generateQuarterlyReport();
   else html = generateYearlyReport();
   document.getElementById('reportContent').innerHTML = html;
+  renderReviewArchive();
+}
+
+// ====================
+//  报告页 · 我的日复盘全集
+//  把「所有」手写日复盘列出来（不限当前周期），最新在前；
+//  整卡可折叠、单条可点开看全文，方便随时翻回去读。
+// ====================
+let _openReviews = null; // 展开态（内存），切换周期 tab 重渲染也不丢
+
+function collectAllDailyReviews() {
+  const dates = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k) continue;
+      const m = String(k).match(/^dailyReview-(\d{4}-\d{2}-\d{2})$/);
+      if (m) {
+        const t = loadData('dailyReview-' + m[1], '');
+        if (t && String(t).trim()) dates.push(m[1]);
+      }
+    }
+  } catch (e) {}
+  dates.sort();
+  dates.reverse(); // 最新在前
+  return dates;
+}
+
+// 旧版周复盘（v3 之前写在 review-周key），一并列出，不丢历史
+function collectOldWeeklyReviews() {
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k) continue;
+      const m = String(k).match(/^review-(\d{4}-W\d{2})$/);
+      if (m) {
+        const t = loadData('review-' + m[1], '');
+        if (t && String(t).trim()) out.push({ wk: m[1], text: String(t) });
+      }
+    }
+  } catch (e) {}
+  out.sort((a, b) => (a.wk < b.wk ? 1 : -1));
+  return out;
+}
+
+function reviewFirstLine(t) {
+  const s = String(t || '').replace(/\s+/g, ' ').trim();
+  return s.length > 24 ? s.substring(0, 24) + '…' : (s || '（空）');
+}
+
+function renderReviewArchive() {
+  const box = document.getElementById('reviewArchive');
+  if (!box) return;
+  const dates = collectAllDailyReviews();
+  const oldWeeks = collectOldWeeklyReviews();
+  if (dates.length === 0 && oldWeeks.length === 0) { box.innerHTML = ''; return; }
+
+  if (_openReviews === null) _openReviews = new Set(dates.length ? [dates[0]] : []);
+  const folded = loadData('reviewArchiveFolded', false) === true;
+
+  let html = '<div class="card">';
+  html += '<div class="card-header ra-head" onclick="toggleReviewArchive()">';
+  html += '<div class="card-icon review">📖</div>';
+  html += '<div style="flex:1"><div class="card-title">我的日复盘 · 全部 ' + dates.length + ' 篇</div>' +
+    '<div class="ra-sub" id="raSub">点这里' + (folded ? '展开' : '收起') + ' · 点单条看全文</div></div>';
+  html += '<div class="fit-plan-arrow' + (folded ? ' folded' : '') + '" id="raArrow">▾</div>';
+  html += '</div>';
+  html += '<div class="ra-body' + (folded ? ' folded' : '') + '" id="raBody">';
+
+  if (dates.length > 0) {
+    html += '<div class="ra-tools">' +
+      '<button class="ra-tool" onclick="expandAllReviews()">全部展开</button>' +
+      '<button class="ra-tool" onclick="collapseAllReviews()">全部收起</button></div>';
+  }
+
+  dates.forEach(dk => {
+    const text = loadData('dailyReview-' + dk, '');
+    const d = new Date(dk + 'T00:00:00');
+    const w = loadData('work-' + dk, { daily: [] });
+    const l = loadData('learn-' + dk, { english: false, tennis: false, golf: false, reading: false });
+    const wn = (w.daily || []).length;
+    const ln = [l.english, l.tennis, l.golf, l.reading].filter(Boolean).length;
+    const open = _openReviews.has(dk);
+    html += '<div class="ra-item' + (open ? ' open' : '') + '" id="raItem-' + dk + '">' +
+      '<div class="ra-item-head" onclick="toggleReviewItem(\'' + dk + '\')">' +
+      '<span class="ra-date">' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + DOW_CN[d.getDay()] + '</span>' +
+      '<span class="ra-badge">工作 ' + wn + '/3 · 学习 ' + ln + '/4 · ' + reviewFirstLine(text) + '</span>' +
+      '<span class="ra-arrow">▾</span></div>' +
+      '<div class="ra-item-body">' + nl2br(text) + '</div>' +
+      '</div>';
+  });
+
+  if (oldWeeks.length > 0) {
+    html += '<div class="ra-sub" style="margin-top:10px">旧版周复盘（' + oldWeeks.length + ' 篇）</div>';
+    oldWeeks.forEach(o => {
+      const open = _openReviews.has(o.wk);
+      html += '<div class="ra-item' + (open ? ' open' : '') + '" id="raItem-' + o.wk + '">' +
+        '<div class="ra-item-head" onclick="toggleReviewItem(\'' + o.wk + '\')">' +
+        '<span class="ra-date">' + o.wk + '</span>' +
+        '<span class="ra-badge">' + reviewFirstLine(o.text) + '</span>' +
+        '<span class="ra-arrow">▾</span></div>' +
+        '<div class="ra-item-body">' + nl2br(o.text) + '</div></div>';
+    });
+  }
+
+  html += '</div></div>';
+  box.innerHTML = html;
+}
+
+function toggleReviewArchive() {
+  const body = document.getElementById('raBody');
+  if (!body) return;
+  const nowFolded = !body.classList.contains('folded');
+  body.classList.toggle('folded', nowFolded);
+  const arrow = document.getElementById('raArrow');
+  if (arrow) arrow.classList.toggle('folded', nowFolded);
+  const sub = document.getElementById('raSub');
+  if (sub) sub.textContent = '点这里' + (nowFolded ? '展开' : '收起') + ' · 点单条看全文';
+  saveData('reviewArchiveFolded', nowFolded);
+}
+
+function toggleReviewItem(key) {
+  const el = document.getElementById('raItem-' + key);
+  if (!el) return;
+  const open = el.classList.toggle('open');
+  if (_openReviews === null) _openReviews = new Set();
+  if (open) _openReviews.add(key); else _openReviews.delete(key);
+}
+
+function expandAllReviews() {
+  if (_openReviews === null) _openReviews = new Set();
+  document.querySelectorAll('#reviewArchive .ra-item').forEach(el => {
+    el.classList.add('open');
+    _openReviews.add(el.id.replace('raItem-', ''));
+  });
+}
+
+function collapseAllReviews() {
+  if (_openReviews === null) _openReviews = new Set();
+  document.querySelectorAll('#reviewArchive .ra-item').forEach(el => {
+    el.classList.remove('open');
+    _openReviews.delete(el.id.replace('raItem-', ''));
+  });
 }
 
 function escapeHtml(text) {
@@ -4268,18 +4737,31 @@ function shareReport(periodKey) {
       weekReviews.forEach(r => { text += r.date + ': ' + r.text.substring(0, 50) + '\n'; });
     }
   } else if (_reportPeriod === 'month') {
-    text = '📊 工作台月报 ' + periodKey + '\n\n';
-    const start = getMonthStart(0);
-    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    text = '📊 工作台月复盘 · 上月（' + getReviewMonthLabel() + '）\n\n';
+    const start = getReviewMonthStart();
+    const end = getReviewMonthEnd();
     const daily = collectDailyData(start, end);
     const sport = collectSportData(start, end);
     text += '工作完成率: ' + Math.round(daily.workDone/Math.max(1,daily.workTotal)*100) + '%\n';
     text += '学习完成率: ' + Math.round(daily.learnDone/Math.max(1,daily.learnTotal)*100) + '%\n';
     text += '运动总次数: 网球' + sport.tennis + ' 高尔夫' + sport.golf + ' 力量' + sport.strength + '\n';
+  } else if (_reportPeriod === 'quarter') {
+    text = '📊 工作台季复盘 · 上季度（' + getReviewQuarterLabel() + '）\n\n';
+    const start = getReviewQuarterStart();
+    const end = getReviewQuarterEnd();
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    const reviews = collectReviews(start, end);
+    const days = Math.round((end - start) / 86400000) + 1;
+    const weeks = Math.max(1, Math.round(days / 7));
+    text += '工作完成率: ' + Math.round(daily.workDone/Math.max(1,daily.workTotal)*100) + '%\n';
+    text += '学习完成率: ' + Math.round(daily.learnDone/Math.max(1,daily.learnTotal)*100) + '%\n';
+    text += '运动总次数: 网球' + sport.tennis + ' 高尔夫' + sport.golf + ' 力量' + sport.strength + ' (目标' + weeks*6 + ')\n';
+    text += '复盘篇数: ' + reviews.length + '\n';
   } else {
-    text = '📊 工作台年报 ' + periodKey + '\n\n';
-    const start = getYearStart(0);
-    const end = new Date();
+    text = '📊 工作台年度复盘 · 去年（' + getReviewYearKey() + '年）\n\n';
+    const start = getReviewYearStart();
+    const end = getReviewYearEnd();
     const daily = collectDailyData(start, end);
     const sport = collectSportData(start, end);
     const reviews = collectReviews(start, end);
@@ -4959,32 +5441,30 @@ function closeDiagModal() { const m = document.getElementById('diagModal'); if (
 // ====================
 function checkReportPopup() {
   const todayKey = getDateKey();
-  const wk = getWeekKey();
-  const mk = getMonthKey();
-  const yk = String(new Date().getFullYear());
-  const seen = loadData('reportSeen', { week: '', month: '', year: '', day: '' });
+  const seen = loadData('reportSeen', { week: '', month: '', quarter: '', year: '', day: '' });
 
-  // Priority: year > month > week — show the most significant new one
+  // ★ 2026-10-14 口径（铁律）：当天是哪种「复盘日」，就**只**复盘它对应的上一个周期，
+  //   绝不掺入更大的周期（此前 year > month > week 的优先级会让月复盘日弹出年报）。
+  //   元旦→去年 ／ 季首月1号→上季度 ／ 每月1号→上月 ／ 周一→上周 ／ 其余→昨天
+  const type = getReviewDayType();
   let period = null, key = null, label = '';
-  if (seen.year !== yk) {
-    period = 'year'; key = yk; label = yk + '年';
-  } else if (seen.month !== mk) {
-    period = 'month'; key = mk; label = mk;
-  } else if (seen.week !== wk) {
-    period = 'week'; key = wk;
-    label = '上周 ' + fmtMD(getReviewWeekStart()) + ' - ' + fmtMD(getReviewWeekEnd());
+
+  if (type !== 'day') {
+    const pKey = getReviewPeriodKey(type);
+    if (seen[type] !== pKey) {
+      if (hasReportData(type)) {
+        period = type; key = pKey; label = getReviewPeriodLabel(type);
+      } else {
+        // 空周期不弹，标记已读避免反复提示
+        seen[type] = pKey;
+        saveData('reportSeen', seen);
+      }
+    }
   }
 
-  // 当天首次打开：附上「昨日复盘」
+  // 非复盘日：当天首次打开就陪他复盘「昨天」这一天
   const firstOpenToday = seen.day !== todayKey;
-  const yBlock = firstOpenToday ? buildYesterdayBlock() : '';
-
-  if (period && !hasReportData(period)) {
-    // 空周期不弹，标记已读避免反复提示，但仍保留「昨日复盘」
-    seen[period] = key;
-    saveData('reportSeen', seen);
-    period = null; key = null; label = '';
-  }
+  const yBlock = (!period && firstOpenToday) ? buildDailyCompanion() : '';
 
   if (!period && !yBlock) {
     document.getElementById('reportNavBadge').style.display = 'none';
@@ -5011,84 +5491,308 @@ function hasReportData(period) {
       (sport.tennis + sport.golf + sport.strength) > 0;
   }
   if (period === 'month') {
-    const start = getMonthStart(0);
-    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    // 月复盘看的是「上月」
+    const start = getReviewMonthStart();
+    const end = getReviewMonthEnd();
     const daily = collectDailyData(start, end);
     const sport = collectSportData(start, end);
-    return daily.workDone > 0 || daily.learnDone > 0 || sport.tennis + sport.golf + sport.strength > 0;
+    const reviews = collectReviews(start, end);
+    return daily.workDone > 0 || daily.learnDone > 0 || reviews.length > 0 ||
+      sport.tennis + sport.golf + sport.strength > 0;
+  }
+  if (period === 'quarter') {
+    const start = getReviewQuarterStart();
+    const end = getReviewQuarterEnd();
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    const reviews = collectReviews(start, end);
+    return daily.workDone > 0 || daily.learnDone > 0 || reviews.length > 0 ||
+      sport.tennis + sport.golf + sport.strength > 0;
   }
   if (period === 'year') {
-    const start = getYearStart(0);
-    const end = new Date();
+    // 年复盘看的是「去年」
+    const start = getReviewYearStart();
+    const end = getReviewYearEnd();
     const daily = collectDailyData(start, end);
     const sport = collectSportData(start, end);
-    return daily.workDone > 0 || daily.learnDone > 0 || sport.tennis + sport.golf + sport.strength > 0;
+    const reviews = collectReviews(start, end);
+    return daily.workDone > 0 || daily.learnDone > 0 || reviews.length > 0 ||
+      sport.tennis + sport.golf + sport.strength > 0;
   }
   return false;
 }
 
-// 构建「昨日复盘」区块：当天首次打开时展示
-// 1) 优先昨天的复盘文本；昨天没写则回退到最近 7 天内最近一篇，并标注实际日期
-// 2) 附上昨天的完成情况（工作日），让复盘有数据对照
-function buildYesterdayBlock() {
+// ====================
+//  昨日复盘 · 五维对话（日报弹窗核心）
+//  ★ 只复盘「昨天」这一天，不掺任何更大的周期。
+//  五维：工作 / 生活 / 学习 / 运动 / 执行 —— 这是每天的日常。
+//  完成度分五档：一点都没做 / 一般 / 不错 / 优秀 / 超额完成。
+//  文案以「昨天日期」为种子 → 同一天稳定、跨天换新；语气：良师益友，偶尔搞怪。
+// ====================
+const DAILY_DIM_RANK = { zero: 0, soso: 1, ok: 2, great: 3, super: 4 };
+
+function dailyRate(done, total) {
+  if (!total || done <= 0) return { k: 'zero', t: '一点都没做' };
+  const p = done / total;
+  if (p < 0.4) return { k: 'soso', t: '一般' };
+  if (p < 0.8) return { k: 'ok', t: '不错' };
+  if (p < 1) return { k: 'great', t: '优秀' };
+  return { k: 'super', t: '超额完成' };
+}
+
+const DAILY_LINES = {
+  work: {
+    zero: [
+      '三项一格没亮。是没做，还是做了忘了点？这两种情况，处理方式不一样。',
+      '昨天工作台是白的。先别自我批评——让「坐下来点一下」变成条件反射比做完更要紧。',
+      '工作 0/3。忙不是问题，「忙到没点一下」才是信号：它还没进你的动线。'
+    ],
+    soso: [
+      '三项里点了 {n} 项，起手了。今天把最难的那项放到上午第一件事做。',
+      '开了个头就停了。1 项和 3 项之间差的，通常只是「有没有排进固定时段」。',
+      '{n}/3，起手有余、收尾不足。今天补齐一项，别让缺口过夜。'
+    ],
+    ok: [
+      '{n}/3，就差一项。缺的通常是「最容易忘」的那项，给它单独设个提醒。',
+      '差一格就满。顺手把第三项补上，成就感是现成的。',
+      '{n}/3 是很稳的水位，想上 3/3 只差把它绑在一个固定动作后面。'
+    ],
+    great: ['{n}/3，几乎满格，差最后一下。'],
+    super: [
+      '三项全亮。这是基本盘——有它，别的事才有底气谈。',
+      '3/3 满配。今天可以把注意力从「点勾」挪到「哪件做得更值」。',
+      '全清。昨天这个工作节奏，值得原样复制一遍。'
+    ]
+  },
+  learn: {
+    zero: [
+      '英语、网球课、高尔夫、阅读——四项一项没动。不紧急，但决定三年后的选择权。',
+      '学习 0/4。不用四项全上，今天先开一个 15 分钟的视频，把车发动起来。',
+      '昨天学习挂了零。最容易的是阅读 30 分钟，用它当每天的保底勾。'
+    ],
+    soso: [
+      '四项里动了一项（{items}），比零好，但还没成节奏。今天把它变成两项就够。',
+      '只点了一项。别急着四项全打——先把「每天都打开」这件事做稳。',
+      '1/4 起步。挑最不费劲的那一项固定下来，剩下的会自己长出来。'
+    ],
+    ok: [
+      '{n}/4 已经过半。差的那项通常是你最不想碰的，把它挪到早上。',
+      '{n}/4，节奏有了。把最费劲的放到精力最好的时段，效果翻倍。',
+      '{n}/4 是不错的水位，再补一项就够到满格。'
+    ],
+    great: ['{n}/4，差一项就满，收个尾吧。'],
+    super: [
+      '四项全打。输入够了，下一步该把「看」变成「说」——试试跟读复述。',
+      '4/4 满勤。别急着加量，先把其中一项做深。',
+      '全清。这一天你没让学习排在最后。'
+    ]
+  },
+  sport: {
+    zero: [
+      '昨天没动，本周也还挂零。今天做一组深蹲（3×15，两分钟）就算把账户激活。',
+      '身体这块昨天没收到任何信号。不用大动作，一组平板支撑也行。',
+      '运动 0 次。久坐 + 高强度脑力，最先报警的会是颈椎和腰——今天轻量动一下。'
+    ],
+    soso: [
+      '专项体能 {n}/4，动了就好。明天把「快速转体甩臂」补上，那是挥杆最缺的一环。',
+      '{n}/4，开了个头。剩下的两项加起来不到 5 分钟，顺手就做了。',
+      '练了 {n} 项。不求多，只求别断——明天接着来。'
+    ],
+    ok: [
+      '{n}/4，动作基本走完了。核心那两项（平板支撑、弓步转体）别省。',
+      '{n}/4，不错。剩下的今天补完，明天就可以只做维持量。',
+      '{n}/4 的水位挺好。想更进一步，加一次真实的下场或练习场。'
+    ],
+    great: ['{n}/4，只差最后一项，收尾吧。'],
+    super: [
+      '四项全练完。这不是打卡，这是你在为球场上那 1% 的稳定提前付账。',
+      '4/4 满格。核心、髋、旋转爆发力都覆盖到了，明天可以只做维持。',
+      '全清。身体是唯一不能透支的账户，昨天你往里存了钱。'
+    ]
+  },
+  exec: {
+    zero: [
+      '昨天 7 项日常 + 复盘，全空。别慌——今天只要动一项，账户就回血。',
+      '执行 0/8。一天没做不算失败，两天不做才开始变成习惯。',
+      '昨天一格没点。低谷期的动作要小到不可能失败：今天点 1 个勾就赢。'
+    ],
+    soso: [
+      '执行 {n}/8。断点几乎都在「没排进固定时段」，不是你没能力。',
+      '{n}/8，起了个头。今天试着把其中一项绑在已有动作后（泡好茶 → 打开工作台 → 点三下）。',
+      '{n}/8。别追求全清，今天比昨天多一项就是进步。'
+    ],
+    ok: [
+      '执行 {n}/8，过半。剩下那几项里挑一项固定的，先变成条件反射。',
+      '{n}/8，节奏在。把最容易漏的那项设个单独提醒，就能上 7。',
+      '{n}/8 已经不错了。今天的对手是「收尾」——最后那 1-2 项最容易被放过。'
+    ],
+    great: ['执行 {n}/8，很高了。差最后一点，通常就差在收尾那一下。'],
+    super: [
+      '8/8 全清——7 项打卡加一篇复盘，一项没漏。你不缺能力，缺的只是把它常态化。',
+      '满格执行。昨天你把自己说要做的事全做了，这比任何计划都值钱。',
+      '8/8。这种日子攒够 30 天，你会变成另一个人。'
+    ]
+  }
+};
+
+// 「生活」这格工作台记不到，不编数据 —— 用一句真心话问出来
+const DAILY_LIFE_ASKS = [
+  '工作台记不到这一格，但它才是所有努力的目的。昨天有没有一件事，是纯粹为自己或家人做的？',
+  '这一格留白不是扣分，是提醒：昨天有没有哪怕半小时，是完全属于你自己的？',
+  '生活这块得你自己打分。昨天累归累，有没有笑过一次？',
+  '工作台管不了生活，所以这句是问你：昨天陪家人好好说上几句话了吗？',
+  '这一格没人能替你打卡。昨天睡够了吗？有没有一顿饭是好好坐下来吃的？',
+  '生活的答案在你心里，不在这个页面上。昨天过得还成吗——真心话。'
+];
+
+// 最弱那一维对应的一句「今天先做一件」
+const DAILY_FIRST_STEP = {
+  work: '到网点坐下，第一件事先点掉「CCR 数据处理」，别等忙完。',
+  learn: '今晚睡前打开 B 站看 15 分钟老友记，看完顺手点勾。',
+  sport: '今天或明天去练习场打一筐球，把本周运动开张。',
+  exec: '把打卡绑成一个连贯动作：坐下 → 打开工作台 → 点三下。',
+  life: '今天留 30 分钟给家人或给自己——这一条不用打卡。'
+};
+
+function dailyFill(line, ctx) {
+  return String(line)
+    .replace(/\{n\}/g, ctx.n).replace(/\{t\}/g, ctx.t)
+    .replace(/\{items\}/g, ctx.items || '—')
+    .replace(/\{x\}/g, ctx.x === undefined ? 0 : ctx.x);
+}
+
+function buildDailyCompanion() {
   const y = new Date(); y.setDate(y.getDate() - 1);
   const yKey = fmtDateKey(y);
   const yLabel = fmtMD(y) + '（' + DOW_CN[y.getDay()] + '）';
+  const P = makePicker(yKey + '-daily');
+  const isWeekend = y.getDay() === 0 || y.getDay() === 6;
 
-  // 找最近一篇复盘（昨天优先，最多回溯 7 天）
+  // --- 昨天这一天的事实 ---
+  const w = loadData('work-' + yKey, { daily: [], review: '' });
+  const l = loadData('learn-' + yKey, { english: false, tennis: false, golf: false, reading: false });
+  const workDoneN = (w.daily || []).length;
+  const learnItems = [['英语', l.english], ['网球课', l.tennis], ['高尔夫', l.golf], ['阅读', l.reading]];
+  const learnDoneN = learnItems.filter(x => x[1]).length;
+  const learnDoneNames = learnItems.filter(x => x[1]).map(x => x[0]).join('、');
+  const fit = loadData('golfFit-' + yKey, []);
+  const fitN = Array.isArray(fit) ? fit.length : 0;
+
+  // 昨天所在那一周的运动计数
+  const fitD = new Date(y);
+  const fitDay = fitD.getDay();
+  const fitDiff = fitD.getDate() - fitDay + (fitDay === 0 ? -6 : 1);
+  const fitMonday = new Date(fitD.getFullYear(), fitD.getMonth(), fitDiff);
+  const yWk = getWeekKeyOf(fitMonday);
+  const ySport = loadData('sport-' + yWk, { tennis: 0, golf: 0, strength: 0 });
+  const ySportTotal = (ySport.tennis || 0) + (ySport.golf || 0) + (ySport.strength || 0);
+
+  // 昨天的手写复盘（没有则回退到最近 7 天内最近一篇，并标注真实日期）
   let rDate = null, rText = '';
   for (let i = 1; i <= 7; i++) {
     const d = new Date(); d.setDate(d.getDate() - i);
     const t = loadData('dailyReview-' + fmtDateKey(d), '');
     if (t && String(t).trim()) { rDate = d; rText = String(t); break; }
   }
+  const wroteYesterday = !!(rDate && fmtDateKey(rDate) === yKey);
 
-  const w = loadData('work-' + yKey, { daily: [], review: '' });
-  const l = loadData('learn-' + yKey, { english: false, tennis: false, golf: false, reading: false });
-  const workDone = (w.daily || []).length;
-  const isWeekend = y.getDay() === 0 || y.getDay() === 6;
-  const learnItems = [['英语', l.english], ['网球课', l.tennis], ['高尔夫', l.golf], ['阅读', l.reading]];
-  const learnDone = learnItems.filter(x => x[1]).length;
+  // 执行 = 7 项日常打卡 + 是否写了昨天的复盘（共 8 分）
+  const execScore = workDoneN + learnDoneN + (wroteYesterday ? 1 : 0);
 
-  const hasYesterdayData = workDone > 0 || learnDone > 0;
-  if (!rText && !hasYesterdayData) return ''; // 没内容就不打扰
+  // 没任何痕迹就不打扰
+  if (!rText && workDoneN === 0 && learnDoneN === 0 && fitN === 0 && ySportTotal === 0) return '';
+
+  // --- 五维评级 ---
+  const workRate = dailyRate(workDoneN, 3);
+  const learnRate = dailyRate(learnDoneN, 4);
+  let sportRate;
+  if (fitN > 0) sportRate = dailyRate(fitN, 4);
+  else if (ySportTotal > 0) sportRate = { k: 'soso', t: '清单没动' };
+  else sportRate = { k: 'zero', t: '一点都没做' };
+  const execRate = dailyRate(execScore, 8);
 
   let html = '<div class="rm-sep"></div><div class="rm-ysec">';
+  html += '<div class="rm-ytitle">🌙 昨日复盘 · ' + yLabel + (isWeekend ? ' · 周末' : '') + '</div>';
+  html += '<div class="rm-dims">';
 
-  if (rDate && fmtDateKey(rDate) === yKey) {
-    html += '<div class="rm-ytitle">🌙 昨日复盘 · ' + yLabel + '</div>';
-  } else if (rDate) {
-    html += '<div class="rm-ytitle">🌙 最近一篇复盘 · ' + fmtMD(rDate) + '（' + DOW_CN[rDate.getDay()] + '）</div>';
+  // ① 工作
+  const workLine = isWeekend && workRate.k === 'zero'
+    ? '昨天是' + DOW_CN[y.getDay()] + '，不强制打卡的日子，工作台空着是正常的。'
+    : dailyFill(P(DAILY_LINES.work[workRate.k]), { n: workDoneN, t: 3, x: ySportTotal });
+  html += renderDailyDim('💼', '工作', workDoneN + '/3 项', workRate, workLine);
+
+  // ② 生活（无数据，只问一句）
+  html += renderDailyDim('🏡', '生活', '你说了算', { k: 'ask', t: '问你一句' }, P(DAILY_LIFE_ASKS));
+
+  // ③ 学习
+  const learnLine = isWeekend && learnRate.k === 'zero'
+    ? '周末没学很正常。想动的话，阅读 30 分钟算最好起步。'
+    : dailyFill(P(DAILY_LINES.learn[learnRate.k]), { n: learnDoneN, t: 4, items: learnDoneNames || '—', x: 0 });
+  html += renderDailyDim('📚', '学习', learnDoneN + '/4 项', learnRate, learnLine);
+
+  // ④ 运动（昨天体能清单 + 本周进度）
+  let sportLine;
+  if (fitN > 0) {
+    sportLine = dailyFill(P(DAILY_LINES.sport[sportRate.k]), { n: fitN, t: 4, x: ySportTotal });
+    sportLine += ' 本周运动 ' + ySportTotal + '/6 次。';
+  } else if (ySportTotal > 0) {
+    sportLine = '昨天体能清单没动，不过当周已经练了 ' + ySportTotal + '/6 次（网球' + (ySport.tennis||0) +
+      ' · 高尔夫' + (ySport.golf||0) + ' · 力量' + (ySport.strength||0) + '），节奏还在——清单补一下更完整。';
   } else {
-    html += '<div class="rm-ytitle">🌙 昨日回顾 · ' + yLabel + '</div>';
+    sportLine = dailyFill(P(DAILY_LINES.sport.zero), { n: 0, t: 4, x: 0 });
   }
+  html += renderDailyDim('🏃', '运动', fitN > 0 ? (fitN + '/4 项') : (ySportTotal > 0 ? '本周 ' + ySportTotal + '/6' : '0 次'), sportRate, sportLine);
 
-  if (!isWeekend) {
-    html += '<div class="rm-yrow"><span>昨日工作</span><span class="' + (workDone >= 3 ? 'good' : workDone > 0 ? 'warn' : 'bad') + '">' + workDone + '/3 项</span></div>';
-    html += '<div class="rm-yrow"><span>昨日学习</span><span class="' + (learnDone >= 4 ? 'good' : learnDone > 0 ? 'warn' : 'bad') + '">' + learnDone + '/4 项' +
-      (learnDone > 0 && learnDone < 4 ? '（' + learnItems.filter(x => x[1]).map(x => x[0]).join('、') + '）' : '') + '</span></div>';
-  } else {
-    html += '<div class="rm-yrow"><span>昨天是' + DOW_CN[y.getDay()] + '</span><span style="color:var(--text-secondary)">周末不强制打卡</span></div>';
-  }
+  // ⑤ 执行
+  const execLine = dailyFill(P(DAILY_LINES.exec[execRate.k]), { n: execScore, t: 8, x: 0 }) +
+    (wroteYesterday ? ' 昨天那篇复盘，也算执行的一部分。' : '');
+  html += renderDailyDim('⚡', '执行', execScore + '/8 分', execRate, execLine);
 
+  html += '</div>';
+
+  // --- 昨天亲手写的内容 ---
   if (rText) {
-    const shown = rText.length > 400 ? rText.substring(0, 400) + '…' : rText;
+    if (wroteYesterday) {
+      html += '<div class="rm-ysub">📝 昨天你写的</div>';
+    } else {
+      html += '<div class="rm-ysub">📝 最近一篇 · ' + fmtMD(rDate) + '（' + DOW_CN[rDate.getDay()] + '）</div>';
+    }
+    const shown = rText.length > 500 ? rText.substring(0, 500) + '…' : rText;
     html += '<div class="rm-yreview">' + nl2br(shown) + '</div>';
   } else {
-    html += '<div class="rm-yreview rm-ymiss">昨天还没写复盘。补一句也好：今天最想记住的是什么？</div>';
+    html += '<div class="rm-yreview rm-ymiss">昨天还没写复盘。补一句也来得及：今天最想记住的是什么？</div>';
   }
+
+  // --- 今天先做一件（挑最弱的那一维）---
+  const dims = [
+    { k: 'work', r: workRate }, { k: 'learn', r: learnRate },
+    { k: 'sport', r: sportRate }, { k: 'exec', r: execRate }
+  ];
+  const weakest = dims.reduce((a, b) => (DAILY_DIM_RANK[a.r.k] <= DAILY_DIM_RANK[b.r.k] ? a : b));
+  html += '<div class="rm-yclose">🎯 <b>今天先做一件：</b>' + DAILY_FIRST_STEP[weakest.k] + '</div>';
 
   html += '</div>';
   return html;
 }
 
+// 单维一行：名称 + 评级标签 + 一句对话
+function renderDailyDim(icon, name, meta, rate, line) {
+  const cls = rate.k === 'ask' ? 'r-ask' : ('r-' + rate.k);
+  return '<div class="rm-dim">' +
+    '<div class="rm-dim-top"><span class="rm-dim-name">' + icon + ' ' + name +
+    ' <span class="rm-dim-meta">' + meta + '</span></span>' +
+    '<span class="rm-rate ' + cls + '">' + rate.t + '</span></div>' +
+    '<div class="rm-dim-line">' + line + '</div>' +
+    '</div>';
+}
+
 function showReportModal(period, key, label, yBlock) {
-  const icons = { week: '📊', month: '📈', year: '🏆' };
-  const titles = { week: '上周复盘已生成', month: '月报已生成', year: '年报已生成' };
+  const icons = { week: '📊', month: '📈', quarter: '🗓', year: '🏆' };
+  const titles = { week: '上周复盘已生成', month: '上月复盘已生成', quarter: '上季度复盘已生成', year: '去年复盘已生成' };
   if (!period) {
     document.getElementById('rmIcon').textContent = '🌙';
-    document.getElementById('rmTitle').textContent = '昨日复盘';
-    document.getElementById('rmPeriod').textContent = '新的一天，先看看昨天写了什么';
+    document.getElementById('rmTitle').textContent = '昨天过得怎么样';
+    document.getElementById('rmPeriod').textContent = '新的一天，先复盘昨天这 24 小时';
   } else {
     document.getElementById('rmIcon').textContent = icons[period];
     document.getElementById('rmTitle').textContent = titles[period];
@@ -5123,8 +5827,9 @@ function showReportModal(period, key, label, yBlock) {
     html += '<div class="rm-analysis">' + weeklyConclusion(workPct, learnPct, sport, wk) + '</div>';
 
   } else if (period === 'month') {
-    const start = getMonthStart(0);
-    const end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+    // 月复盘 = 上月
+    const start = getReviewMonthStart();
+    const end = getReviewMonthEnd();
     const daily = collectDailyData(start, end);
     const sport = collectSportData(start, end);
     const reviews = collectReviews(start, end);
@@ -5137,9 +5842,28 @@ function showReportModal(period, key, label, yBlock) {
     html += rmStatRow('运动总次数', (sport.tennis + sport.golf + sport.strength) + '次', sport.tennis + sport.golf + sport.strength >= 24 ? 100 : 50);
     html += rmStatRow('复盘篇数', reviews.length + '篇', reviews.length >= 4 ? 100 : 50);
     html += '<div class="rm-analysis">' + generateMonthlyAnalysis(workPct, learnPct, sport, reviews.length, billing, payroll).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
+  } else if (period === 'quarter') {
+    // 季复盘 = 上季度
+    const start = getReviewQuarterStart();
+    const end = getReviewQuarterEnd();
+    const daily = collectDailyData(start, end);
+    const sport = collectSportData(start, end);
+    const reviews = collectReviews(start, end);
+    const breakdown = collectMonthlyBreakdown(start, end);
+    const days = Math.round((end - start) / 86400000) + 1;
+    const weeks = Math.max(1, Math.round(days / 7));
+    const sportTotal = sport.tennis + sport.golf + sport.strength;
+    const workPct = daily.workTotal ? Math.round(daily.workDone / daily.workTotal * 100) : 0;
+    const learnPct = daily.learnTotal ? Math.round(daily.learnDone / daily.learnTotal * 100) : 0;
+    html += rmStatRow('工作完成率', workPct + '%', workPct);
+    html += rmStatRow('学习完成率', learnPct + '%', learnPct);
+    html += rmStatRow('运动总次数', sportTotal + '/' + (weeks * 6) + '次', Math.round(sportTotal / (weeks * 6) * 100));
+    html += rmStatRow('复盘篇数', reviews.length + '/' + weeks + '篇', Math.round(reviews.length / weeks * 100));
+    html += '<div class="rm-analysis">' + generateQuarterlyAnalysis(workPct, learnPct, sport, reviews.length, weeks, breakdown, getReviewQuarterKey()).replace(/<br>\s*<br>\s*/g, ' · ').replace(/<br>\s*/g, ' ') + '</div>';
   } else {
-    const start = getYearStart(0);
-    const end = new Date();
+    // 年复盘 = 去年
+    const start = getReviewYearStart();
+    const end = getReviewYearEnd();
     const daily = collectDailyData(start, end);
     const sport = collectSportData(start, end);
     const reviews = collectReviews(start, end);
@@ -5165,11 +5889,15 @@ function rmStatRow(label, value, pct) {
 }
 
 // 标记弹窗已读（含"当天已打开过"标记）
+// 只标记本次实际展示的那个周期，避免把没给他看的周期也标记成已读
 function markReportSeen() {
-  const seen = loadData('reportSeen', { week: '', month: '', year: '', day: '' });
-  const wk = getWeekKey(), mk = getMonthKey(), yk = String(new Date().getFullYear());
-  seen.week = wk; seen.month = mk; seen.year = yk;
+  const seen = loadData('reportSeen', { week: '', month: '', quarter: '', year: '', day: '' });
   seen.day = getDateKey();
+  const p = window._rmPeriod;
+  if (p === 'week') seen.week = getReviewWeekKey();
+  else if (p === 'month') seen.month = getReviewMonthKey();
+  else if (p === 'quarter') seen.quarter = getReviewQuarterKey();
+  else if (p === 'year') seen.year = getReviewYearKey();
   saveData('reportSeen', seen);
 }
 
