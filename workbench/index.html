@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="我的工作台">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%234f46e5' width='100' height='100' rx='22'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white'>台</text></svg>">
 <title>我的工作台</title>
-<meta name="code-sync-ts" content="2026-10-12T09:27:27.429Z">
+<meta name="code-sync-ts" content="2026-10-14T13:21:33.041Z">
 <style>
 :root {
   --bg: #f5f5f7;
@@ -2864,6 +2864,33 @@ let _videoSeries = {
         { id: 'BV1J34y1Y7z3', title: '④手腕扭转', desc: '发力释放' },
       ]
     },
+    {
+      name: '高尔夫体能训练系列（GOLFTEC）',
+      videos: [
+        { id: 'BV1Ci4y1U7Aj', title: '体能·上杆核心转动训练（上）', desc: '核心旋转基础' },
+        { id: 'BV1xY4y1Y7eZ', title: '体能·带侧向弯曲的坐姿转动（中）', desc: '坐姿转动进阶' },
+        { id: 'BV16A4y1X7tT', title: '体能·靠墙半跪地转动练习（下）', desc: '跪姿转动强化' },
+        { id: 'BV1nB4y1U7Xk', title: '转胯顺序·如何练习·练习须知', desc: '转胯原理与方法' },
+        { id: 'BV1wB4y1i7cH', title: '提升脊柱稳定性·预防腰伤', desc: '脊柱稳定保护' },
+        { id: 'BV1eW4y1z7xn', title: '防止挥杆中的背部运动损伤', desc: '背部防伤' },
+        { id: 'BV1XL4y1g7X5', title: '日常体能辅助·5 个动作', desc: '5个日常动作' },
+      ]
+    },
+    {
+      name: 'GOLFTEC 教练精选 · 挥杆细节精修',
+      videos: [
+        { id: 'BV1E6421f7UP', title: '上杆转不动？打开身体旋转的开关', desc: '上杆旋转' },
+        { id: 'BV1LH4y1A7i3', title: '理解挥杆身体移动，让一号木更远', desc: '身体移动' },
+        { id: 'BV17H4y1A76V', title: '彻底告别用手打球（两个练习）', desc: '身体握杆' },
+        { id: 'BV1Xy411q7uB', title: '做到正确的上杆侧移，击球更稳定', desc: '上杆侧移' },
+        { id: 'BV1XT421e7zX', title: '调整挥杆轨迹，解决外下杆', desc: '修正外下杆' },
+        { id: 'BV1jT421a7RW', title: '一个小细节改善外上外下杆', desc: '改善挥杆平面' },
+        { id: 'BV154421Q7ok', title: '上下杆蓄力释放时机', desc: '释放时机' },
+        { id: 'BV1LT421e7QJ', title: '下杆时左手形态以及运动轨迹', desc: '下杆左手轨迹' },
+        { id: 'BV12H4y1u7Cd', title: '闭合杆面也能打直？', desc: '杆面控制' },
+        { id: 'BV12f421R7f9', title: '手领先杆头·如何利用杆头瞄向', desc: '杆头瞄向' },
+      ]
+    },
   ],
 };
 
@@ -2929,7 +2956,67 @@ function setVideoByIndex(type, seriesIdx, epIdx) {
   if (link) link.href = 'https://www.bilibili.com/video/' + video.id;
   const epDisplay = isComplete ? series.videos.length : epIdx + 1;
   if (title) title.textContent = (isComplete ? '✅ ' : '') + video.title;
-  if (meta) meta.textContent = '⏱ ' + series.name + ' · 第' + epDisplay + '/' + series.videos.length + '集';
+  if (meta) {
+    meta.textContent = isComplete
+      ? '🎓 ' + series.name + ' · 本系列已学完（' + series.videos.length + '/' + series.videos.length + '）'
+      : '⏱ ' + series.name + ' · 第' + epDisplay + '/' + series.videos.length + '集';
+  }
+}
+
+// 统一的「下一集」推进器 —— 「换一集」按钮与「完成打卡」共用同一套语义，
+// 避免两处实现不一致（历史 bug：switch 用 % 取模会循环回第 1 集，学完永远看不到新内容）。
+//   source='switch'  → 手动换一集
+//   source='checkin' → 打卡后自动推进
+// 返回 true 表示位置发生了变化。
+function advanceSeriesVideo(type, source) {
+  const list = _videoSeries[type];
+  if (!list || list.length === 0) return false;
+  const idx = getVideoIdx();
+  const cur = idx[type];
+  if (!cur || typeof cur.s !== 'number' || typeof cur.e !== 'number') return false;
+  const series = list[cur.s];
+  if (!series || !series.videos || series.videos.length === 0) return false;
+  const label = type === 'tennis' ? '网球' : '高尔夫';
+
+  // 已处于「本系列学完」状态（e 越界）：直接尝试进入下一系列
+  if (cur.e >= series.videos.length) {
+    if (cur.s + 1 < list.length) {
+      cur.s++;
+      cur.e = 0;
+      saveVideoIdx(idx);
+      setVideoByIndex(type, cur.s, cur.e);
+      showToast('▶ 已进入新系列：' + list[cur.s].name + '（第1/' + list[cur.s].videos.length + '集）', 3500);
+      return true;
+    }
+    showToast('🎉 ' + label + '已全部学完！新内容更新中...', 4000);
+    return false;
+  }
+
+  cur.e++;
+  if (cur.e >= series.videos.length) {
+    // 本系列最后一集已学完 —— 有下一系列就自动进入，没有就停在完成态（绝不回圈）
+    if (cur.s + 1 < list.length) {
+      cur.s++;
+      cur.e = 0;
+      saveVideoIdx(idx);
+      setVideoByIndex(type, cur.s, cur.e);
+      showToast('🎉 本系列已学完，自动进入：' + list[cur.s].name + '（第1/' + list[cur.s].videos.length + '集）', 4000);
+      return true;
+    }
+    saveVideoIdx(idx);
+    setVideoByIndex(type, cur.s, cur.e);
+    showToast('🎉 ' + label + '全部系列已学完！新内容更新中...', 4000);
+    return false;
+  }
+
+  saveVideoIdx(idx);
+  setVideoByIndex(type, cur.s, cur.e);
+  if (source === 'checkin') {
+    showToast('✅ 打卡成功！下一集已就绪');
+  } else {
+    showToast('🔄 ' + series.name + ' ' + (cur.e + 1) + '/' + series.videos.length, 2500);
+  }
+  return true;
 }
 
 // English: 老友记 逐句精讲 — 按分P顺序学下去（点击「下一集」顺延，不随机、不循环）
@@ -2946,24 +3033,13 @@ function switchEngVideo() {
   showToast('▶ 第 ' + next + '/' + engSeries.totalParts + ' 集');
 }
 
+// 「换一集」：按顺序推进，本系列学完自动进下一系列，全部学完则明确提示等待新内容（不循环）
 function switchTennisVideo() {
-  const idx = getVideoIdx();
-  const series = _videoSeries.tennis[idx.tennis.s];
-  if (!series) return;
-  idx.tennis.e = (idx.tennis.e + 1) % series.videos.length;
-  saveVideoIdx(idx);
-  setVideoByIndex('tennis', idx.tennis.s, idx.tennis.e);
-  showToast('🔄 ' + series.name + ' ' + (idx.tennis.e + 1) + '/' + series.videos.length);
+  advanceSeriesVideo('tennis', 'switch');
 }
 
 function switchGolfVideo() {
-  const idx = getVideoIdx();
-  const series = _videoSeries.golf[idx.golf.s];
-  if (!series) return;
-  idx.golf.e = (idx.golf.e + 1) % series.videos.length;
-  saveVideoIdx(idx);
-  setVideoByIndex('golf', idx.golf.s, idx.golf.e);
-  showToast('🔄 ' + series.name + ' ' + (idx.golf.e + 1) + '/' + series.videos.length);
+  advanceSeriesVideo('golf', 'switch');
 }
 
 function markLearnDone(type) {
@@ -2988,31 +3064,8 @@ function markLearnDone(type) {
         showToast('✅ 打卡成功！下一集已就绪');
       }
     } else if (type !== 'reading') {
-      // Tennis/Golf: multi-series, no loop
-      const seriesList = _videoSeries[type];
-      if (seriesList && seriesList.length > 0) {
-        const cur = idx[type];
-        const series = seriesList[cur.s];
-        if (series && series.videos) {
-          cur.e++;
-          if (cur.e >= series.videos.length) {
-            // Current series done — advance to next
-            cur.s++;
-            cur.e = 0;
-            if (cur.s >= seriesList.length) {
-              // All series done — no loop!
-              cur.s = seriesList.length - 1;
-              cur.e = series.videos.length; // beyond last = complete state
-              showToast('🎉 ' + (type === 'tennis' ? '网球' : '高尔夫') + '全部系列已学完！新内容更新中...', 4000);
-            } else {
-              showToast('🎉 本系列已学完！自动切换到下一系列', 3000);
-            }
-          } else {
-            showToast('✅ 打卡成功！下一集已就绪');
-          }
-        }
-      }
-      saveVideoIdx(idx);
+      // 网球/高尔夫：多系列顺序推进，学完不循环（与「换一集」共用同一推进器，避免两处逻辑分叉）
+      advanceSeriesVideo(type, 'checkin');
     }
   }
   // If un-marking (not completed), keep current video — no change
