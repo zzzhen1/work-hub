@@ -1362,6 +1362,33 @@ body {
   margin-top: 6px;
 }
 .pay-summary b { color: var(--text); }
+
+/* ===== 周复盘检查表（wr- 前缀，复用工作台主题变量） ===== */
+.wr-title { font-size: 14px; font-weight: 700; margin-top: 16px; color: var(--text); }
+.wr-snap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+.wr-snap .item { background: var(--card); border-radius: 10px; padding: 10px 4px; text-align: center; border: 1px solid var(--border); }
+.wr-snap .v { font-size: 16px; font-weight: 700; color: var(--accent); }
+.wr-snap .k { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+.wr-snap .item.warn .v { color: #f59e0b; }
+.wr-progress { background: var(--card); border-radius: 10px; padding: 12px 14px; margin-top: 10px; border: 1px solid var(--border); }
+.wr-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.wr-label { font-size: 12px; font-weight: 600; }
+.wr-pct { font-size: 12px; color: var(--accent); font-weight: 700; }
+.wr-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.wr-fill { height: 100%; background: linear-gradient(90deg, #4f46e5, #10b981); border-radius: 4px; transition: width .3s; }
+.wr-group { background: var(--card); border-radius: 12px; padding: 14px; margin-top: 10px; border: 1px solid var(--border); }
+.wr-group h2 { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+.wr-group h2 .cnt { font-size: 11px; color: var(--text-secondary); font-weight: 400; margin-left: 4px; }
+ul.wr-checks { list-style: none; }
+ul.wr-checks li { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: background .15s; }
+ul.wr-checks li:hover { background: var(--accent-light); }
+ul.wr-checks li.done { color: var(--text-secondary); background: #ecfdf5; }
+ul.wr-checks li.done .wr-txt { text-decoration: line-through; }
+.wr-box { width: 18px; height: 18px; border-radius: 5px; border: 2px solid #c4b5fd; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 12px; color: #fff; transition: all .15s; }
+ul.wr-checks li.done .wr-box { background: #10b981; border-color: #10b981; }
+.wr-txt { flex: 1; font-size: 13px; }
+.wr-tag { font-size: 10px; color: var(--text-secondary); white-space: nowrap; }
+.wr-tag.deadline { color: #f59e0b; font-weight: 600; }
 </style>
 <script>/*__lsShim*/
 (function(){
@@ -1848,6 +1875,13 @@ CREATE POLICY "allow_all" ON workbench_data
       <div style="font-size:11px;color:var(--text-secondary);margin-top:8px;">按时间节点排序 · 勾选 = 已完成 · 每周复盘自动读进度</div>
     </div>
     <div id="debtPlanGroups"></div>
+    <div class="wr-title">📊 周复盘检查表</div>
+    <div class="wr-snap" id="wr-snap"></div>
+    <div class="wr-progress">
+      <div class="wr-row"><span class="wr-label">本周完成度</span><span class="wr-pct" id="wr-pct">0%</span></div>
+      <div class="wr-bar"><div class="wr-fill" id="wr-fill" style="width:0%"></div></div>
+    </div>
+    <div id="wr-groups"></div>
   </div>
 
 </div>
@@ -6067,6 +6101,85 @@ function init() {
 }
 
 init();
+
+/* ===== 周复盘检查表 ===== */
+(function(){
+  var SNAP = [
+    { k: '信用卡使用率', v: '70.5%', warn: true },
+    { k: '自有现金', v: '5,000', warn: true },
+    { k: '月缺口', v: '22,521', warn: true },
+    { k: '额度耗尽', v: '第9月', warn: false }
+  ];
+  var GROUPS = [
+    { name: '一、数据盘点（每周报数）', items: [
+      { id: 'wr_dp', txt: '四卡额度（浦发/招信/中信/广发/建设）', tag: '每周' },
+      { id: 'wr_cp', txt: '现金（微信+支付宝+招行卡）', tag: '每周' },
+      { id: 'wr_xt', txt: '系统结余（报数时顺带）', tag: '每周' }
+    ]},
+    { name: '二、经营止血', items: [
+      { id: 'wr_jia', txt: '选择性涨价（只对新客 3.4）', tag: '本周' },
+      { id: 'wr_zhong', txt: '增重货（重货3.2给门店算账）', tag: '持续' },
+      { id: 'wr_yan', txt: '香烟风险对冲（发前预判+自查+帮申诉）', tag: '持续' }
+    ]},
+    { name: '三、分期办理（招信/浦发已办，剩 2 笔）', items: [
+      { id: 'wr_gf', txt: '广发 13,000 @9%', tag: '11/26前', deadline: true },
+      { id: 'wr_zx2', txt: '中信 35,000 @10.2%', tag: '11/29前', deadline: true }
+    ]},
+    { name: '四、社保清欠', items: [
+      { id: 'wr_sb1', txt: '当月缴 8 人 10,800（刷卡付）', tag: '11月内' },
+      { id: 'wr_sb2', txt: '欠费 13 万（等创业担保贷/经营贷落地后清）', tag: '等低息' }
+    ]},
+    { name: '五、低成本贷款', items: [
+      { id: 'wr_chuang', txt: '创业担保贷 1.75%（去区人社局问3条件）', tag: '主攻' },
+      { id: 'wr_jingying', txt: '经营贷重申（DTI 削峰）', tag: '2027-03' }
+    ]},
+    { name: '六、总部金融', items: [
+      { id: 'wr_zjian', txt: '降息 11%→7%（继续跟进）', tag: '持续' }
+    ]}
+  ];
+  var LS_KEY = 'week_review_2026';
+  function wrLoad(){ try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){ return {}; } }
+  function wrSave(o){ localStorage.setItem(LS_KEY, JSON.stringify(o)); }
+  var wrStored = wrLoad();
+  function wrRender(){
+    var snap = document.getElementById('wr-snap');
+    var groupsEl = document.getElementById('wr-groups');
+    if(!snap || !groupsEl) return;
+    snap.innerHTML = SNAP.map(function(s){
+      return '<div class="item'+(s.warn?' warn':'')+'"><div class="v">'+s.v+'</div><div class="k">'+s.k+'</div></div>';
+    }).join('');
+    var total = 0, done = 0, html = '';
+    GROUPS.forEach(function(g){
+      var gDone = 0;
+      var itemsHtml = g.items.map(function(it){
+        total++;
+        var isDone = !!wrStored[it.id];
+        if(isDone){ done++; gDone++; }
+        var tagCls = it.deadline ? 'wr-tag deadline' : 'wr-tag';
+        return '<li data-id="'+it.id+'" class="'+(isDone?'done':'')+'">'
+          + '<span class="wr-box">'+(isDone?'✓':'')+'</span>'
+          + '<span class="wr-txt">'+it.txt+'</span>'
+          + '<span class="'+tagCls+'">'+it.tag+'</span>'
+          + '</li>';
+      }).join('');
+      html += '<div class="wr-group"><h2>'+g.name+'<span class="cnt">'+gDone+'/'+g.items.length+'</span></h2><ul class="wr-checks">'+itemsHtml+'</ul></div>';
+    });
+    groupsEl.innerHTML = html;
+    var pct = total ? Math.round(done/total*100) : 0;
+    var pctEl = document.getElementById('wr-pct'), fillEl = document.getElementById('wr-fill');
+    if(pctEl) pctEl.textContent = pct + '%（'+done+'/'+total+'）';
+    if(fillEl) fillEl.style.width = pct + '%';
+    groupsEl.querySelectorAll('ul.wr-checks li').forEach(function(li){
+      li.addEventListener('click', function(){
+        var id = li.getAttribute('data-id');
+        if(wrStored[id]){ delete wrStored[id]; } else { wrStored[id] = true; }
+        wrSave(wrStored);
+        wrRender();
+      });
+    });
+  }
+  wrRender();
+})();
 </script>
 
 
