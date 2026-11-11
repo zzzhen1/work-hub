@@ -1864,9 +1864,9 @@ CREATE POLICY "allow_all" ON workbench_data
     <div class="section-title">🎯 债务执行路线</div>
     <div class="card">
       <div class="debt-metrics">
-        <div class="dm-item"><div class="dm-val">10.6万</div><div class="dm-label">月供</div></div>
-        <div class="dm-item red"><div class="dm-val">6.7万</div><div class="dm-label">月缺口</div></div>
-        <div class="dm-item orange"><div class="dm-val">73.8%</div><div class="dm-label">使用率</div></div>
+        <div class="dm-item"><div class="dm-val" id="dm-monthly">—</div><div class="dm-label">月刚性</div></div>
+        <div class="dm-item red"><div class="dm-val" id="dm-gap">—</div><div class="dm-label">月缺口</div></div>
+        <div class="dm-item orange"><div class="dm-val" id="dm-util">—</div><div class="dm-label">使用率</div></div>
       </div>
       <div class="progress-wrap">
         <div class="progress-label"><span>执行进度</span><span id="debtPlanPct">0/12</span></div>
@@ -2370,6 +2370,8 @@ function toggleCheck(el) {
 }
 
 // ===== 债务执行路线 =====
+const DEBT_METRICS = { monthly: 82521, gap: 22521, util: 70.5, income: 60000, asOf: '2026-11-10' };
+
 const DEBT_PLAN = [
   { id:'dp-c11', g:'11/26前办', p:'P0', badge:'badge-p1', name:'★广发分期 13,000 @9%', amt:'月供1,137 · 利息642', key:'剩余应还1.3万，9%第二便宜，11/26还款日前办', steps:'广发剩余应还 13,000，11/26 还款日。9% 第二便宜，App「账单分期」办 12 期。' },
   { id:'dp-c10', g:'11/29前办', p:'P0', badge:'badge-p1', name:'★中信分期 35,000 @10.2%', amt:'月供3,080 · 利息1,964', key:'账单3.5万，10.2%，11/29还款日前办', steps:'中信账单 35,000，11/29 还款日。10.2%，App「账单分期」办 12 期（能分多少分多少）。' },
@@ -2392,6 +2394,22 @@ function getDebtPlan() {
   if (!d.done || typeof d.done !== 'object') d.done = {};
   return d;
 }
+// ★ 执行 tab 顶部三指标：从 DEBT_METRICS（唯一真源现算，sync_debt_plan 注入）实时渲染，禁止硬编码
+function fmtWan(n) {
+  const w = n / 10000;
+  return (Math.round(w * 100) / 100).toString().replace(/\.0+$/, '').replace(/\.$/, '') + '万';
+}
+function renderDebtMetrics() {
+  const m = (typeof DEBT_METRICS !== 'undefined') ? DEBT_METRICS : null;
+  const elM = document.getElementById('dm-monthly');
+  const elG = document.getElementById('dm-gap');
+  const elU = document.getElementById('dm-util');
+  if (!elM || !elG || !elU) return;
+  if (!m) { elM.textContent = '—'; elG.textContent = '—'; elU.textContent = '—'; return; }
+  elM.textContent = fmtWan(m.monthly);   // 月刚性 → 8.25万
+  elG.textContent = fmtWan(m.gap);       // 月缺口 → 2.25万
+  elU.textContent = m.util + '%';        // 使用率 → 70.5%
+}
 function renderDebtItem(it, on) {
   let badge = it.p ? '<span class="checklist-badge ' + it.badge + '">' + it.p + '</span> ' : '';
   let amt = it.amt ? '<span class="dp-amt"> ' + it.amt + '</span>' : '';
@@ -2405,6 +2423,7 @@ function renderDebtItem(it, on) {
     + '</div></li>';
 }
 function renderDebtPlan() {
+  renderDebtMetrics();
   const container = document.getElementById('debtPlanGroups');
   if (!container) return;
   const plan = getDebtPlan();
@@ -6104,12 +6123,16 @@ init();
 
 /* ===== 周复盘检查表 ===== */
 (function(){
-  var SNAP = [
-    { k: '信用卡使用率', v: '70.5%', warn: true },
-    { k: '自有现金', v: '5,000', warn: true },
-    { k: '月缺口', v: '22,521', warn: true },
-    { k: '额度耗尽', v: '第9月', warn: false }
-  ];
+  // ★ 数据快照：使用率/月缺口实时取自 DEBT_METRICS（与执行 tab 同源），避免再次漂移
+  function wrSnap(){
+    var m = (typeof DEBT_METRICS !== 'undefined') ? DEBT_METRICS : null;
+    return [
+      { k: '信用卡使用率', v: m ? (m.util + '%') : '70.5%', warn: true },
+      { k: '自有现金', v: '5,000', warn: true },
+      { k: '月缺口', v: m ? m.gap.toLocaleString('zh-CN') : '22,521', warn: true },
+      { k: '额度耗尽', v: '第9月', warn: false }
+    ];
+  }
   var GROUPS = [
     { name: '一、数据盘点（每周报数）', items: [
       { id: 'wr_dp', txt: '四卡额度（浦发/招信/中信/广发/建设）', tag: '每周' },
@@ -6145,7 +6168,7 @@ init();
     var snap = document.getElementById('wr-snap');
     var groupsEl = document.getElementById('wr-groups');
     if(!snap || !groupsEl) return;
-    snap.innerHTML = SNAP.map(function(s){
+    snap.innerHTML = wrSnap().map(function(s){
       return '<div class="item'+(s.warn?' warn':'')+'"><div class="v">'+s.v+'</div><div class="k">'+s.k+'</div></div>';
     }).join('');
     var total = 0, done = 0, html = '';
