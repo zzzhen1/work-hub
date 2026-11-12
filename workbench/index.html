@@ -2372,13 +2372,16 @@ function toggleCheck(el) {
 // ===== 债务执行路线 =====
 const DEBT_METRICS = { monthly: 83989, gap: 23989, util: 70.5, income: 60000, asOf: '2026-11-10' };
 
+const LOAN_METRICS = { zb: { monthly: 5000, remainingPeriods: 36, remainingAmount: 521794 }, wz: { monthly: 16291, remainingPeriods: 20, remainingAmount: 308544 } };
+
 const DEBT_PLAN = [
-  { id:'dp-c11', g:'11/26前办', p:'P0', badge:'badge-p1', name:'★广发分期 14,000 @9%', amt:'月供1,224 · 利息692', key:'账单1.4万(11/26还)，9%第二便宜', steps:'广发 11 月账单 14,000（11/26 还款日，工作台 11/12 实时）。9% 第二便宜，App「账单分期」办 12 期。★办时同步申请财金〔2026〕71号分期贴息 1%。' },
-  { id:'dp-c10', g:'11/29前办', p:'P0', badge:'badge-p1', name:'★中信剩余 15,000 @10.2%', amt:'月供1,320 · 利息842', key:'账单3.5万已还2万(11/11)，剩1.5万办分期', steps:'中信 11 月账单 35,000，11/11 已先还 20,000（银行卡余额）→ 剩余 15,000，11/29 还款日前 App「账单分期」办 12 期 @10.2%。★办时同步申请财金〔2026〕71号分期贴息 1%。' },
-  { id:'dp-c0a', g:'11/13前', p:'P0', badge:'badge-p1', name:'①还建设 8,000（刷中信补）', amt:'流水未见·待确认', key:'建设8,000 11/13截止；流水无还款记录', steps:'还建设 8,000（11/13，还 10 月账单）。原计划现金 5,000 + 刷中信 3,000。⚠️ 11/12 流水仍无建设还款记录，且 11/12 套现中信 7,900 用途待确认——请核实建设 8,000 是否已还。' },
-  { id:'dp-c0b', g:'11/17-18', p:'P0', badge:'badge-p1', name:'②刷招信14,000 还妈平安', amt:'拆6,983+7,017', key:'妈平安14,000；招信125,000→139,000=84.2%', steps:'还妈平安 14,000（11/20）：刷招信 14,000（拆 6,983+7,017，避整数，11/17-18 各一笔，提前 2-3 天）。刷后招信 75.8%→84.2%（临界，≤85%，不再叠加其他刷招信）。' },
-  { id:'dp-c0c', g:'11/18-19', p:'P0', badge:'badge-p1', name:'③刷中信4,468 付浦发月供', amt:'拆2,234+2,234', key:'浦发月供4,468；中信63,000→67,468=67.5%', steps:'付浦发分期月供 4,468（11/21）：刷中信 4,468（拆 2,234+2,234，避整数，11/18-19 各一笔，提前 2 天）。刷后中信 67.5%，不刷满。' },
-  { id:'dp-c0d', g:'11/20-25', p:'P0', badge:'badge-p1', name:'④刷中信10,800 付社保', amt:'拆5,398+5,402', key:'社保10,800；中信67,468→78,268=78.3%（★原招信改中信，避招信刷爆）', steps:'付社保 8 人 10,800（11月内）：刷中信 10,800（拆 5,398+5,402，避整数，11/20-25 各一笔）。★原方案刷招信，但招信已用 125,000，再刷会超 85%，改刷中信（刷后 78.3%）。' },
+  { id:'dp-c11', g:'11/26前办', p:'P0', badge:'badge-p1', name:'⑥广发账单 14,000（优先还清）', amt:'还清优先·退路分期', key:'11/26还；优先现金流/套现还清，无法周转才分期@9%', steps:'广发 11 月账单 14,000（11/26 还款日）。★按 z 11/12 策略：优先用现金流或套现全额还清；只有「无法周转」（现金流+套现都补不上）才 App「账单分期」办 12 期 @9%（月供 1,224）。办分期时同步申请财金〔2026〕71 号贴息 1%。' },
+  { id:'dp-c10', g:'11/29前办', p:'P0', badge:'badge-p1', name:'⑦中信剩余 15,000（优先还清）', amt:'还清优先·退路分期', key:'已还2万剩1.5万；优先还清，无法周转才分期@10.2%', steps:'中信 11 月账单 35,000，11/11 已先还 20,000 → 剩 15,000，11/29 还款日。★按 z 11/12 策略：优先用现金流或套现还清；只有「无法周转」才 App「账单分期」办 12 期 @10.2%（月供 1,320）。办分期时同步申请财金〔2026〕71 号贴息 1%。' },
+  { id:'dp-c0a', g:'11/13前', p:'P0', badge:'badge-p1', name:'①还建设 8,000', amt:'⚠️未还·明天截止', key:'建设8,000未还；11/12套现中信7,900已用于发工资', steps:'还建设 8,000（11/13，还 10 月账单）。⚠️ 11/12 套现中信 7,900 已用于发工资，建设 8,000 仍未还——明天截止，尽快用现金流或套现补还。' },
+  { id:'dp-c0e', g:'11/15前', p:'P0', badge:'badge-p1', name:'②总部金融 5,000（本月未转）', amt:'⚠️赋强公证·勿逾期', key:'总部金融本月5,000还没转进去，尽快转', steps:'总部金融 11 月应还本金 5,000（36 期先本后息已签约，前 35 期每月 5,000）。⚠️ 本月还没转进去——赋强公证债务，绝不能逾期（任一 5,000 未按期还→全部剩余本金+利息+罚息立即到期）。尽快安排转账。' },
+  { id:'dp-c0b', g:'11/17-18', p:'P0', badge:'badge-p1', name:'③刷招信14,000 还妈平安', amt:'拆6,983+7,017', key:'妈平安14,000；招信125,000→139,000=84.2%', steps:'还妈平安 14,000（11/20）：刷招信 14,000（拆 6,983+7,017，避整数，11/17-18 各一笔，提前 2-3 天）。刷后招信 75.8%→84.2%（临界，≤85%，不再叠加其他刷招信）。' },
+  { id:'dp-c0c', g:'11/18-19', p:'P0', badge:'badge-p1', name:'④刷中信4,468 付浦发月供', amt:'拆2,234+2,234', key:'浦发分期月供4,468；中信刷后使用率可控', steps:'付浦发分期月供 4,468（11/21）：刷中信 4,468（拆 2,234+2,234，避整数，11/18-19 各一笔，提前 2 天）。★优先用现金流付，现金流不够再刷中信。' },
+  { id:'dp-c0d', g:'11/20-25', p:'P0', badge:'badge-p1', name:'⑤刷中信10,800 付社保', amt:'拆5,398+5,402', key:'社保10,800；优先现金流，不够再刷中信', steps:'付社保 8 人 10,800（11月内）：优先用现金流付，现金流不够刷中信 10,800（拆 5,398+5,402，避整数，11/20-25 各一笔）。★原方案刷招信，但招信已用 125,000 会超 85%，改中信。' },
 ];
 function getDebtPlan() {
   const d = loadData('debtPlan', { done: {} });
@@ -2527,7 +2530,20 @@ const LOAN_INIT = {
 
 function getLoanState() {
   const stored = loadData('loanState', null);
-  return mergeData(stored, LOAN_INIT);
+  const merged = mergeData(stored, LOAN_INIT);
+  // ★ 总部金融/微众从 LOAN_METRICS（loans_truth 真源，sync 注入）实时覆盖云端旧数据
+  if (typeof LOAN_METRICS !== 'undefined') {
+    ['zb', 'wz'].forEach(function(id) {
+      const lm = LOAN_METRICS[id];
+      if (lm) {
+        merged[id] = merged[id] || {};
+        if (lm.monthly) merged[id].monthly = lm.monthly;
+        if (lm.remainingPeriods) merged[id].remainingPeriods = lm.remainingPeriods;
+        if (lm.remainingAmount) merged[id].remainingAmount = lm.remainingAmount;
+      }
+    });
+  }
+  return merged;
 }
 
 // Calculate the next repayment date and billing month for a credit card
@@ -2801,7 +2817,7 @@ function renderMonthlyPayments() {
     html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
     // Left: amount + name + detail
     html += '<div style="flex:1;min-width:0;">';
-    html += '<span class="pay-item-amount ' + (paid ? 'paid' : isUrgent ? 'urgent' : '') + '">' + fmtMoney(loan.monthly) + '</span>';
+    html += '<span class="pay-item-amount ' + (paid ? 'paid' : isUrgent ? 'urgent' : '') + '">' + fmtMoney(state.monthly || loan.monthly) + '</span>';
     html += '<div class="pay-item-info">';
     html += '<div class="pay-item-name">' + loan.name + '</div>';
     let detail = '每月' + loan.repayDay + '日';
