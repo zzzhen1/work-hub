@@ -2520,7 +2520,7 @@ const CC_CONFIG = [
 
 const LOAN_INIT = {
   wz:  { name: '微众',    repayDay: 4,  monthly: 16290, remainingPeriods: 21,  remainingAmount: 322557 },
-  zb:  { name: '总部金融', repayDay: 4,  monthly: 18900, remainingPeriods: 33,  remainingAmount: 620813 },
+  zb:  { name: '总部金融', repayDay: 4,  monthly: 5000, remainingPeriods: 36,  remainingAmount: 614983 },
   zfd: { name: '招房贷',  repayDay: 9,  monthly: 17000, remainingPeriods: null, endDate: '2033-02-06', remainingAmount: 2730000 },
   ma:  { name: '妈平安',  repayDay: 20, monthly: 14000, remainingPeriods: null, remainingAmount: 960000 },
 };
@@ -6144,7 +6144,9 @@ init();
       { id: 'wr_jingying', txt: '经营贷重申（DTI 削峰）', tag: '2027-03' }
     ]},
     { name: '五、总部金融', items: [
-      { id: 'wr_zjian', txt: '总部 5,000/月已谈成✅；降息 11%→7% 跟进（+利息口径+去尾款）', tag: '持续' }
+      { id: 'wr_zjian', txt: '变更协议已签约✅（36期先本后息，前35期5,000/月本金）', tag: '已落地' },
+      { id: 'wr_zball', txt: '第36期气球款44万（2029-10前经营贷/创业担保贷须落地）', tag: '2029-10' },
+      { id: 'wr_zcut', txt: '利息减半=口头承诺未写合同（到期重新审核，不可押注）', tag: '风险' }
     ]},
     { name: '六、远期', items: [
       { id: 'wr_wg', txt: '稳岗返还+重点群体补贴（跑一趟人社窗口）', tag: '远期' }
